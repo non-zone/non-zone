@@ -19,7 +19,7 @@ import {
   Splash,
   ProfileWidget,
   renderObject,
-  Profile,
+  MyProfile,
 } from './main_components';
 import { AuthProvider, useAuth } from './Auth';
 import * as firebase from 'firebase/app';
@@ -78,7 +78,7 @@ const Map = () => {
           />
         </Route>
         <Route path="/profile">
-          <Profile onClose={() => router.push('/')} />
+          <MyProfile onClose={() => router.push('/')} />
         </Route>
       </Switch>
     </>
