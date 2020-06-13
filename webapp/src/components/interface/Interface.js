@@ -13,7 +13,7 @@ import './interface.css';
  */
 
 export const Interface = (props) => {
-  const { leftButton, centralButton, righButton } = props;
+  const { leftButton, centralButton, rightButton } = props;
   return (
     <div className="navigation">
       <div className="navigation__layer"></div>
@@ -33,9 +33,9 @@ export const Interface = (props) => {
 
       <button
         className="navigation__current navigation__button"
-        onClick={righButton.onClick}
+        onClick={rightButton.onClick}
       >
-        {righButton.svg}
+        {rightButton.svg}
       </button>
     </div>
   );

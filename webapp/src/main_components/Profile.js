@@ -1,22 +1,20 @@
-import React from 'react'
-import { useAuth } from '../Auth'
-
+import React from 'react';
+import { useAuth } from '../Auth';
+import { Interface, svg } from '../components';
 
 export const Profile = ({ onClose }) => {
-  const { user } = useAuth()
-
-  return <div style={{
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    zIndex: 5,
-    height: 400,
-    width: 400,
-    background: 'white'
-  }}>
-    TODO profile
-    {user && <div>{user.email}</div>}
-
-    <button onClick={onClose}>close</button>
-  </div>
-}
+  const {
+    Profile: { close, save, logout },
+  } = svg;
+  return (
+    <Interface
+      leftButton={{ onClick: onClose, svg: close }}
+      centralButton={{
+        svg: save,
+        name: 'Update profile',
+        onClick: () => alert('it works'),
+      }}
+      rightButton={{ onClick: () => alert('you logged out'), svg: logout }}
+    />
+  );
+};

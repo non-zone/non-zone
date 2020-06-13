@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Interface } from '../components/interface/Interface';
-import { Profile } from '../components/profile/Profile';
-import { svg } from '../components/svg/svg.js';
+import { Interface } from '../components';
+import { Profile } from '../components';
+import { svg } from '../components';
 
 export const NavigationWidget = ({ autolocate, zoomIn, zoomOut }) => {
   const [showModal, setShowModal] = useState(false);
@@ -11,7 +11,11 @@ export const NavigationWidget = ({ autolocate, zoomIn, zoomOut }) => {
   return (
     <>
       {showModal ? <div></div> : ''}
-      <Profile avatarUrl={"https://hhcdn.ru/photo/586132179.jpeg?t=1592170832&h=5QwltFkMTmjCmxroLG7oXA"} />
+      <Profile
+        avatarUrl={
+          'https://hhcdn.ru/photo/586132179.jpeg?t=1592170832&h=5QwltFkMTmjCmxroLG7oXA'
+        }
+      />
       <Interface
         leftButton={{
           onClick: zoomIn,
@@ -22,7 +26,7 @@ export const NavigationWidget = ({ autolocate, zoomIn, zoomOut }) => {
           name: 'Create a nonzone',
           svg: create,
         }}
-        righButton={{
+        rightButton={{
           onClick: autolocate,
           svg: current,
         }}
