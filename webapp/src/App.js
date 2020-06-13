@@ -20,7 +20,7 @@ import {
     ProfileWidget,
     renderObject,
     Profile,
-} from "./components";
+} from "./main_components";
 import { AuthProvider, useAuth } from "./Auth";
 import * as firebase from "firebase/app";
 import "firebase/analytics";

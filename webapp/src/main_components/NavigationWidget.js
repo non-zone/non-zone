@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Interface } from './Interface';
-import { svg } from './svg/svg.js';
+import { Interface } from '../components/interface/Interface';
+import { svg } from '../components/svg/svg.js';
 
 export const NavigationWidget = ({ autolocate, zoomIn, zoomOut }) => {
   const [showModal, setShowModal] = useState(false);
