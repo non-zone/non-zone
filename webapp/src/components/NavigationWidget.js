@@ -13,7 +13,7 @@ export const NavigationWidget = ({ autolocate, zoomIn, zoomOut }) => {
                     className="navigation__filter navigation__button"
                     onClick={zoomIn}
                 >
-                    {svg.Navigation.explore}
+                    {svg.Navigation.current}
                 </button>
                 <button
                     className="navigation__create navigation__button"
