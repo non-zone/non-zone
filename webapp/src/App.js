@@ -1,47 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { CommunityMap, Pin, initFirebase, detectLocation } from "@opencommunitymap/react-sdk";
+import {
+  CommunityMap,
+  Pin,
+  initFirebase,
+  detectLocation
+} from "@opencommunitymap/react-sdk";
 import mapStyles from './MapsGoogleDarkStyle.json'
+import {
+  NewContentWidget,
+  NavigationWidget,
+  Splash,
+  ProfileWidget,
+  renderObject
+} from './components'
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
 
 initFirebase('development')
 
-const Splash = () => {
-  return <div className="Splash-header">
-    {/* <img src={logo} className="Splash-logo" alt="logo" /> */}
-    <p>
-      Non-zone
-    </p>
-  </div>
-}
 
-const Navigation = ({ autolocate, zoomIn, zoomOut }) => {
-  return <div style={{ position: 'fixed', bottom: 50, left: 50 }}>
-    <button onClick={autolocate}>auto</button>
-    <button onClick={zoomIn}>+</button>
-    <button onClick={zoomOut}>-</button>
-  </div>
-}
 
-const NewContentWidget = ({ loc }) => {
-  const [showModal, setShowModal] = useState(false)
-  return <div style={{ position: 'fixed', bottom: 50, right: 50, background: 'lightgrey' }}>
-    {showModal
-      ? (
-        <div style={{ width: 300, height: 500 }}>
-          <h3>New non-zone</h3>
-          <textarea style={{ width: '100%', height: '80%' }} />
-          <br />
-          <button onClick={() => setShowModal(false)}>Cancel</button>
-        </div>
-      )
-      : (
-        <button onClick={() => setShowModal(true)}>New</button>
-      )
-    }
-  </div>
-}
 const defaultCenter = { latitude: 42.69, longitude: 23.32 };
 
 const Map = () => {
@@ -58,8 +37,10 @@ const Map = () => {
       center={center}
       zoom={zoom}
       showZoomControls={false}
+      profileWidget={<ProfileWidget />}
+      renderObject={renderObject}
       navigationWidget={
-        <Navigation
+        <NavigationWidget
           autolocate={() =>
             detectLocation()
               .then((loc) => setCenter(loc))
