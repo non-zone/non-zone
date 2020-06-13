@@ -22,6 +22,7 @@ import {
   renderObject,
   Profile
 } from './components'
+import { AuthProvider, useAuth } from './Auth'
 import * as firebase from "firebase/app";
 import "firebase/analytics";
 import "firebase/auth";
@@ -96,5 +97,7 @@ function App() {
 }
 
 export default () => <Router>
-  <App />
+  <AuthProvider>
+    <App />
+  </AuthProvider>
 </Router>

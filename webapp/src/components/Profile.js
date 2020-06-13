@@ -1,7 +1,10 @@
 import React from 'react'
+import { useAuth } from '../Auth'
 
 
 export const Profile = ({ onClose }) => {
+  const { user } = useAuth()
+
   return <div style={{
     position: 'fixed',
     top: '50%',
@@ -12,7 +15,8 @@ export const Profile = ({ onClose }) => {
     background: 'white'
   }}>
     TODO profile
-    
+    {user && <div>{user.email}</div>}
+
     <button onClick={onClose}>close</button>
   </div>
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import { useAuth } from '../Auth';
 
 const googleSignIn = () => {
   firebase.auth()
@@ -23,19 +24,10 @@ const signout = () => firebase.auth().signOut();
 
 export const ProfileWidget = ({ onShowProfile }) => {
   const [showLogin, setShowLogin] = useState(false);
-  const [user, setUser] = useState();
-  const isLoading = user === undefined;
+  const { user, loading } = useAuth()
 
-  useEffect(() => {
-    firebase.auth().onIdTokenChanged(user => {
-      console.log('Non-zone user:', user)
-      setUser(user)
-    }, err => {
-      console.log('Error getting Non-zone user:', err)
-    })
-  }, [])
 
-  if (isLoading) return <span />
+  if (loading) return <span />
 
   if (showLogin && !user) {
     return <Login />
