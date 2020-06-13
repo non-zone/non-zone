@@ -1,4 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useHistory
+} from "react-router-dom";
 import './App.css';
 import {
   CommunityMap,
@@ -12,12 +19,22 @@ import {
   NavigationWidget,
   Splash,
   ProfileWidget,
-  renderObject
+  renderObject,
+  Profile
 } from './components'
+import * as firebase from "firebase/app";
+import "firebase/analytics";
+import "firebase/auth";
+import "firebase/database";
+import firebaseConfig from './firebaseConfig';
+
+firebase.initializeApp(firebaseConfig);
+
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
+// init OCM firebase too
+const ocmFirebaseApp = initFirebase('development')
 
-initFirebase('development')
 
 
 
@@ -26,6 +43,8 @@ const defaultCenter = { latitude: 42.69, longitude: 23.32 };
 const Map = () => {
   const [center, setCenter] = useState(defaultCenter)
   const [zoom, setZoom] = useState()
+
+  const router = useHistory()
 
   return <>
     <CommunityMap
@@ -37,7 +56,7 @@ const Map = () => {
       center={center}
       zoom={zoom}
       showZoomControls={false}
-      profileWidget={<ProfileWidget />}
+      profileWidget={<ProfileWidget onShowProfile={() => router.push('/profile')} />}
       renderObject={renderObject}
       navigationWidget={
         <NavigationWidget
@@ -53,6 +72,11 @@ const Map = () => {
       onChange={(center, bounds, zoom) => { setCenter(center); setZoom(zoom); }}
     />
     <NewContentWidget loc={center} />
+    <Switch>
+      <Route path="/profile">
+        <Profile onClose={() => router.push('/')} />
+      </Route>
+    </Switch>
   </>
 }
 
@@ -71,4 +95,6 @@ function App() {
   );
 }
 
-export default App;
+export default () => <Router>
+  <App />
+</Router>
