@@ -1,4 +1,11 @@
 import React, { useState, useEffect } from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useHistory,
+} from "react-router-dom";
 import "./App.css";
 import {
     CommunityMap,
@@ -12,16 +19,29 @@ import {
     Splash,
     ProfileWidget,
     renderObject,
+    Profile,
 } from "./components";
+import { AuthProvider, useAuth } from "./Auth";
+import * as firebase from "firebase/app";
+import "firebase/analytics";
+import "firebase/auth";
+import "firebase/database";
+import firebaseConfig from "./firebaseConfig";
+
+firebase.initializeApp(firebaseConfig);
+
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || "";
 
-initFirebase("development");
+// init OCM firebase too
+const ocmFirebaseApp = initFirebase("development");
 
 const defaultCenter = { latitude: 42.69, longitude: 23.32 };
 
 const Map = () => {
     const [center, setCenter] = useState(defaultCenter);
     const [zoom, setZoom] = useState();
+
+    const router = useHistory();
 
     return (
         <>
@@ -34,7 +54,11 @@ const Map = () => {
                 center={center}
                 zoom={zoom}
                 showZoomControls={false}
-                profileWidget={<ProfileWidget />}
+                profileWidget={
+                    <ProfileWidget
+                        onShowProfile={() => router.push("/profile")}
+                    />
+                }
                 renderObject={renderObject}
                 navigationWidget={
                     <NavigationWidget
@@ -52,6 +76,12 @@ const Map = () => {
                     setZoom(zoom);
                 }}
             />
+
+            <Switch>
+                <Route path="/profile">
+                    <Profile onClose={() => router.push("/")} />
+                </Route>
+            </Switch>
         </>
     );
 };
@@ -59,7 +89,7 @@ const Map = () => {
 function App() {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
+        setTimeout(() => setLoading(false), 3000);
     }, []);
 
     return (
@@ -70,4 +100,10 @@ function App() {
     );
 }
 
-export default App;
+export default () => (
+    <Router>
+        <AuthProvider>
+            <App />
+        </AuthProvider>
+    </Router>
+);
