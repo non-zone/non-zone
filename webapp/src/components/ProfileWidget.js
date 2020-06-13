@@ -4,5 +4,5 @@ export const ProfileWidget = () => {
   // google sign in to non-zone fb 
   // edit with nonzone firebase
   // add fixed positioning
-  return <div>TODO </div>
+  return <div></div>
 }
