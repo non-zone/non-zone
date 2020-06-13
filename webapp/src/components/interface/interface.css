@@ -36,7 +36,7 @@
     z-index: 4;
 
     transition-property: background-color;
-    transition-duration: 0.3s;
+    transition-duration: 0.2s;
 }
 
 .navigation__button:hover {

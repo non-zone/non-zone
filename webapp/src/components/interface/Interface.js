@@ -3,12 +3,12 @@ import './interface.css';
 
 /**
  * Interface - represent buttons of interface
- * 
+ *
  * @param {props} props - includes:
  * @param {object} leftButton - includes two properties: svg - image for the button and onClick hanlder
  * @param {object} CentralButton - includes two properties: svg - image for the button and onClick hanlder + name
  * @param {object} rightButton - includes two properties: svg - image for the button and onClick hanlder
- * 
+ *
  * @returns {HTMLElement} - control elements
  */
 
