@@ -34,7 +34,9 @@ export const MyProfile = ({ onClose }) => {
 
     const onSave = () => {
         if (!input || !user) return;
-        updateUserProfile(user.uid, { nickname: inputValue });
+        updateUserProfile(user.uid, { nickname: inputValue })
+            .then(() => onClose())
+            .catch((err) => alert(err.message));
     };
     const onSignout = () => signout();
 
