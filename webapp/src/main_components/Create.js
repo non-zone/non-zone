@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { Interface, svg, Slider } from '../components';
+import { Interface, svg, Slider, DialogWindow } from '../components';
 import './create.css';
 import { TakePicture } from './TakePicture';
+
+const Congrats = ({ onClose }) => {
+    return (
+        <DialogWindow
+            title={'Congrats! You created a new non-zone!'}
+            onClose={onClose}
+        />
+    );
+};
 
 export const Create = ({ onClose, onSave }) => {
     const [state, setState] = useState({ type: 'story' });
@@ -10,14 +19,16 @@ export const Create = ({ onClose, onSave }) => {
     } = svg;
 
     //TODO
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
+    const [showCongrats, setShowCongrats] = useState(false);
     const _onSave = () => {
         if (!state.title) return;
-        setLoading(true);
+        // setLoading(true);
+        setTimeout(() => setShowCongrats(true), 1000);
         onSave(state)
             .finally(() => {
-                setLoading(false);
-                onClose();
+                // setLoading(false);
+                // onClose();
             })
             .catch((err) => alert(err.message));
     };
@@ -25,6 +36,7 @@ export const Create = ({ onClose, onSave }) => {
     // console.log('create data:', state);
     return (
         <>
+            {showCongrats && <Congrats onClose={onClose} />}
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
                 centralButton={{
