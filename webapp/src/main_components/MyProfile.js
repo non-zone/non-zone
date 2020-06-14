@@ -76,7 +76,9 @@ export const MyProfile = ({ onClose }) => {
 
     return (
         <>
-			<DialogWindow/>
+			<DialogWindow amount="40" text="Use your Zone Points to interact with your favorite
+                    non-zones, or reddeem them with experience-providers in the
+                    area."/>
             <Profile avatarUrl={user?.photoURL} onClick={() => {}} />
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}

@@ -1,22 +1,52 @@
 import React from 'react';
 import './dialogwindow.css';
 
+/**
+ * Dialogwindow - represents all types of tips and messages in ainterface
+ *
+ * @param {props} props
+ * @param {number} amount - amount of coins which user has earned // put this props to display special type of this window
+ * @param {Function} onClose - closing hanlder
+ * @param {Function} onClick - additional functional
+ */
+
 export const DialogWindow = (props) => {
+    const {
+        amount = '',
+        onClose = () => alert('this is handler'),
+		onClick = () => alert('onClose'),
+		text = ""
+    } = props;
+    const onClickHandler = () => {
+        onClick();
+        onClose();
+    };
     return (
         <div className="dialogwindow">
-            <div className="dialogwindow__box">
-                <h1 className="dialogwindow__title">Congratulations</h1>
-                <p className="dialogwindow__header">
-                    You’ve earned Non-Zone points
-                </p>
-                <p className="dialogwindow__amount">+40nz</p>
-                <p className="dialogwindow__text dialogwindow__header">
-                    Use your Zone Points to interact with your favorite
-                    non-zones, or reddeem them with experience-providers in the
-                    area.
+            <div className="dialogwindow__box dialogwindow-animation ">
+                {amount ? (
+                    <>
+                        <h1 className="dialogwindow__title">Congratulations</h1>
+                        <p className="dialogwindow__header">
+                            You’ve earned Non-Zone points
+                        </p>
+                        <p className="dialogwindow__amount">
+                            {'+' + amount + 'nz'}
+                        </p>
+                    </>
+                ) : (
+                    ''
+                )}
+                <p className="dialogwindow__text">
+                    {text}
                 </p>
             </div>
-            <button className="dialogwindow__button">Got it!</button>
+            <button
+                onClick={() => onClickHandler()}
+                className="dialogwindow__button dialogwindow-animation "
+            >
+                Got it!
+            </button>
         </div>
     );
 };

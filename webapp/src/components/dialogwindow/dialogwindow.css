@@ -50,13 +50,24 @@
     color: white !important;
 }
 
+.dialogwindow__text {
+	padding-top: 10px;
+	font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 13px;
+    text-align: center;
+
+    color: white !important;
+}
+
 .dialogwindow__amount {
     font-family: Roboto;
     font-style: normal;
     font-weight: 500;
     font-size: 23px;
     line-height: 27px;
-    padding-bottom: 10px;
 
     text-align: center;
 
@@ -85,4 +96,24 @@
 
     transition-property: background-color opacity transform;
     transition-duration: 0.3s;
+}
+
+.dialogwindow-animation {
+    animation-name: dialogwindow-appearance;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes dialogwindow-appearance {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
 }
