@@ -24,8 +24,8 @@
     background-color: #1b1d1f;
     box-shadow: 5px 7px 14px rgba(0, 0, 0, 0.13);
     border-radius: 15px;
-    border: 0px;
-	outline: none;
+    border: solid 2px #055f54;
+    outline: none;
 
     display: flex;
     justify-content: center;
@@ -64,7 +64,7 @@
 
 .navigation__create {
     margin: 12px 0px;
-	width: 100%;
+    width: 100%;
 
     font-family: Roboto;
     font-style: normal;
