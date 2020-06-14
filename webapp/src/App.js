@@ -48,7 +48,7 @@ const defaultCenter = { latitude: 42.69, longitude: 23.32 };
 const Map = () => {
     const [center, setCenter] = useState(defaultCenter);
     const [zoom, setZoom] = useState();
-
+    const [showMerchants, setShowMerchants] = useState(false);
     const router = useHistory();
 
     const { user } = useAuth();
@@ -77,8 +77,9 @@ const Map = () => {
                         zoom={zoom}
                         showZoomControls={false}
                         profileWidget={<span />}
-                        renderObject={getRenderObject((objectId) =>
-                            router.push(`/nonzone/${objectId}`)
+                        renderObject={getRenderObject(
+                            (objectId) => router.push(`/nonzone/${objectId}`),
+                            showMerchants
                         )}
                         navigationWidget={
                             <NavigationWidget
@@ -88,7 +89,7 @@ const Map = () => {
                                         .catch((err) => alert(err.message))
                                 }
                                 toggleMerchants={() => {
-                                    // TODO
+                                    setShowMerchants((val) => !val);
                                 }}
                                 createZone={() =>
                                     user

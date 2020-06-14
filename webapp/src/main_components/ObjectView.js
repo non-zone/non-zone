@@ -3,11 +3,12 @@ import { svg } from '../components';
 import './object.css';
 
 const MapObject = (props) => {
-    const { title, description, onClick } = props;
+    const { title, description, type, onClick } = props;
     const [state, setState] = useState(false);
     return (
         <div className="mapobject" onClick={() => setState(!state)}>
-            {svg.MapObject.vortex}
+            {type === 'place' ? svg.MapObject.vortex : svg.MapObject.vortex2}
+            {type}
             {state ? (
                 <>
                     <div className="mapobject__box mapobject__animation">
@@ -30,13 +31,30 @@ const MapObject = (props) => {
     );
 };
 
-export const getRenderObject = (cbOnClick) => ({
-    item: { id, title, description },
+export const getRenderObject = (cbOnClick, showMerchants) => ({
+    item: { id, title, description, type, external_data },
 }) => {
+    // console.log('getRenderObject', {
+    //     showMerchants,
+    //     title,
+    //     id,
+    //     type,
+    //     external_data,
+    // });
+    if (
+        !showMerchants &&
+        type === 'place'
+        // ||
+        // (showMerchants && type === 'story')
+    ) {
+        // console.log('ignore');
+        return null;
+    }
     return (
         <MapObject
             title={title}
             description={description}
+            type={type}
             onClick={() => cbOnClick(id)}
         />
     );
