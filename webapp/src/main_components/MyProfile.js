@@ -43,11 +43,11 @@ export const MyProfile = ({ onClose }) => {
                     How do you see yourself the most?
                 </p>
                 <Slider
-                    onChange={(a) => alert(a)}
+                    onChange={(a) => console.log(a)}
                     elements={[
-                        ['Zoner', 'Description', '1'],
-                        ['Merchant', 'Description', '2'],
-                        ['Explorer', 'Description', '3'],
+                        ['Zoner', 'Description hello how are you', '1'],
+                        ['Merchant', 'Description Description hello how are you', '2'],
+                        ['Explorer', 'Description Description hello how are you', '3'],
                     ]}
                 />
             </div>
