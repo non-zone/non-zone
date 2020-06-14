@@ -1,0 +1,36 @@
+.myprofile__page {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.myprofile__title {
+    padding: 20px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 100;
+    font-size: 50px;
+
+    color: #333333;
+}
+
+.myprofile__welcome {
+    padding: 10px 20px;
+    font-weight: 200;
+    font-size: 27px;
+}
+
+.myprofile__nickname {
+    margin: 20px 20px;
+    padding-left: 0px;
+    width: 90vw;
+    height: 50px;
+    border: 0px;
+    border-bottom: 4px solid#85e7c3;
+    border-radius: 0px;
+    background-color: white;
+
+    font-size: 30px;
+    color: rgb(124, 124, 124);
+    outline: none;
+}

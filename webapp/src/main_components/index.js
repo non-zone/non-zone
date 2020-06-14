@@ -1,5 +1,5 @@
 export * from './NavigationWidget'
 export * from './ObjectView'
-export * from './Profile'
+export * from './MyProfile'
 export * from './ProfileWidget'
 export * from './Splash'
