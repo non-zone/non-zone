@@ -66,8 +66,10 @@ export const MyProfile = ({ onClose }) => {
                     text="Use your Zone Points to interact with your favorite
                     non-zones, or reddeem them with experience-providers in the
 					area."
-                    onClose={setShowCongrats(false)}
-                    onClick={onClose}
+                    onClose={() => {
+                        setShowCongrats(false);
+                        onClose();
+                    }}
                 />
             ) : (
                 ''

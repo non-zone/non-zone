@@ -15,12 +15,12 @@ export const DialogWindow = (props) => {
     const {
         amount = '',
         onClose = () => alert('this is handler'),
-        onClick = () => alert('onClose'),
+        // onClick = () => alert('onClose'),
         text = '',
-        title = "Warning",
+        title = 'Warning',
     } = props;
     const onClickHandler = () => {
-        onClick();
+        // onClick();
         onClose();
     };
     return (
