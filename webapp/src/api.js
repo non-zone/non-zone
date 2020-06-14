@@ -1,7 +1,10 @@
 import axios from 'axios';
+import * as firebase from 'firebase/app';
+import 'firebase/database';
+
 const {
-  REACT_APP_OCM_HOST: HOST = 'https://communitymap.online',
-  REACT_APP_OCM_TOKEN: TOKEN,
+    REACT_APP_OCM_HOST: HOST = 'https://communitymap.online',
+    REACT_APP_OCM_TOKEN: TOKEN,
 } = process.env;
 
 console.log({ HOST, TOKEN });
@@ -15,24 +18,29 @@ console.log({ HOST, TOKEN });
  * loc: {latitude: number, longitude: number}
  */
 export const addNewObject = async ({
-  type,
-  loc,
-  title,
-  description,
-  external_data = null,
-}) => {
-  const uri = `${HOST}/api/v0/object/?token=${TOKEN}`;
-  const data = {
     type,
     loc,
     title,
     description,
-    external_data,
-    valid_until: '2100-01-01', //temp
-  };
+    external_data = null,
+}) => {
+    const uri = `${HOST}/api/v0/object/?token=${TOKEN}`;
+    const data = {
+        type,
+        loc,
+        title,
+        description,
+        external_data,
+        valid_until: '2100-01-01', //temp
+    };
 
-  console.debug('Add new object', uri, JSON.stringify(data));
+    console.debug('Add new object', uri, JSON.stringify(data));
 
-  const res = await axios.post(uri, data);
-  console.debug('Result:', res.data);
+    const res = await axios.post(uri, data);
+    console.debug('Result:', res.data);
+};
+
+export const updateUserProfile = (uid, data) => {
+    if (!uid) throw new Error('uid empty');
+    return firebase.database().ref(`/users-public/${uid}`).update(data);
 };
