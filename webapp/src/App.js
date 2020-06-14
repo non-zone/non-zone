@@ -20,6 +20,7 @@ import {
   ProfileWidget,
   renderObject,
   MyProfile,
+  Create
 } from './main_components';
 import { AuthProvider, useAuth } from './Auth';
 import * as firebase from 'firebase/app';
@@ -79,6 +80,9 @@ const Map = () => {
         </Route>
         <Route path="/profile">
           <MyProfile onClose={() => router.push('/')} />
+        </Route>
+		<Route path="/create">
+          <Create onClose={() => router.push('/')} />
         </Route>
       </Switch>
     </>
