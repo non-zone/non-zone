@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth, signout, useUserPublicProfile } from '../Auth';
 import { Interface, svg, Profile, Slider, DialogWindow } from '../components';
@@ -14,7 +14,16 @@ export const MyProfile = ({ onClose }) => {
     } = svg;
 
     const { user, loading } = useAuth();
-    const { profile } = useUserPublicProfile(user?.uid);
+    const { profile, loading: profileLoading } = useUserPublicProfile(
+        user?.uid
+    );
+
+    const [showCongrats, setShowCongrats] = useState(false);
+    const isNewUser = useRef();
+
+    if (user && !profileLoading && !profile?.nickname) {
+        isNewUser.current = true;
+    }
 
     if (!user && !loading) {
         onClose();
@@ -35,10 +44,35 @@ export const MyProfile = ({ onClose }) => {
     const onSave = () => {
         if (!input || !user) return;
         updateUserProfile(user.uid, { nickname: inputValue })
-            .then(() => onClose())
+            .then(() => {
+                if (isNewUser.current) {
+                    // when new users fills details, congratulate him!
+                    setShowCongrats(true);
+                    isNewUser.current = false;
+                } else {
+                    onClose();
+                }
+            })
             .catch((err) => alert(err.message));
     };
     const onSignout = () => signout();
+
+    if (showCongrats) {
+        alert('Congrats');
+        return (
+            <div>
+                CONGR{' '}
+                <button
+                    onClick={() => {
+                        // congratulations accepted. close all
+                        onClose();
+                    }}
+                >
+                    Explore
+                </button>
+            </div>
+        );
+    }
 
     return (
         <>
