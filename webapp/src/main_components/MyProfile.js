@@ -1,7 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth, signout, useUserPublicProfile } from '../Auth';
-import { Interface, svg, Profile, Slider, DialogWindow, Image } from '../components';
+import {
+    Interface,
+    svg,
+    Profile,
+    Slider,
+    DialogWindow,
+    Image,
+} from '../components';
 import './myprofile.css';
 import { updateUserProfile } from '../api';
 
@@ -24,6 +31,8 @@ export const MyProfile = ({ onClose }) => {
     if (user && !profileLoading && !profile?.nickname) {
         isNewUser.current = true;
     }
+    const isShowDummyImage =
+        !!user && !!profile?.nickname && !isNewUser.current;
 
     if (!user && !loading) {
         onClose();
@@ -59,7 +68,7 @@ export const MyProfile = ({ onClose }) => {
 
     return (
         <>
-		<Image/>
+            {isShowDummyImage && <Image onClose={onClose} />}
             {showCongrats ? (
                 <DialogWindow
                     amount="10"
