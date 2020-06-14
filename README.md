@@ -6,6 +6,9 @@ Here you can find the description: https://devpost.com/software/non-zone <br/>
 Main stack: React, JavaScript, TS, CSS, HTML, NodeJS, Firebase <br/>
 Collaborators: [Sergey Rudenko](https://github.com/rudensergey), [Dmitrii Yudakov](https://github.com/dmitry-yudakov)<br/>
 
+![Interface](https://github.com/non-zone/non-zone/blob/master/webapp/media/readme.jpeg?raw=true)<br/>
+
+
 ## Available Scripts
 
 In the project directory, you can run:
