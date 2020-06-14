@@ -41,6 +41,7 @@ export const Slider = (props) => {
             <div className="slider__wrapper">
                 {elements.map((slide) => (
                     <Slide
+                        key={slide[0]}
                         onChange={onChange}
                         name={slide[0]}
                         description={slide[1]}

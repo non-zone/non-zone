@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { Interface, svg, Slider } from '../components';
 import './create.css';
+import { signout } from '../Auth';
 
-export const Create = ({ onClose }) => {
-    const [input, setInput] = useState('Title');
+export const Create = ({ onClose, onSave }) => {
+    const [state, setState] = useState({ type: 'story' });
     const {
         Create: { pin, shot, close },
     } = svg;
+
+    const [loading, setLoading] = useState(false);
+    const _onSave = () => {
+        if (!state.title) return;
+        setLoading(true);
+        onSave(state)
+            .finally(() => setLoading(false))
+            .catch((err) => alert(err.message));
+    };
+
+    console.log('create data:', state);
     return (
         <>
             <Interface
@@ -14,10 +26,10 @@ export const Create = ({ onClose }) => {
                 centralButton={{
                     svg: pin,
                     name: 'Pin this nonzone',
-                    onClick: () => alert('it works'),
+                    onClick: _onSave,
                 }}
                 rightButton={{
-                    onClick: () => alert('you logged out'),
+                    onClick: signout,
                     svg: shot,
                 }}
             />
@@ -33,19 +45,29 @@ export const Create = ({ onClose }) => {
                     <input
                         className="create__title"
                         type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        value={state.title || ''}
+                        placeholder="Title"
+                        onChange={(e) =>
+                            setState({ ...state, title: e.target.value })
+                        }
                     ></input>
                     <textarea
                         className="create__textarea"
                         type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        value={state.description || ''}
+                        placeholder="Description"
+                        onChange={(e) =>
+                            setState({ ...state, description: e.target.value })
+                        }
                     ></textarea>
                     <p className="create__welcome">Nonzone type?</p>
                     <Slider
-                        onChange={(a) => console.log(a)}
-                        elements={[['#Story'], ['#Memory'], ['#Search']]}
+                        onChange={(type) => setState({ ...state, type })}
+                        elements={[
+                            ['#Story', '', 'story'],
+                            ['#Memory', '', 'memory'],
+                            ['#Search', '', 'search'],
+                        ]}
                     />
                     <div className="create__bottom"></div>
                 </div>

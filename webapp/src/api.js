@@ -14,23 +14,26 @@ console.log({ HOST, TOKEN });
  *
  * @param {props} object Props of create map object
  *
- * type: story|place
+ * kind: story|place
+ * type: memory|search|story
  * loc: {latitude: number, longitude: number}
  */
 export const addNewObject = async ({
+    kind,
     type,
     loc,
     title,
     description,
-    external_data = null,
+    image = null,
 }) => {
     const uri = `${HOST}/api/v0/object/?token=${TOKEN}`;
     const data = {
-        type,
+        type: kind,
         loc,
         title,
         description,
-        external_data,
+        logoURL: image,
+        external_data: { type, image },
         valid_until: '2100-01-01', //temp
     };
 
