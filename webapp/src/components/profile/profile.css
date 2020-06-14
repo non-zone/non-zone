@@ -1,36 +1,38 @@
 .profile {
-  position: fixed;
-  top: 0px;
-  right: 0px;
-  margin: 12px;
-  height: 62px;
-  width: 62px;
-  border-radius: 50%;
-  border: 3px solid #55d4c3;
-  box-shadow: 5px 7px 14px rgba(0, 0, 0, 0.13);
-  background-color: rgb(32, 32, 32);
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    margin: 12px;
+    height: 62px;
+    width: 62px;
+    border-radius: 50%;
+    border: 3px solid #55d4c3;
+    box-shadow: 5px 7px 14px rgba(0, 0, 0, 0.13);
+    background-color: rgb(32, 32, 32);
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  transition-property: background-color;
-  transition-duration: 0.2s;
+    transition-property: background-color;
+    transition-duration: 0.2s;
+
+    cursor: pointer;
 }
 
 .profile:hover {
-  background-color: #1b1d1f;
+    background-color: #1b1d1f;
 }
 
 .profile svg {
-  margin-right: 7px;
+    margin-right: 7px;
 }
 
 .profile__avatar {
-	height: 100%;
-	width: 100%;
-	border-radius: 50%;
-	border: 3px solid white;
-	background-size: cover;
-	box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    border: 3px solid white;
+    background-size: cover;
+    box-sizing: border-box;
 }
