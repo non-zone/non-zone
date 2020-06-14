@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Interface, svg, Slider } from '../components';
 import './create.css';
-import { signout } from '../Auth';
+import { TakePicture } from './TakePicture';
 
 export const Create = ({ onClose, onSave }) => {
     const [state, setState] = useState({ type: 'story' });
@@ -9,6 +9,7 @@ export const Create = ({ onClose, onSave }) => {
         Create: { pin, shot, close },
     } = svg;
 
+    //TODO
     const [loading, setLoading] = useState(false);
     const _onSave = () => {
         if (!state.title) return;
@@ -29,8 +30,20 @@ export const Create = ({ onClose, onSave }) => {
                     onClick: _onSave,
                 }}
                 rightButton={{
-                    onClick: signout,
-                    svg: shot,
+                    // onClick: signout,
+                    // svg: shot,
+                    svg: (
+                        <TakePicture
+                            onChange={(image) =>
+                                setState({
+                                    ...state,
+                                    image,
+                                })
+                            }
+                        >
+                            {shot}
+                        </TakePicture>
+                    ),
                 }}
             />
             <div className="create__wrapper">
@@ -39,7 +52,8 @@ export const Create = ({ onClose, onSave }) => {
                         className="create__image"
                         style={{
                             backgroundImage:
-                                'url(https://hhcdn.ru/photo/586132179.jpeg?t=1592170832&h=5QwltFkMTmjCmxroLG7oXA)',
+                                // 'url(https://hhcdn.ru/photo/586132179.jpeg?t=1592170832&h=5QwltFkMTmjCmxroLG7oXA)',
+                                `url(${state.image})`,
                         }}
                     ></div>
                     <input

@@ -1,0 +1,7 @@
+.takepicture__input {
+    position: absolute;
+    width: 62px;
+    height: 62px;
+    z-index: 10;
+    opacity: 0;
+}
