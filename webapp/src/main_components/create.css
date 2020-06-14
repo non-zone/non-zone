@@ -15,7 +15,7 @@
 }
 
 .create__title {
-    margin: 20px 20px;
+    margin: 20px 10px 20px 20px;
     width: 90%;
     height: 50px;
     border: 0px;
@@ -29,7 +29,7 @@
 }
 
 .create__textarea {
-    margin: 20px 20px;
+    margin: 20px 10px 20px 20px;
     padding: 20px;
     width: 90%;
     height: 200px;
