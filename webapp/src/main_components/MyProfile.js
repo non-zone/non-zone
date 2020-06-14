@@ -7,6 +7,7 @@ export const MyProfile = ({ onClose }) => {
     const [input, setInput] = useState('Your nickname');
     const {
         Profile: { close, save, logout },
+        Slider: { zoner, explorer, merchant },
     } = svg;
     return (
         <>
@@ -45,9 +46,19 @@ export const MyProfile = ({ onClose }) => {
                 <Slider
                     onChange={(a) => console.log(a)}
                     elements={[
-                        ['Zoner', 'Description hello how are you', '1'],
-                        ['Merchant', 'Description Description hello how are you', '2'],
-                        ['Explorer', 'Description Description hello how are you', '3'],
+                        ['Zoner', 'Create, pin and own new Non-Zones', '1', zoner],
+                        [
+                            'Merchant',
+                            'Provide unique expiriences to explorers',
+                            '2',
+                            merchant,
+                        ],
+                        [
+                            'Explorer',
+                            'Interact and discover exiting Non-zones',
+                            '3',
+                            explorer,
+                        ],
                     ]}
                 />
             </div>

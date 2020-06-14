@@ -46,6 +46,12 @@
     background: #417270;
 }
 
+.slider__slide svg {
+	height: 30px;
+	width: 30px;
+	margin-bottom: 10px;
+}
+
 .slider__name {
 	color: white !important;
 	font-size: 25px;
@@ -53,8 +59,8 @@
 }
 
 .slider__description {
-	margin-top: 5px !important;
+	margin-top: 3px !important;
 	color: white !important;
-	font-size: 15px;
+	font-size: 13px;
 	text-align: center;
 }

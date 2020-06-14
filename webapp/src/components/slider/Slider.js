@@ -3,7 +3,7 @@ import './slider.css';
 
 const Slide = (props) => {
     const [active, setActive] = useState(false);
-    const { onChange, name, description, value } = props;
+    const { onChange, name, description, value, svg = '' } = props;
     return (
         <div
             className={
@@ -14,6 +14,7 @@ const Slide = (props) => {
                 onChange(value);
             }}
         >
+            {svg}
             <h5
                 className={
                     'slider__name ' + (active ? 'slider__name-active' : '')
@@ -44,6 +45,7 @@ export const Slider = (props) => {
                         name={slide[0]}
                         description={slide[1]}
                         value={slide[2]}
+                        svg={slide[3]}
                     />
                 ))}
             </div>
