@@ -12,15 +12,15 @@
 
 .splash__svg {
     height: 150px;
-	width: 300px;
-	opacity: 0;
+    width: 300px;
+    opacity: 0;
 }
 
 .splash__text {
-	padding-top: 20px;
+    padding-top: 20px;
     font-size: 20px;
-	font-weight: 100;
-	opacity: 0;
+    font-weight: 100;
+    opacity: 0;
 }
 
 .splash__text-bold {
@@ -30,25 +30,25 @@
 
 .splash-appearance {
     animation-name: splash-appearance;
-	animation-duration: 1s;
-	animation-fill-mode: forwards;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 
 .splash-appearance-text {
     animation-name: splash-appearance;
-	animation-duration: 1s;
-	animation-delay: 0.2s;
-	animation-fill-mode: forwards;
+    animation-duration: 1s;
+    animation-delay: 0.2s;
+    animation-fill-mode: forwards;
 }
 
 @keyframes splash-appearance {
     0% {
         opacity: 0;
         transform: translateY(50px);
-	}
-	50% {
-		opacity: 0;
-	}
+    }
+    50% {
+        opacity: 0;
+    }
     100% {
         opacity: 1;
         transform: translateY(0px);

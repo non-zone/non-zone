@@ -5,7 +5,7 @@ export const Splash = () => {
     return (
         <div className="splash">
             <svg
-                className="splash__svg splash-appearance"
+                className="splash__svg splash-appearance display-none"
                 width="341"
                 height="182"
                 viewBox="0 0 341 182"
