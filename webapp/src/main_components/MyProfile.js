@@ -17,7 +17,8 @@ export const MyProfile = ({ onClose }) => {
     const { profile } = useUserPublicProfile(user?.uid);
 
     if (!user && !loading) {
-        return onClose();
+        onClose();
+        return <span />;
     }
 
     const inputValue = input === undefined ? profile?.nickname : input;

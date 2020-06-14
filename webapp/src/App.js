@@ -21,9 +21,9 @@ import {
   renderObject,
   MyProfile,
   Create,
-  Nonzone
+    Nonzone,
 } from './main_components';
-import { AuthProvider, useAuth } from './Auth';
+import { AuthProvider, useAuth, useUserPublicProfile } from './Auth';
 import * as firebase from 'firebase/app';
 import 'firebase/analytics';
 import 'firebase/auth';
@@ -45,6 +45,13 @@ const Map = () => {
 
   const router = useHistory();
 
+    const { user } = useAuth();
+    const { profile, loading } = useUserPublicProfile(user?.uid);
+
+    if (user && !loading && !profile) {
+        router.replace('/profile');
+    }
+
   return (
     <>
       <Switch>
@@ -58,9 +65,7 @@ const Map = () => {
             center={center}
             zoom={zoom}
             showZoomControls={false}
-            profileWidget={
-                            <span />
-            }
+                        profileWidget={<span />}
             renderObject={renderObject}
             navigationWidget={
               <NavigationWidget
