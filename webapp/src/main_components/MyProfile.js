@@ -56,8 +56,10 @@ export const MyProfile = ({ onClose }) => {
             <div className="myprofile__page">
                 <h1 className="myprofile__title">Profile</h1>
                 <p className="myprofile__welcome">
-                    Welcome to Non-zone This is your secret place, help us to
-                    make it more personal for you.
+                    Welcome to <strong>Non-zone</strong>
+                    <br />
+                    This is your <strong>secret place</strong>, help us to make
+                    it <strong>more personal</strong> for you.
                 </p>
                 <input
                     className="myprofile__nickname"
@@ -83,13 +85,13 @@ export const MyProfile = ({ onClose }) => {
                         ],
                         [
                             'Merchant',
-                            'Provide unique expiriences to explorers',
+                            'Provide unique experiences to explorers',
                             '2',
                             merchant,
                         ],
                         [
                             'Explorer',
-                            'Interact and discover exiting Non-zones',
+                            'Interact and discover exciting Non-zones',
                             '3',
                             explorer,
                         ],

@@ -7,7 +7,7 @@ const MapObject = (props) => {
     const [state, setState] = useState(false);
     return (
         <div className="mapobject" onClick={() => setState(!state)}>
-            {type === 'place' ? svg.MapObject.vortex : svg.MapObject.vortex2}
+            {type !== 'place' ? svg.MapObject.vortex : svg.MapObject.vortex2}
             {type}
             {state ? (
                 <>
@@ -20,7 +20,7 @@ const MapObject = (props) => {
                             className="mapobject__button"
                             onClick={() => onClick()}
                         >
-                            open this nonzone
+                            open this non-zone
                         </button>
                     </div>
                 </>

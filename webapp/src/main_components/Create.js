@@ -26,7 +26,7 @@ export const Create = ({ onClose, onSave }) => {
                 leftButton={{ onClick: onClose, svg: close }}
                 centralButton={{
                     svg: pin,
-                    name: 'Pin this nonzone',
+                    name: 'Pin this non-zone',
                     onClick: _onSave,
                 }}
                 rightButton={{
@@ -74,7 +74,7 @@ export const Create = ({ onClose, onSave }) => {
                             setState({ ...state, description: e.target.value })
                         }
                     ></textarea>
-                    <p className="create__welcome">Nonzone type?</p>
+                    <p className="create__welcome">Non-zone type?</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
                         elements={[

@@ -18,7 +18,7 @@ export const Nonzone = ({ onClose }) => {
                 leftButton={{ onClick: onClose, svg: close }}
                 // centralButton={{
                 //     svg: flag,
-                //     name: 'Save this nonzone',
+                //     name: 'Save this non-zone',
                 //     onClick: () => alert('it works'),
                 // }}
                 // rightButton={{
@@ -31,14 +31,13 @@ export const Nonzone = ({ onClose }) => {
                     <div
                         className="nonzone__image"
                         style={{
-                            backgroundImage:
-                                `url(${object?.logoURL})`,
+                            backgroundImage: `url(${object?.logoURL})`,
                         }}
                     ></div>
                     <p className="nonzone__type">{object?.title}</p>
                     <p className="nonzone__author"></p>
                     <p className="nonzone__text">{object?.description}</p>
-                    <p className="nonzone__type">Nonzone type</p>
+                    <p className="nonzone__type">Non-zone type</p>
                     <Sliderr
                         onChange={(a) => console.log(a)}
                         elements={[['#' + object?.external_data?.type]]}
