@@ -8,14 +8,16 @@ import './dialogwindow.css';
  * @param {number} amount - amount of coins which user has earned // put this props to display special type of this window
  * @param {Function} onClose - closing hanlder
  * @param {Function} onClick - additional functional
+ * @param {string} title - title for this window
  */
 
 export const DialogWindow = (props) => {
     const {
         amount = '',
         onClose = () => alert('this is handler'),
-		onClick = () => alert('onClose'),
-		text = ""
+        onClick = () => alert('onClose'),
+        text = '',
+        title = "Warning",
     } = props;
     const onClickHandler = () => {
         onClick();
@@ -24,9 +26,9 @@ export const DialogWindow = (props) => {
     return (
         <div className="dialogwindow">
             <div className="dialogwindow__box dialogwindow-animation ">
+                {title ? <h1 className="dialogwindow__title">{title}</h1> : ''}
                 {amount ? (
                     <>
-                        <h1 className="dialogwindow__title">Congratulations</h1>
                         <p className="dialogwindow__header">
                             You’ve earned Non-Zone points
                         </p>
@@ -37,9 +39,7 @@ export const DialogWindow = (props) => {
                 ) : (
                     ''
                 )}
-                <p className="dialogwindow__text">
-                    {text}
-                </p>
+                <p className="dialogwindow__text">{text}</p>
             </div>
             <button
                 onClick={() => onClickHandler()}
