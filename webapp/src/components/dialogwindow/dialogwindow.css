@@ -8,6 +8,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    z-index: 4;
 }
 
 .dialogwindow__box {
@@ -51,8 +53,8 @@
 }
 
 .dialogwindow__text {
-	padding-top: 10px;
-	font-family: Roboto;
+    padding-top: 10px;
+    font-family: Roboto;
     font-style: normal;
     font-weight: 500;
     font-size: 11px;
