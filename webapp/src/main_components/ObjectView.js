@@ -8,7 +8,6 @@ const MapObject = (props) => {
     return (
         <div className="mapobject" onClick={() => setState(!state)}>
             {type !== 'place' ? svg.MapObject.vortex : svg.MapObject.vortex2}
-            {type}
             {state ? (
                 <>
                     <div className="mapobject__box mapobject__animation">
