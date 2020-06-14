@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth, signout, useUserPublicProfile } from '../Auth';
-import { Interface, svg, Profile, Slider, DialogWindow } from '../components';
+import { Interface, svg, Profile, Slider, DialogWindow, Image } from '../components';
 import './myprofile.css';
 import { updateUserProfile } from '../api';
 
@@ -59,6 +59,7 @@ export const MyProfile = ({ onClose }) => {
 
     return (
         <>
+		<Image/>
             {showCongrats ? (
                 <DialogWindow
                     amount="40"

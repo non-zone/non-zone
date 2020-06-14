@@ -1,0 +1,22 @@
+.image {
+	display: block;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(0, 0, 0);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+	align-items: center;
+	z-index: 100;
+}
+
+.image__pic {
+	display: inline;
+	height: 100%;
+	width: 100%;
+	background-image: url(./123.jpeg);
+	background-size: cover;
+	z-index: 999;
+}
