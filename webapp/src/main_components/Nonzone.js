@@ -26,7 +26,7 @@ export const Nonzone = ({ onClose }) => {
                 //     svg: star,
                 // }}
             />
-            <div className="nonzone__wrapper">
+            <div className="nonzone__wrapper ">
                 <div className="nonzone__page">
                     <div
                         className="nonzone__image"
