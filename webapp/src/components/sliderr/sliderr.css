@@ -1,45 +1,44 @@
 .sliderr__container {
-	height: min-content;
-	margin-top: 10px;
-	margin-bottom: 90px;
+    height: min-content;
+    margin-top: 10px;
+    margin-bottom: 90px;
     width: 100%;
 
-    background: #fafafa;
+    background: #1b1d1f;
     box-shadow: inset 4px 9px 15px rgba(0, 0, 0, 0.11);
 
-	overflow-x: scroll;
+    overflow-x: scroll;
 }
 
 .sliderr__wrapper {
-	padding: 0px 5px;
-	height: 100%;
-	width: min-content;
-	display: flex;
-	flex-direction: row;
+    padding: 0px 5px;
+    height: 100%;
+    width: min-content;
+    display: flex;
+    flex-direction: row;
 }
 
 .sliderr__slide {
-	margin: 10px 5px;
+    margin: 10px 5px;
     width: max-content;
-	height: min-content;
+    height: min-content;
     left: 166px;
-	top: 430px;
-	padding: 10px;
+    top: 430px;
+    padding: 10px;
 
-	box-sizing: border-box;
+    box-sizing: border-box;
 
-    background: #6dc0bc;
-    box-shadow: 5px 7px 14px rgba(0, 0, 0, 0.13),
-        inset 5px 5px 11px rgba(255, 255, 255, 0.1);
-	border-radius: 15px;
-	
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+    background: #2c3033;
+    box-shadow: 5px 7px 14px rgba(0, 0, 0, 0.13);
+    border-radius: 15px;
 
-	transition-property: background-color;
-	transition-duration: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    transition-property: background-color;
+    transition-duration: 0.3s;
 }
 
 .sliderr__slide-active {
@@ -47,23 +46,23 @@
 }
 
 .sliderr__slide svg {
-	height: 30px;
-	width: 30px;
-	margin-bottom: 10px;
+    height: 30px;
+    width: 30px;
+    margin-bottom: 10px;
 }
 
 .sliderr__name {
-	color: white !important;
-	width: max-content;
-	height: max-content;
-	padding: 0px 20px;
-	font-size: 25px;
-	font-weight: 100;
+    color: #55d4c3 !important;
+    width: max-content;
+    height: max-content;
+    padding: 0px 20px;
+    font-size: 25px;
+    font-weight: 100;
 }
 
 .sliderr__description {
-	margin-top: 3px !important;
-	color: white !important;
-	font-size: 13px;
-	text-align: center;
+    margin-top: 3px !important;
+    color: white !important;
+    font-size: 13px;
+    text-align: center;
 }

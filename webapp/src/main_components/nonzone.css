@@ -1,6 +1,10 @@
 .nonzone__page {
+	position: fixed;
+	padding-top: 10px;
     height: 100%;
 	width: 100vw;
+	background-color: black;
+	overflow-y: scroll;
 }
 
 .nonzone__wrapper {
@@ -9,6 +13,7 @@
 }
 
 .nonzone__text {
+	color: #bebebe !important;
 	padding: 10px 20px;
 	line-height: 35px;
     font-weight: 400;
@@ -16,6 +21,7 @@
 }
 
 .nonzone__type {
+	color: white !important;
 	padding: 10px 20px;
 	line-height: 35px;
     font-weight: 200;
@@ -27,26 +33,24 @@
 	line-height: 35px;
     font-weight: 600;
 	font-size: 20px;
-	color: rgba(0, 0, 0, 0.397) !important;
+	color:#bebebe !important;
 }
 .nonzone__title {
     margin: 20px 20px;
     width: 90%;
     height: 50px;
     border: 0px;
-    border-bottom: 4px solid#6dc0bc;
     border-radius: 0px;
-    background-color: white;
 
     font-size: 30px;
-    color: rgb(124, 124, 124);
+    color: white;
     outline: none;
 }
 
 .nonzone__image {
 	height: 240px;
 	width: 95%;
-	margin: 20px auto;
+	margin: 0px auto 20px auto;
 	background-color: black;
 	background-size: cover;
 	border-radius: 15px;
