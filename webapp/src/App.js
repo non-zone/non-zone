@@ -22,6 +22,7 @@ import {
     MyProfile,
     Create,
     Nonzone,
+    CreateMerchant,
 } from './main_components';
 import {
     AuthProvider,
@@ -44,6 +45,8 @@ const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 const ocmFirebaseApp = initFirebase('development');
 
 const defaultCenter = { latitude: 42.69, longitude: 23.32 };
+
+const isMerchantMode = window.location.search === '?create-service';
 
 const Map = () => {
     const [center, setCenter] = useState(defaultCenter);
@@ -116,10 +119,17 @@ const Map = () => {
                     <MyProfile onClose={() => router.push('/')} />
                 </Route>
                 <Route path="/create">
-                    <Create
-                        onClose={() => router.push('/')}
-                        onSave={onCreate('story')}
-                    />
+                    {!isMerchantMode ? (
+                        <Create
+                            onClose={() => router.push('/')}
+                            onSave={onCreate('story')}
+                        />
+                    ) : (
+                        <CreateMerchant
+                            onClose={() => router.push('/')}
+                            onSave={onCreate('place')}
+                        />
+                    )}
                 </Route>
                 <Route path="/nonzone/:objectId">
                     <Nonzone onClose={() => router.push('/')} />
