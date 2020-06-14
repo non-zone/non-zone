@@ -36,11 +36,11 @@
     z-index: 4;
 
     transition-property: background-color;
-	transition-duration: 0.2s;
+    transition-duration: 0.2s;
 
-	animation-name: button-appearance;
-	animation-duration: 1s;
-	animation-timing-function: ease-out;
+    animation-name: button-appearance;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
 }
 
 .navigation__button:hover {
@@ -81,7 +81,7 @@
 }
 
 .navigation__create svg {
-	margin-right: 10px;
+    margin-right: 10px;
 }
 
 .navigation__layer {
@@ -99,10 +99,7 @@
     0% {
         opacity: 0;
         transform: translateY(50px);
-	}
-	50% {
-		opacity: 0;
-	}
+    }
     100% {
         opacity: 1;
         transform: translateY(0px);

@@ -1,53 +1,54 @@
 import React, { useState } from 'react';
-import { Interface, svg, Slider } from '../components';
+import { Interface, svg, Sliderr } from '../components';
 import './nonzone.css';
 
 export const Nonzone = ({ onClose }) => {
     const [input, setInput] = useState('Title');
     const {
-        Create: { pin, shot, close },
+        Nonzone: { star, flag, close },
     } = svg;
     return (
         <>
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
                 centralButton={{
-                    svg: pin,
-                    name: 'Pin this nonzone',
+                    svg: flag,
+                    name: 'Save this nonzone',
                     onClick: () => alert('it works'),
                 }}
                 rightButton={{
                     onClick: () => alert('you logged out'),
-                    svg: shot,
+                    svg: star,
                 }}
             />
-            <div className="create__wrapper">
-                <div className="create__page">
+            <div className="nonzone__wrapper">
+                <div className="nonzone__page">
                     <div
-                        className="create__image"
+                        className="nonzone__image"
                         style={{
                             backgroundImage:
                                 'url(https://hhcdn.ru/photo/586132179.jpeg?t=1592170832&h=5QwltFkMTmjCmxroLG7oXA)',
                         }}
                     ></div>
-                    <input
-                        className="create__title"
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                    ></input>
-                    <textarea
-                        className="create__textarea"
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                    ></textarea>
-                    <p className="create__welcome">Nonzone type?</p>
-                    <Slider
+					<p className="nonzone__type">This is title</p>
+					<p className="nonzone__author">This is author</p>
+                    <p className="nonzone__text">
+                        Suspendisse potenti. Curabitur vel sagittis risus. Fusce
+                        condimentum malesuada dolor, eget mollis neque porttitor
+                        quis. Nam semper elit eros, at convallis lectus
+                        tristique eu. Mauris mollis enim at augue mattis, nec
+                        varius tellus ultricies. Etiam lobortis turpis vel
+                        scelerisque lacinia. Nulla efficitur sed dui a faucibus.
+                        Maecenas et consequat libero, vel auctor metus. Integer
+                        malesuada ac eros lobortis consectetur. Curabitur quis
+                        venenatis dolor, eget ultrices massa.
+                    </p>
+                    <p className="nonzone__type">Nonzone type</p>
+                    <Sliderr
                         onChange={(a) => console.log(a)}
                         elements={[['#Story'], ['#Memory'], ['#Search']]}
                     />
-                    <div className="create__bottom"></div>
+                    <div className="nonzone__bottom"></div>
                 </div>
             </div>
         </>

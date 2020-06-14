@@ -20,7 +20,8 @@ import {
   ProfileWidget,
   renderObject,
   MyProfile,
-  Create
+  Create,
+  Nonzone
 } from './main_components';
 import { AuthProvider, useAuth } from './Auth';
 import * as firebase from 'firebase/app';
@@ -85,7 +86,7 @@ const Map = () => {
           <Create onClose={() => router.push('/')} />
         </Route>
 		<Route path="/nonzone">
-          <Create onClose={() => router.push('/')} />
+          <Nonzone onClose={() => router.push('/')} />
         </Route>
       </Switch>
     </>
