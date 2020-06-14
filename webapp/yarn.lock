@@ -1574,9 +1574,9 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 "@opencommunitymap/react-sdk@^0.1.0-rc2":
-  version "0.1.0-rc2"
-  resolved "https://registry.yarnpkg.com/@opencommunitymap/react-sdk/-/react-sdk-0.1.0-rc2.tgz#4bf1d265ebb5e9e029f45694ff080448fba0f6bc"
-  integrity sha512-pEcLqTagAgArw4KRrMn9KPEUYB5ZAOFMk3HTh0yGFKC1dAQuytMaOcJ2oALpIe85/wACGintEZcpdmbEzGpr5w==
+  version "0.1.0-rc3"
+  resolved "https://registry.yarnpkg.com/@opencommunitymap/react-sdk/-/react-sdk-0.1.0-rc3.tgz#4372d226facd7759f9e717a5aa4e4bdd8dd8c9f8"
+  integrity sha512-TWmgRRiMnFaAD5EG86vH5LjMzzFIJEoiz6OqGppgLmFztnclkH/RhuW4wRDazkakEJRghxOLwhTApRtbcwNxLA==
   dependencies:
     classnames "^2.2.6"
     dayjs "^1.8.28"
