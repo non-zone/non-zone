@@ -18,7 +18,7 @@ import {
     NavigationWidget,
     Splash,
     ProfileWidget,
-    renderObject,
+    getRenderObject,
     MyProfile,
     Create,
     Nonzone,
@@ -77,7 +77,9 @@ const Map = () => {
                         zoom={zoom}
                         showZoomControls={false}
                         profileWidget={<span />}
-                        renderObject={renderObject}
+                        renderObject={getRenderObject((objectId) =>
+                            router.push(`/nonzone/${objectId}`)
+                        )}
                         navigationWidget={
                             <NavigationWidget
                                 autolocate={() =>
@@ -118,7 +120,7 @@ const Map = () => {
                         onSave={onCreate('story')}
                     />
                 </Route>
-                <Route path="/nonzone">
+                <Route path="/nonzone/:objectId">
                     <Nonzone onClose={() => router.push('/')} />
                 </Route>
             </Switch>

@@ -13,30 +13,35 @@ import './interface.css';
  */
 
 export const Interface = (props) => {
-  const { leftButton, centralButton, rightButton } = props;
-  return (
-    <div className="navigation">
-      <div className="navigation__layer"></div>
-      <button
-        className="navigation__filter navigation__button"
-        onClick={leftButton.onClick}
-      >
-        {leftButton.svg}
-      </button>
-      <button
-        className="navigation__create navigation__button"
-        onClick={centralButton.onClick}
-      >
-        {centralButton.svg}
-        {centralButton.name}
-      </button>
+    const { leftButton, centralButton, rightButton } = props;
+    return (
+        <div className="navigation">
+            <div className="navigation__layer"></div>
+            <button
+                className="navigation__filter navigation__button"
+                onClick={leftButton.onClick}
+            >
+                {leftButton.svg}
+            </button>
 
-      <button
-        className="navigation__current navigation__button"
-        onClick={rightButton.onClick}
-      >
-        {rightButton.svg}
-      </button>
-    </div>
-  );
+            {!!centralButton && (
+                <button
+                    className="navigation__create navigation__button"
+                    onClick={centralButton.onClick}
+                >
+                    {centralButton.svg}
+                    {centralButton.name}
+                </button>
+            )}
+
+            {!!rightButton && (
+                <button
+                    className="navigation__current navigation__button"
+                    onClick={rightButton.onClick}
+                >
+                    {rightButton.svg}
+                </button>
+            )}
+        </div>
+    );
 };

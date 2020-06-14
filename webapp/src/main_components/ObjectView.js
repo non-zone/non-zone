@@ -7,7 +7,7 @@ const MapObject = (props) => {
     const [state, setState] = useState(false);
     return (
         <div className="mapobject" onClick={() => setState(!state)}>
-			{svg.MapObject.vortex}
+            {svg.MapObject.vortex}
             {state ? (
                 <>
                     <div className="mapobject__box mapobject__animation">
@@ -30,12 +30,14 @@ const MapObject = (props) => {
     );
 };
 
-export const renderObject = ({ item: { title, description } }) => {
+export const getRenderObject = (cbOnClick) => ({
+    item: { id, title, description },
+}) => {
     return (
         <MapObject
             title={title}
             description={description}
-            onClick={() => alert('it works')}
+            onClick={() => cbOnClick(id)}
         />
     );
 };
