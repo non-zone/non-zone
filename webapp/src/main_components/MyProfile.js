@@ -68,7 +68,11 @@ export const MyProfile = ({ onClose }) => {
 
     return (
         <>
-            {isShowDummyImage && <Image onClose={onClose} />}
+            {isShowDummyImage && (
+                <Image
+                // onClose={onClose}
+                />
+            )}
             {showCongrats ? (
                 <DialogWindow
                     amount="10"
