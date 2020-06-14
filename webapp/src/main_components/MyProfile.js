@@ -62,10 +62,10 @@ export const MyProfile = ({ onClose }) => {
 		<Image/>
             {showCongrats ? (
                 <DialogWindow
-                    amount="40"
+                    amount="10"
                     title="Congratulations"
                     text="Use your Zone Points to interact with your favorite
-                    non-zones, or reddeem them with experience-providers in the
+                    non-zones, or redeem them with experience-providers in the
 					area."
                     onClose={() => {
                         setShowCongrats(false);
