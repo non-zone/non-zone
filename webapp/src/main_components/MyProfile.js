@@ -1,32 +1,54 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useAuth } from '../Auth';
+import { useAuth, signout, useUserPublicProfile } from '../Auth';
 import { Interface, svg, Profile, Slider } from '../components';
 import './myprofile.css';
+import { updateUserProfile } from '../api';
 
 export const MyProfile = ({ onClose }) => {
     const router = useHistory();
-    const [input, setInput] = useState('Your nickname');
+    const [input, setInput] = useState();
     const {
         Profile: { close, save, logout },
         Slider: { zoner, explorer, merchant },
     } = svg;
+
+    const { user, loading } = useAuth();
+    const { profile } = useUserPublicProfile(user?.uid);
+
+    if (!user && !loading) {
+        return onClose();
+    }
+
+    const inputValue = input === undefined ? profile?.nickname : input;
+    console.log(
+        'input value',
+        typeof input,
+        typeof inputValue,
+        input,
+        inputValue,
+        profile,
+        user
+    );
+
+    const onSave = () => {
+        if (!input || !user) return;
+        updateUserProfile(user.uid, { nickname: inputValue });
+    };
+    const onSignout = () => signout();
+
     return (
         <>
-            <Profile
-                avatarUrl={
-                    'https://hhcdn.ru/photo/586132179.jpeg?t=1592170832&h=5QwltFkMTmjCmxroLG7oXA'
-                }
-            />
+            <Profile avatarUrl={user?.photoURL} onClick={() => {}} />
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
                 centralButton={{
                     svg: save,
                     name: 'Update profile',
-                    onClick: () => alert('it works'),
+                    onClick: onSave,
                 }}
                 rightButton={{
-                    onClick: () => alert('you logged out'),
+                    onClick: onSignout,
                     svg: logout,
                 }}
             />
@@ -39,8 +61,12 @@ export const MyProfile = ({ onClose }) => {
                 <input
                     className="myprofile__nickname"
                     type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    value={inputValue}
+                    placeholder="Your nickname"
+                    onChange={(e) => {
+                        console.log('Input nickname', e, e.target.value);
+                        setInput(e.target.value);
+                    }}
                 ></input>
                 <p className="myprofile__welcome">
                     How do you see yourself the most?

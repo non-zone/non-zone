@@ -39,16 +39,21 @@ export const useAuth = () => {
 export const useUserPublicProfile = (uid) => {
     const [profile, setProfile] = useState();
 
-    useEffect(
-        () =>
-            firebase
-                .database()
-                .ref(`/users-public/${uid}`)
-                .on('value', (snap) => {
-                    setProfile(snap.val());
-                }),
-        [uid]
-    );
+    useEffect(() => {
+        if (!uid) return;
+        console.log(`/users-public/${uid}`);
+        return firebase
+            .database()
+            .ref(`/users-public/${uid}`)
+            .on(
+                'value',
+                (snap) => {
+                    console.log('Snap:', snap);
+                    setProfile(snap?.val());
+                },
+                (err) => console.log('Error loading public user profile')
+            );
+    }, [uid]);
 
     return useMemo(
         () => ({
@@ -58,3 +63,15 @@ export const useUserPublicProfile = (uid) => {
         [profile]
     );
 };
+
+export const googleSignIn = () => {
+    firebase
+        .auth()
+        .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then((userCred) => {
+            console.log('User info after sign in:', userCred);
+        })
+        .catch((err) => console.log('Error signing in:', err));
+};
+
+export const signout = () => firebase.auth().signOut();

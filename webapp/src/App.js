@@ -59,7 +59,7 @@ const Map = () => {
             zoom={zoom}
             showZoomControls={false}
             profileWidget={
-              <ProfileWidget onShowProfile={() => router.push('/profile')} />
+                            <span />
             }
             renderObject={renderObject}
             navigationWidget={
@@ -71,7 +71,13 @@ const Map = () => {
                 }
                 zoomIn={() => setZoom((zoom = 18) => zoom + 1)}
                 zoomOut={() => setZoom((zoom = 18) => zoom - 1)}
+                            >
+                                <ProfileWidget
+                                    onShowProfile={() =>
+                                        router.push('/profile')
+                                    }
               />
+                            </NavigationWidget>
             }
             onChange={(center, bounds, zoom) => {
               setCenter(center);
