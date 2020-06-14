@@ -57,32 +57,21 @@ export const MyProfile = ({ onClose }) => {
     };
     const onSignout = () => signout();
 
-    if (showCongrats) {
-        alert('Congrats');
-        return (
-            <div>
-                CONGR{' '}
-                <button
-                    onClick={() => {
-                        // congratulations accepted. close all
-                        onClose();
-                    }}
-                >
-                    Explore
-                </button>
-            </div>
-        );
-    }
-
     return (
         <>
-            <DialogWindow
-				amount="40"
-				title="Congratulations"
-                text="Use your Zone Points to interact with your favorite
+            {showCongrats ? (
+                <DialogWindow
+                    amount="40"
+                    title="Congratulations"
+                    text="Use your Zone Points to interact with your favorite
                     non-zones, or reddeem them with experience-providers in the
-                    area."
-            />
+					area."
+                    onClose={setShowCongrats(false)}
+                    onClick={onClose}
+                />
+            ) : (
+                ''
+            )}
             <Profile avatarUrl={user?.photoURL} onClick={() => {}} />
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
