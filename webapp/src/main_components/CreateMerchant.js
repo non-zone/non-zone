@@ -15,11 +15,14 @@ export const CreateMerchant = ({ onClose, onSave }) => {
         if (!state.title) return;
         setLoading(true);
         onSave(state)
-            .finally(() => setLoading(false))
+            .finally(() => {
+                setLoading(false);
+                onClose();
+            })
             .catch((err) => alert(err.message));
     };
 
-    console.log('create data:', state);
+    // console.log('create data:', state);
     return (
         <>
             <Interface
