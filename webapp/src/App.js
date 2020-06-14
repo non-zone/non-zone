@@ -23,7 +23,12 @@ import {
     Create,
     Nonzone,
 } from './main_components';
-import { AuthProvider, useAuth, useUserPublicProfile } from './Auth';
+import {
+    AuthProvider,
+    useAuth,
+    useUserPublicProfile,
+    googleSignIn,
+} from './Auth';
 import * as firebase from 'firebase/app';
 import 'firebase/analytics';
 import 'firebase/auth';
@@ -80,8 +85,16 @@ const Map = () => {
                                         .then((loc) => setCenter(loc))
                                         .catch((err) => alert(err.message))
                                 }
-                                zoomIn={() => setZoom((zoom = 18) => zoom + 1)}
-                                zoomOut={() => setZoom((zoom = 18) => zoom - 1)}
+                                toggleMerchants={() => {
+                                    // TODO
+                                }}
+                                createZone={() =>
+                                    user
+                                        ? router.push('/create')
+                                        : googleSignIn()
+                                }
+                                // zoomIn={() => setZoom((zoom = 18) => zoom + 1)}
+                                // zoomOut={() => setZoom((zoom = 18) => zoom - 1)}
                             >
                                 <ProfileWidget
                                     onShowProfile={() =>
