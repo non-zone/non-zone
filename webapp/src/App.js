@@ -84,6 +84,9 @@ const Map = () => {
 		<Route path="/create">
           <Create onClose={() => router.push('/')} />
         </Route>
+		<Route path="/nonzone">
+          <Create onClose={() => router.push('/')} />
+        </Route>
       </Switch>
     </>
   );

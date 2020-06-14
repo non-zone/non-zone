@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Interface, svg, Slider } from '../components';
-import './create.css';
+import './nonzone.css';
 
-export const Create = ({ onClose }) => {
+export const Nonzone = ({ onClose }) => {
     const [input, setInput] = useState('Title');
     const {
         Create: { pin, shot, close },

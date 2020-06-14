@@ -1,0 +1,58 @@
+.create__page {
+    height: 100%;
+	width: 100vw;
+}
+
+.create__wrapper {
+    height: 100%;
+	overflow-y: scroll;
+}
+
+.create__welcome {
+    padding: 10px 20px;
+    font-weight: 200;
+    font-size: 27px;
+}
+
+.create__title {
+    margin: 20px 20px;
+    width: 90%;
+    height: 50px;
+    border: 0px;
+    border-bottom: 4px solid#6dc0bc;
+    border-radius: 0px;
+    background-color: white;
+
+    font-size: 30px;
+    color: rgb(124, 124, 124);
+    outline: none;
+}
+
+.create__textarea {
+    margin: 20px 20px;
+    padding: 20px;
+    width: 90%;
+    height: 200px;
+    border: 0px;
+    border-bottom: 4px solid#6dc0bc;
+    border-radius: 0px;
+    background-color: rgb(240, 240, 240);
+
+    font-size: 20px;
+    color: rgb(124, 124, 124);
+    outline: none;
+}
+
+.create__image {
+	height: 240px;
+	width: 90%;
+	margin: 20px auto;
+	background-color: black;
+	background-size: cover;
+	border-radius: 15px;
+	box-sizing: border-box;
+}
+
+.create__bottom {
+	padding-bottom: 5px;
+}

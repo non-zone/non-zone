@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useAuth } from '../Auth';
 import { Interface, svg, Profile, Slider } from '../components';
 import './myprofile.css';
 
 export const MyProfile = ({ onClose }) => {
+    const router = useHistory();
     const [input, setInput] = useState('Your nickname');
     const {
         Profile: { close, save, logout },
@@ -46,7 +48,12 @@ export const MyProfile = ({ onClose }) => {
                 <Slider
                     onChange={(a) => console.log(a)}
                     elements={[
-                        ['Zoner', 'Create, pin and own new Non-Zones', '1', zoner],
+                        [
+                            'Zoner',
+                            'Create, pin and own new Non-Zones',
+                            '1',
+                            zoner,
+                        ],
                         [
                             'Merchant',
                             'Provide unique expiriences to explorers',
