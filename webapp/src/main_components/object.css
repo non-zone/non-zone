@@ -1,12 +1,18 @@
 .mapobject {
     height: 50px;
     width: 50px;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(0, 0, 0);
     border-radius: 50%;
 }
 
+.mapobject svg {
+	height: 50px;
+	width: 50px;
+}
+
 .mapobject__box {
-    position: relative;
+	position: relative;
+	top: -50px;
     left: 60px;
     height: min-content;
     width: 200px;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { svg } from '../components';
 import './object.css';
 
 const MapObject = (props) => {
@@ -6,6 +7,7 @@ const MapObject = (props) => {
     const [state, setState] = useState(false);
     return (
         <div className="mapobject" onClick={() => setState(!state)}>
+			{svg.MapObject.vortex}
             {state ? (
                 <>
                     <div className="mapobject__box mapobject__animation">
