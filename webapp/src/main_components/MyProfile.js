@@ -31,8 +31,8 @@ export const MyProfile = ({ onClose }) => {
     if (user && !profileLoading && !profile?.nickname) {
         isNewUser.current = true;
     }
-    const isShowDummyImage =
-        !!user && !!profile?.nickname && !isNewUser.current;
+    // const isShowDummyImage =
+    //     !!user && !!profile?.nickname && !isNewUser.current;
 
     if (!user && !loading) {
         onClose();
@@ -68,11 +68,11 @@ export const MyProfile = ({ onClose }) => {
 
     return (
         <>
-            {isShowDummyImage && (
+            {/* {isShowDummyImage && (
                 <Image
                 // onClose={onClose}
                 />
-            )}
+            )} */}
             {showCongrats ? (
                 <DialogWindow
                     amount="10"
