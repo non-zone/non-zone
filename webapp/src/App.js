@@ -36,6 +36,7 @@ import 'firebase/auth';
 import 'firebase/database';
 import firebaseConfig from './firebaseConfig';
 import { addNewObject } from './api';
+import { restoreLastLocation, storeLastLocation } from './utils';
 
 firebase.initializeApp(firebaseConfig);
 
@@ -44,7 +45,10 @@ const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 // init OCM firebase too
 const ocmFirebaseApp = initFirebase('development');
 
-const defaultCenter = { latitude: 42.69, longitude: 23.32 };
+const defaultCenter = restoreLastLocation() || {
+    latitude: 42.69,
+    longitude: 23.32,
+};
 
 const isMerchantMode = window.location.search === '?create-service';
 
@@ -109,9 +113,17 @@ const Map = () => {
                                 />
                             </NavigationWidget>
                         }
-                        onChange={(center, bounds, zoom) => {
-                            setCenter(center);
-                            setZoom(zoom);
+                        onChange={(newCenter, bounds, newZoom) => {
+                            if (
+                                center.latitude === newCenter.latitude &&
+                                center.longitude === newCenter.longitude &&
+                                zoom === newZoom
+                            )
+                                return; // save unneeded reload
+
+                            setCenter(newCenter);
+                            setZoom(newZoom);
+                            setTimeout(() => storeLastLocation(newCenter), 0);
                         }}
                     />
                 </Route>
