@@ -53,10 +53,19 @@ const defaultCenter = restoreLastLocation() || {
 const isMerchantMode = window.location.search === '?create-service';
 
 const Map = () => {
-    const [center, setCenter] = useState(defaultCenter);
+    const [center, setCenter] = useState();
     const [zoom, setZoom] = useState();
     const [showMerchants, setShowMerchants] = useState(false);
     const router = useHistory();
+
+    useEffect(() => {
+        detectLocation()
+            .then((loc) => {
+                console.log('Autodetect location initially', loc);
+                setCenter(loc);
+            })
+            .catch((err) => console.log(err.message));
+    }, []);
 
     const { user } = useAuth();
     const { profile, loading } = useUserPublicProfile(user?.uid);
@@ -76,11 +85,12 @@ const Map = () => {
                 <Route path="/" exact>
                     <CommunityMap
                         mapApiKey={GOOGLE_API_KEY}
-                        autolocate
+                        // autolocate
                         filterOrigin="non-zone"
                         mapStyles={mapStyles}
                         centerPin={<Pin color="#79CAB5" />}
                         center={center}
+                        defaultCenter={defaultCenter}
                         zoom={zoom}
                         showZoomControls={false}
                         profileWidget={<span />}
@@ -92,7 +102,13 @@ const Map = () => {
                             <NavigationWidget
                                 autolocate={() =>
                                     detectLocation()
-                                        .then((loc) => setCenter(loc))
+                                        .then((loc) => {
+                                            console.log(
+                                                'Autodetect location manually',
+                                                loc
+                                            );
+                                            setCenter(loc);
+                                        })
                                         .catch((err) => alert(err.message))
                                 }
                                 toggleMerchants={() => {
@@ -114,13 +130,20 @@ const Map = () => {
                             </NavigationWidget>
                         }
                         onChange={(newCenter, bounds, newZoom) => {
+                            console.log({ newCenter, newZoom });
                             if (
-                                center.latitude === newCenter.latitude &&
-                                center.longitude === newCenter.longitude &&
+                                center?.latitude === newCenter.latitude &&
+                                center?.longitude === newCenter.longitude &&
                                 zoom === newZoom
-                            )
+                            ) {
+                                console.log('Ignore update for same location', {
+                                    newCenter,
+                                    center,
+                                    zoom,
+                                    newZoom,
+                                });
                                 return; // save unneeded reload
-
+                            }
                             setCenter(newCenter);
                             setZoom(newZoom);
                             setTimeout(() => storeLastLocation(newCenter), 0);

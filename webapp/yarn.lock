@@ -1573,10 +1573,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@opencommunitymap/react-sdk@^0.1.0-rc2":
-  version "0.1.0-rc3"
-  resolved "https://registry.yarnpkg.com/@opencommunitymap/react-sdk/-/react-sdk-0.1.0-rc3.tgz#4372d226facd7759f9e717a5aa4e4bdd8dd8c9f8"
-  integrity sha512-TWmgRRiMnFaAD5EG86vH5LjMzzFIJEoiz6OqGppgLmFztnclkH/RhuW4wRDazkakEJRghxOLwhTApRtbcwNxLA==
+"@opencommunitymap/react-sdk@^0.1.0-rc4":
+  version "0.1.0-rc4"
+  resolved "https://registry.yarnpkg.com/@opencommunitymap/react-sdk/-/react-sdk-0.1.0-rc4.tgz#ed95c171b9a81a434af2cceef63ede3978a4dbfb"
+  integrity sha512-uvKfZzbuBBKofYZ/UgmiGEosRKJ/tPtQY1QWaM1S8j6Y1RjBpKiIIRaNIgQUbUcZu2DzlCKAdt/HNyYdSY+gHw==
   dependencies:
     classnames "^2.2.6"
     dayjs "^1.8.28"
