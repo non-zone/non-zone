@@ -31,7 +31,7 @@ const MapObject = (props) => {
 };
 
 export const getRenderObject = (cbOnClick, showMerchants) => ({
-    item: { id, title, description, type, external_data },
+    item: { id, title, description = '', type, external_data },
 }) => {
     // console.log('getRenderObject', {
     //     showMerchants,
@@ -52,7 +52,11 @@ export const getRenderObject = (cbOnClick, showMerchants) => ({
     return (
         <MapObject
             title={title}
-            description={description}
+            description={
+                description.length > 200
+                    ? description.substring(0, 200) + '...'
+                    : description
+            }
             type={type}
             onClick={() => cbOnClick(id)}
         />
