@@ -22,6 +22,7 @@ export const addNewObject = async ({
     kind,
     type,
     loc,
+    uid,
     title,
     description,
     image = null,
@@ -33,7 +34,7 @@ export const addNewObject = async ({
         title,
         description,
         logoURL: image,
-        external_data: { type, image },
+        external_data: { type, image, uid },
         valid_until: '2100-01-01', //temp
     };
 

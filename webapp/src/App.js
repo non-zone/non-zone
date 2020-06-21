@@ -76,7 +76,7 @@ const Map = () => {
     }
 
     const onCreate = (kind) => async (info) => {
-        const data = { loc: center, kind, ...info };
+        const data = { loc: center, uid: user.uid, kind, ...info };
         return addNewObject(data);
     };
 
