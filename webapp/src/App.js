@@ -81,97 +81,91 @@ const Map = () => {
     };
 
     return (
-        <>
-            <Switch>
-                <Route path="/" exact>
-                    <CommunityMap
-                        mapApiKey={GOOGLE_API_KEY}
-                        // autolocate
-                        filterOrigin="non-zone"
-                        mapStyles={mapStyles}
-                        centerPin={<Pin color="#79CAB5" />}
-                        center={center}
-                        defaultCenter={defaultCenter}
-                        zoom={zoom}
-                        showZoomControls={false}
-                        profileWidget={<span />}
-                        renderObject={getRenderObject(
-                            (objectId) => router.push(`/nonzone/${objectId}`),
-                            showMerchants
-                        )}
-                        navigationWidget={
-                            <NavigationWidget
-                                autolocate={() =>
-                                    detectLocation()
-                                        .then((loc) => {
-                                            console.log(
-                                                'Autodetect location manually',
-                                                loc
-                                            );
-                                            setCenter(loc);
-                                        })
-                                        .catch((err) => alert(err.message))
-                                }
-                                toggleMerchants={() => {
-                                    setShowMerchants((val) => !val);
-                                }}
-                                createZone={() =>
-                                    user
-                                        ? router.push('/create')
-                                        : googleSignIn()
-                                }
-                                // zoomIn={() => setZoom((zoom = 18) => zoom + 1)}
-                                // zoomOut={() => setZoom((zoom = 18) => zoom - 1)}
-                            >
-                                <ProfileWidget
-                                    onShowProfile={() =>
-                                        router.push('/profile')
-                                    }
-                                />
-                            </NavigationWidget>
-                        }
-                        onChange={(newCenter, bounds, newZoom) => {
-                            console.log({ newCenter, newZoom });
-                            if (
-                                center?.latitude === newCenter.latitude &&
-                                center?.longitude === newCenter.longitude &&
-                                zoom === newZoom
-                            ) {
-                                console.log('Ignore update for same location', {
-                                    newCenter,
-                                    center,
-                                    zoom,
-                                    newZoom,
-                                });
-                                return; // save unneeded reload
-                            }
-                            setCenter(newCenter);
-                            setZoom(newZoom);
-                            setTimeout(() => storeLastLocation(newCenter), 0);
-                        }}
-                    />
-                </Route>
-                <Route path="/profile">
-                    <MyProfile onClose={() => router.push('/')} />
-                </Route>
-                <Route path="/create">
-                    {!isMerchantMode ? (
-                        <Create
-                            onClose={() => router.push('/')}
-                            onSave={onCreate('story')}
-                        />
-                    ) : (
-                        <CreateMerchant
-                            onClose={() => router.push('/')}
-                            onSave={onCreate('place')}
-                        />
+        <Switch>
+            <Route path="/" exact>
+                <CommunityMap
+                    mapApiKey={GOOGLE_API_KEY}
+                    // autolocate
+                    filterOrigin="non-zone"
+                    mapStyles={mapStyles}
+                    centerPin={<Pin color="#79CAB5" />}
+                    center={center}
+                    defaultCenter={defaultCenter}
+                    zoom={zoom}
+                    showZoomControls={false}
+                    profileWidget={<span />}
+                    renderObject={getRenderObject(
+                        (objectId) => router.push(`/nonzone/${objectId}`),
+                        showMerchants
                     )}
-                </Route>
-                <Route path="/nonzone/:objectId">
-                    <Nonzone onClose={() => router.push('/')} />
-                </Route>
-            </Switch>
-        </>
+                    navigationWidget={
+                        <NavigationWidget
+                            autolocate={() =>
+                                detectLocation()
+                                    .then((loc) => {
+                                        console.log(
+                                            'Autodetect location manually',
+                                            loc
+                                        );
+                                        setCenter(loc);
+                                    })
+                                    .catch((err) => alert(err.message))
+                            }
+                            toggleMerchants={() => {
+                                setShowMerchants((val) => !val);
+                            }}
+                            createZone={() =>
+                                user ? router.push('/create') : googleSignIn()
+                            }
+                            // zoomIn={() => setZoom((zoom = 18) => zoom + 1)}
+                            // zoomOut={() => setZoom((zoom = 18) => zoom - 1)}
+                        >
+                            <ProfileWidget
+                                onShowProfile={() => router.push('/profile')}
+                            />
+                        </NavigationWidget>
+                    }
+                    onChange={(newCenter, bounds, newZoom) => {
+                        console.log({ newCenter, newZoom });
+                        if (
+                            center?.latitude === newCenter.latitude &&
+                            center?.longitude === newCenter.longitude &&
+                            zoom === newZoom
+                        ) {
+                            console.log('Ignore update for same location', {
+                                newCenter,
+                                center,
+                                zoom,
+                                newZoom,
+                            });
+                            return; // save unneeded reload
+                        }
+                        setCenter(newCenter);
+                        setZoom(newZoom);
+                        setTimeout(() => storeLastLocation(newCenter), 0);
+                    }}
+                />
+            </Route>
+            <Route path="/profile">
+                <MyProfile onClose={() => router.push('/')} />
+            </Route>
+            <Route path="/create">
+                {!isMerchantMode ? (
+                    <Create
+                        onClose={() => router.push('/')}
+                        onSave={onCreate('story')}
+                    />
+                ) : (
+                    <CreateMerchant
+                        onClose={() => router.push('/')}
+                        onSave={onCreate('place')}
+                    />
+                )}
+            </Route>
+            <Route path="/nonzone/:objectId">
+                <Nonzone onClose={() => router.push('/')} />
+            </Route>
+        </Switch>
     );
 };
 
