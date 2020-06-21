@@ -39,6 +39,7 @@ import { addNewObject } from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
 
 firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
