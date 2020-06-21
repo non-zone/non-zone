@@ -1,26 +1,26 @@
 .mapobject {
     height: 50px;
     width: 50px;
-    
-	border-radius: 50%;
-	z-index: 10;
+
+    border-radius: 50%;
+    z-index: 10;
 }
 
 .mapobject svg {
-	height: 50px;
-	width: 50px;
+    height: 50px;
+    width: 50px;
 }
 
 .mapobject__box {
-	position: relative;
-	top: -50px;
+    position: relative;
+    top: -50px;
     left: 60px;
     height: min-content;
     width: 200px;
 }
 
 .mapobject__header {
-	border: solid 2px #055f54;
+    border: solid 2px #055f54;
     height: min-content;
     width: 100%;
     padding: 20px;
@@ -31,22 +31,22 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-	align-self: center;
-	
-	z-index: 999;
+    align-self: center;
+
+    z-index: 999;
 }
 
 .mapobject__header h5 {
-	font-size: 15px;
-	color: white !important;
+    font-size: 15px;
+    color: white !important;
 }
 
 .mapobject__header p {
     margin-top: 20px;
     padding-top: 10px;
     height: min-content;
-	width: 100%;
-	color: #bebebe !important;
+    width: 100%;
+    color: #bebebe !important;
 }
 
 .mapobject__button {
@@ -67,20 +67,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-	z-index: 4;
+    z-index: 4;
 
-	transition-property: background-color opacity transform;
-	transition-duration: 0.3s;
+    transition-property: background-color opacity transform;
+    transition-duration: 0.3s;
 }
 
 .mapobject__button:hover {
-	background-color: #329494;
+    background-color: #329494;
 }
 
 .mapobject__animation {
-	animation-name: object-appearance;
-	animation-duration: 0.1s;
-	animation-timing-function: ease-in-out;
+    animation-name: object-appearance;
+    animation-duration: 0.1s;
+    animation-timing-function: ease-in-out;
 }
 
 @keyframes object-appearance {
