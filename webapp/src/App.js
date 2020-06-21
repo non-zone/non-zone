@@ -44,7 +44,7 @@ firebase.analytics();
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
 // init OCM firebase too
-const ocmFirebaseApp = initFirebase('development');
+const ocmFirebaseApp = initFirebase(process.env.NODE_ENV);
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
