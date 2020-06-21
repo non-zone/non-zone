@@ -4,6 +4,8 @@
 
     border-radius: 50%;
     z-index: 10;
+
+    transform: translate(-50%, -50%);
 }
 
 .mapobject svg {
