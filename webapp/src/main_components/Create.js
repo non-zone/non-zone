@@ -63,14 +63,19 @@ export const Create = ({ onClose, onSave }) => {
             />
             <div className="create__wrapper">
                 <div className="create__page">
-                    <div
+                    {/* <div
                         className="create__image"
                         style={{
                             backgroundImage:
                                 // 'url(https://hhcdn.ru/photo/586132179.jpeg?t=1592170832&h=5QwltFkMTmjCmxroLG7oXA)',
                                 `url(${state.image})`,
                         }}
-                    ></div>
+                    ></div> */}
+                    {!!state.image && (
+                        <div className="create__image_holder">
+                            <img className="create__image" src={state.image} />
+                        </div>
+                    )}
                     <input
                         className="create__title"
                         type="text"

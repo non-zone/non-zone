@@ -18,6 +18,7 @@
     line-height: 35px;
     font-weight: 400;
     font-size: 17px;
+    white-space: pre-wrap;
 }
 
 .nonzone__type {
@@ -47,9 +48,15 @@
     outline: none;
 }
 
+.nonzone__image_holder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .nonzone__image {
-    height: 240px;
-    width: 95%;
+    max-height: 480px;
+    max-width: 95%;
     margin: 0px auto 20px auto;
     background-color: black;
     background-size: cover;

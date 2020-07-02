@@ -28,12 +28,20 @@ export const Nonzone = ({ onClose }) => {
             />
             <div className="nonzone__wrapper ">
                 <div className="nonzone__page">
-                    <div
+                    {/* <div
                         className="nonzone__image"
                         style={{
                             backgroundImage: `url(${object?.logoURL})`,
                         }}
-                    ></div>
+                    ></div> */}
+                    {!!object?.logoURL && (
+                        <div className="nonzone__image_holder">
+                            <img
+                                className="nonzone__image"
+                                src={object?.logoURL}
+                            />
+                        </div>
+                    )}
                     <p className="nonzone__type">{object?.title}</p>
                     <p className="nonzone__author"></p>
                     <p className="nonzone__text">{object?.description}</p>

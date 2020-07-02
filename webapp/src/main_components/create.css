@@ -49,9 +49,15 @@
     outline: none;
 }
 
+.create__image_holder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .create__image {
-    height: 240px;
-    width: 90%;
+    max-height: 480px;
+    max-width: 95%;
     margin: 20px auto;
     background-color: black;
     background-size: cover;
