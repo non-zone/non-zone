@@ -1,25 +1,25 @@
 .create__page {
     height: 100%;
-	width: 100vw;
-	background-color: black;
-	position: fixed;
-	overflow-y: scroll;
+    width: 100vw;
+    background-color: black;
+    position: fixed;
+    overflow-y: scroll;
 }
 
 .create__wrapper {
     height: 100%;
-	overflow-y: scroll;
+    overflow-y: scroll;
 }
 
 .create__welcome {
-	color: white !important;
+    color: white !important;
     padding: 10px 20px;
     font-weight: 200;
     font-size: 27px;
 }
 
 .create__title {
-	color: #bebebe !important;
+    color: #bebebe !important;
     margin: 20px 10px 20px 20px;
     width: 90%;
     height: 50px;
@@ -34,7 +34,7 @@
 }
 
 .create__textarea {
-	color: #bebebe !important;
+    color: #bebebe !important;
     margin: 20px 10px 20px 20px;
     padding: 20px;
     width: 90%;
@@ -50,15 +50,15 @@
 }
 
 .create__image {
-	height: 240px;
-	width: 90%;
-	margin: 20px auto;
-	background-color: black;
-	background-size: cover;
-	border-radius: 15px;
-	box-sizing: border-box;
+    height: 240px;
+    width: 90%;
+    margin: 20px auto;
+    background-color: black;
+    background-size: cover;
+    border-radius: 15px;
+    box-sizing: border-box;
 }
 
 .create__bottom {
-	padding-bottom: 5px;
+    padding-bottom: 5px;
 }
