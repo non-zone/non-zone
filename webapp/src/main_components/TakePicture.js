@@ -25,7 +25,7 @@ export const TakePicture = ({ children, onChange }) => {
                 className="takepicture__input"
                 onChange={async (e) => {
                     const info = await uploadImage(e.target.files[0]);
-                    onChange(info.url);
+                    onChange(info.secure_url);
                 }}
             ></input>
             {children}
