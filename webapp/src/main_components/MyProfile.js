@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useAuth, signout, useUserPublicProfile } from '../Auth';
+import { useAuth, signout, useUserPublicProfile, useUserWallet } from '../Auth';
 import {
     Interface,
     svg,
@@ -24,6 +24,7 @@ export const MyProfile = ({ onClose }) => {
     const { profile, loading: profileLoading } = useUserPublicProfile(
         user?.uid
     );
+    const { balance, loading: walletLoading } = useUserWallet(user?.uid);
 
     const [showCongrats, setShowCongrats] = useState(false);
     const isNewUser = useRef();
@@ -75,7 +76,7 @@ export const MyProfile = ({ onClose }) => {
             )} */}
             {showCongrats ? (
                 <DialogWindow
-                    amount="10"
+                    amount={10}
                     title="Congratulations"
                     text="Use your Zone Points to interact with your favorite
                     non-zones, or redeem them with experience-providers in the
@@ -103,12 +104,20 @@ export const MyProfile = ({ onClose }) => {
             />
             <div className="myprofile__page">
                 <h1 className="myprofile__title">Profile</h1>
-                <p className="myprofile__welcome">
-                    Welcome to <strong>Non-zone</strong>
-                    <br />
-                    This is your <strong>secret place</strong>, help us to make
-                    it <strong>more personal</strong> for you.
-                </p>
+                {isNewUser.current && (
+                    <p className="myprofile__welcome">
+                        Welcome to <strong>Non-zone</strong>
+                        <br />
+                        This is your <strong>secret place</strong>, help us to
+                        make it <strong>more personal</strong> for you.
+                    </p>
+                )}
+                {!walletLoading && !isNewUser.current && (
+                    <p className="myprofile__welcome">
+                        Your balance is <strong>{balance}</strong> SPACES
+                    </p>
+                )}
+
                 <input
                     className="myprofile__nickname"
                     type="text"

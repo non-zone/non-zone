@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as firebase from 'firebase/app';
 import 'firebase/database';
+import 'firebase/functions';
 
 const {
     REACT_APP_OCM_HOST: HOST = 'https://communitymap.online',
@@ -27,6 +28,10 @@ export const addNewObject = async ({
     description,
     image = null,
 }) => {
+    if (!uid) throw new Error('uid empty');
+    const timestamp = new Date().toISOString();
+    const objRef = await firebase.database().ref(`/objects/`).push();
+
     const uri = `${HOST}/api/v0/object/?token=${TOKEN}`;
     const data = {
         type: kind,
@@ -34,7 +39,7 @@ export const addNewObject = async ({
         title,
         description,
         logoURL: image,
-        external_data: { type, image, uid },
+        external_data: { type, image, uid, id: objRef.key },
         valid_until: '2100-01-01', //temp
     };
 
@@ -42,6 +47,16 @@ export const addNewObject = async ({
 
     const res = await axios.post(uri, data);
     console.debug('Result:', res.data);
+    return objRef.set({
+        uid,
+        type: kind,
+        loc,
+        title,
+        description: description || '',
+        image,
+        timestamp,
+        ocm_id: res.data.id,
+    });
 };
 
 export const updateUserProfile = (uid, data) => {
