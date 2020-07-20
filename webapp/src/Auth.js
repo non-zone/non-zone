@@ -64,6 +64,35 @@ export const useUserPublicProfile = (uid) => {
     );
 };
 
+export const useUserWallet = (uid) => {
+    const [balance, setBalance] = useState();
+
+    useEffect(() => {
+        if (!uid) return;
+        console.log(`/users-wallets/${uid}`);
+        return firebase
+            .database()
+            .ref(`/users-wallets/${uid}`)
+            .on(
+                'value',
+                (snap) => {
+                    const val = snap?.val()?.balance;
+                    console.log('Loaded balance:', val);
+                    setBalance(val || 0);
+                },
+                (err) => console.log('Error loading user wallet')
+            );
+    }, [uid]);
+
+    return useMemo(
+        () => ({
+            balance: balance !== undefined ? balance : null,
+            loading: balance === undefined,
+        }),
+        [balance]
+    );
+};
+
 export const googleSignIn = () => {
     firebase
         .auth()

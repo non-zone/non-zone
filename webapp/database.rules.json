@@ -1,10 +1,28 @@
 {
-  "rules": {
-    "users-public": {
-      "$uid": {
-        ".read": true,
-        ".write": "$uid === auth.uid"
-      }
+    "rules": {
+        "objects": {
+            "$object_id": {
+                ".read": true,
+                ".write": "!data.exists() && auth != null"
+            }
+        },
+        "users-activity": {
+            "$uid": {
+                ".read": "$uid === auth.uid",
+                ".write": false
+            }
+        },
+        "users-public": {
+            "$uid": {
+                ".read": true,
+                ".write": "$uid === auth.uid"
+            }
+        },
+        "users-wallets": {
+            "$uid": {
+                ".read": true,
+                ".write": false
+            }
+        }
     }
-  }
 }

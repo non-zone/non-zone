@@ -13,7 +13,7 @@ import './dialogwindow.css';
 
 export const DialogWindow = (props) => {
     const {
-        amount = '',
+        amount = 0,
         onClose = () => alert('this is handler'),
         // onClick = () => alert('onClose'),
         text = '',
@@ -30,10 +30,11 @@ export const DialogWindow = (props) => {
                 {amount ? (
                     <>
                         <p className="dialogwindow__header">
-                            You’ve earned Non-Zone points
+                            You’ve {amount >= 0 ? 'earned' : 'spent'} Non-Zone
+                            points
                         </p>
                         <p className="dialogwindow__amount">
-                            {'+' + amount + 'nz'}
+                            {(amount >= 0 ? '+' : '-') + amount + 'SPACE'}
                         </p>
                     </>
                 ) : (
