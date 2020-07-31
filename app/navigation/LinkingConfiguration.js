@@ -7,7 +7,10 @@ export default {
       path: 'root',
       screens: {
         Home: 'home',
-        Links: 'links',
+        Profile: 'profile',
+        CreateStory: 'createStory',
+        ShowStory: 'showStory',
+        Map: 'map',
       },
     },
   },
