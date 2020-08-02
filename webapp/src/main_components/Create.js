@@ -117,6 +117,7 @@ export const Create = ({ onClose, onSave }) => {
                     <p className="create__welcome">Non-zone type?</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
+                        activeElement={state.type}
                         elements={[
                             ['#Story', '', 'story'],
                             ['#Memory', '', 'memory'],
