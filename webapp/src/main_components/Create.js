@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Interface, svg, Slider, DialogWindow } from '../components';
 import './create.css';
 import { TakePicture } from './TakePicture';
+import cx from 'classnames';
+
+const MIN_DESCR_LENGTH = 150;
+const MAX_DESCR_LENGTH = 600;
 
 const Congrats = ({ onClose }) => {
     return (
@@ -15,6 +19,7 @@ const Congrats = ({ onClose }) => {
 
 export const Create = ({ onClose, onSave }) => {
     const [state, setState] = useState({ type: 'story' });
+    const descrLength = state.description?.length || 0;
     const {
         Create: { pin, shot, close },
     } = svg;
@@ -99,6 +104,16 @@ export const Create = ({ onClose, onSave }) => {
                             setState({ ...state, description: e.target.value })
                         }
                     ></textarea>
+                    <div
+                        className={cx('create__descr_char_counter', {
+                            warning: descrLength > MAX_DESCR_LENGTH,
+                            good:
+                                descrLength >= MIN_DESCR_LENGTH &&
+                                descrLength <= MAX_DESCR_LENGTH,
+                        })}
+                    >
+                        {!!descrLength && `${descrLength} chars`}
+                    </div>
                     <p className="create__welcome">Non-zone type?</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
