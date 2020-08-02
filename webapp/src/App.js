@@ -3,14 +3,13 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
     useHistory,
 } from 'react-router-dom';
 import './App.css';
 import {
     CommunityMap,
     Pin,
-    initFirebase,
+    initFirebase as initOcmFirebase,
     detectLocation,
 } from '@opencommunitymap/react-sdk';
 import mapStyles from './MapsGoogleDarkStyle.json';
@@ -43,8 +42,7 @@ firebase.analytics();
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
-// init OCM firebase too
-const ocmFirebaseApp = initFirebase(process.env.NODE_ENV);
+initOcmFirebase(process.env.NODE_ENV);
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,

@@ -74,7 +74,11 @@ export const Create = ({ onClose, onSave }) => {
                     ></div> */}
                     {!!state.image && (
                         <div className="create__image_holder">
-                            <img className="create__image" src={state.image} />
+                            <img
+                                className="create__image"
+                                alt="snapshot"
+                                src={state.image}
+                            />
                         </div>
                     )}
                     <input
