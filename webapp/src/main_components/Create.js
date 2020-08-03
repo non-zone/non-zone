@@ -5,6 +5,7 @@ import { TakePicture } from './TakePicture';
 import cx from 'classnames';
 import { useParams } from 'react-router-dom';
 import { useLoadStory } from '../api';
+import { Spinner } from '../components/spinner/Spinner';
 
 const MIN_DESCR_LENGTH = 150;
 const MAX_DESCR_LENGTH = 600;
@@ -44,7 +45,7 @@ export const CreateSaveStory = ({
     const isDirtyState = isCreated && existingData !== state;
     const isPublished = existingData?.ocm_id;
     const canPublish = isCreated && !isPublished && !isDirtyState;
-    let actionTitle =
+    const actionTitle =
         (isPublished && 'Published') || (canPublish ? 'Publish' : 'Save');
 
     const [loading, setLoading] = useState(false);
@@ -80,11 +81,10 @@ export const CreateSaveStory = ({
         }
     };
 
-    if (loading) actionTitle = 'saving...';
-
     // console.log('create data:', state);
     return (
         <>
+            {loading && <Spinner />}
             {showCongrats && (
                 <Congrats onClose={() => setShowCongrats(false)} />
             )}
@@ -101,12 +101,14 @@ export const CreateSaveStory = ({
                     // svg: shot,
                     svg: (
                         <TakePicture
-                            onChange={(image) =>
+                            onStartUpload={() => setLoading(true)}
+                            onChange={(image) => {
                                 setState({
                                     ...state,
                                     image,
-                                })
-                            }
+                                });
+                                setLoading(false);
+                            }}
                         >
                             {shot}
                         </TakePicture>
