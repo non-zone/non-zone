@@ -9,7 +9,7 @@ import {
     // Image,
 } from '../components';
 import './myprofile.css';
-import { updateUserProfile } from '../api';
+import { updateUserProfile, useLoadUserStories } from '../api';
 
 export const MyProfile = ({ onClose }) => {
     const [input, setInput] = useState();
@@ -26,6 +26,10 @@ export const MyProfile = ({ onClose }) => {
 
     const [showCongrats, setShowCongrats] = useState(false);
     const isNewUser = useRef();
+
+    // load all stories including unpublished
+    const { data: stories } = useLoadUserStories(user?.uid, false);
+    console.log('TODO list user stories:', stories);
 
     if (user && !profileLoading && !profile?.nickname) {
         isNewUser.current = true;

@@ -137,6 +137,49 @@ export const useLoadStory = (id) => {
     return { data, error, loading: data === undefined };
 };
 
+export const useLoadUserStories = (uid, publishedOnly = true) => {
+    console.debug('useLoadUserStories', uid);
+    const [data, setData] = useState();
+    const [error, setError] = useState();
+    useEffect(() => {
+        if (!uid) return;
+
+        const unsub = firebase
+            .database()
+            .ref(`/objects/`)
+            .orderByChild('uid')
+            .equalTo(uid)
+            .on(
+                'value',
+                (snap) => {
+                    if (snap && snap.val()) {
+                        const obj = snap.val();
+                        console.debug('Loaded user stories', obj);
+                        const arr = Object.entries(obj)
+                            .map(([id, data]) => ({
+                                id,
+                                ...data,
+                            }))
+                            .filter(
+                                (story) => !publishedOnly || !!story.published
+                            );
+                        console.debug('Loaded user stories arr', arr);
+
+                        setData(arr);
+                    } else {
+                        setData([]);
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                    setError(err.message);
+                }
+            );
+        return unsub;
+    }, [uid]);
+    return { data, error, loading: data === undefined };
+};
+
 export const updateUserProfile = (uid, data) => {
     if (!uid) throw new Error('uid empty');
     return firebase.database().ref(`/users-public/${uid}`).update(data);
