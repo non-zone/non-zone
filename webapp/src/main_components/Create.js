@@ -49,13 +49,24 @@ export const CreateSaveStory = ({
 
     const [loading, setLoading] = useState(false);
     const [showCongrats, setShowCongrats] = useState(false);
+
+    const [errors, setErrors] = useState();
+
     const handleAction = async () => {
         if (isPublished || loading) return;
+        setErrors(null);
+
         try {
             // if (!state.title) return;
 
             setLoading(true);
             if (canPublish) {
+                const err = validate(state);
+                if (err) {
+                    console.log('ERRORS', err);
+                    setErrors(err);
+                    return;
+                }
                 await onPublish(state);
                 setShowCongrats(true);
             } else {
@@ -121,8 +132,13 @@ export const CreateSaveStory = ({
                             />
                         </div>
                     )}
+                    {!!errors?.image && (
+                        <span className="error-message">{errors.image}</span>
+                    )}
                     <input
-                        className="create__title"
+                        className={cx('create__title', {
+                            warning: !!errors?.title,
+                        })}
                         type="text"
                         value={state.title || ''}
                         placeholder="Title"
@@ -130,8 +146,13 @@ export const CreateSaveStory = ({
                             setState({ ...state, title: e.target.value })
                         }
                     ></input>
+                    {!!errors?.title && (
+                        <span className="error-message">{errors.title}</span>
+                    )}
                     <textarea
-                        className="create__textarea"
+                        className={cx('create__textarea', {
+                            warning: !!errors?.description,
+                        })}
                         type="text"
                         value={state.description || ''}
                         placeholder="Description"
@@ -149,6 +170,11 @@ export const CreateSaveStory = ({
                     >
                         {!!descrLength && `${descrLength} chars`}
                     </div>
+                    {!!errors?.description && (
+                        <span className="error-message">
+                            {errors.description}
+                        </span>
+                    )}
                     <p className="create__welcome">Non-zone type?</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
@@ -183,4 +209,18 @@ export const EditStory = ({ onClose, onSave, onPublish }) => {
             onPublish={() => onPublish(data)}
         />
     );
+};
+
+const validate = ({ title, description, image }) => {
+    if (!title) return { title: 'Title is required' };
+    if (
+        description.length < MIN_DESCR_LENGTH ||
+        description.length > MAX_DESCR_LENGTH
+    )
+        return {
+            description: `Description must be between ${MIN_DESCR_LENGTH} and ${MAX_DESCR_LENGTH} characters`,
+        };
+    if (!image) return { image: 'Having photo is required' };
+
+    return null;
 };

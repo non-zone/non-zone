@@ -48,6 +48,14 @@
     color: rgb(124, 124, 124);
     outline: none;
 }
+input.warning,
+textarea.warning {
+    border-block-color: red;
+}
+.error-message {
+    color: red;
+    margin: 0 20px;
+}
 
 .create__descr_char_counter {
     text-align: right;
