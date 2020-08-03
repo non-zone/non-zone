@@ -50,7 +50,7 @@
 }
 input.warning,
 textarea.warning {
-    border-block-color: red;
+    border-bottom-color: red;
 }
 .error-message {
     color: red;
