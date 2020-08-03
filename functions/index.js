@@ -52,9 +52,16 @@ const applyNewActivity = async (uid, activity) => {
 
 exports.onProfileCreated = functions.database
     .ref('users-public/{uid}')
-    .onCreate((snapshot, context) => {
+    .onCreate(async (snapshot, context) => {
         const { uid } = context.auth;
         functions.logger.info('Profile created', { data: snapshot.val(), uid });
+
+        await firebase
+            .database()
+            .ref('users-public')
+            .child(uid)
+            .update({ created: new Date().toISOString() });
+
         const newActivity = {
             type: types.PROFILE_CREATE,
             timestamp: new Date().toISOString(),
