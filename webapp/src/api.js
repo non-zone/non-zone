@@ -5,9 +5,16 @@ import 'firebase/database';
 import 'firebase/functions';
 
 const {
-    REACT_APP_OCM_HOST: HOST = 'https://communitymap.online',
+    NONZONE_ENV = 'development',
+    REACT_APP_OCM_HOST,
     REACT_APP_OCM_TOKEN: TOKEN,
 } = process.env;
+
+const HOST =
+    REACT_APP_OCM_HOST ||
+    (NONZONE_ENV === 'production'
+        ? 'https://communitymap.online'
+        : 'https://community-map-dev.web.app');
 
 console.log({ HOST, TOKEN });
 
