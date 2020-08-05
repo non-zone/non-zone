@@ -35,7 +35,7 @@ class MapScreen extends Component {
           <MapView style={styles.mapStyle} minZoomLevel={4}>
             {this.state.markers.map(marker => (
                 <Marker
-                    key={marker}
+                    key={marker.title}
                     coordinate={marker.coordinate}
                     title={marker.title}
                     description={marker.description}
