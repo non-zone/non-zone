@@ -2,14 +2,12 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CreateStoryScreen from '../screens/CreateStoryScreen';
-import ShowStoryScreen from '../screens/ShowStoryScreen';
 import MapScreen from '../screens/MapScreen';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Home';
+const INITIAL_ROUTE_NAME = 'Map';
 
 export default function BottomTabNavigator({navigation, route}) {
   // Set the header title on the parent stack navigator depending on the
@@ -20,27 +18,11 @@ export default function BottomTabNavigator({navigation, route}) {
   return (
       <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
         <BottomTab.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              title: 'Home',
-              tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-home"/>,
-            }}
-        />
-        <BottomTab.Screen
             name="CreateStory"
             component={CreateStoryScreen}
             options={{
               title: 'Create Story',
               tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-add"/>,
-            }}
-        />
-        <BottomTab.Screen
-            name="ShowStory"
-            component={ShowStoryScreen}
-            options={{
-              title: 'Show Story',
-              tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-eye"/>,
             }}
         />
         <BottomTab.Screen
