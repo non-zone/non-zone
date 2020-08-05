@@ -48,6 +48,28 @@
     color: rgb(124, 124, 124);
     outline: none;
 }
+input.warning,
+textarea.warning {
+    border-bottom-color: red;
+}
+.error-message {
+    color: red;
+    margin: 0 20px;
+}
+
+.create__descr_char_counter {
+    text-align: right;
+    color: #bebebe;
+    font-size: 0.85rem;
+    font-weight: 300;
+    margin: -2em 1.5em 0 0;
+}
+.create__descr_char_counter.warning {
+    color: red;
+}
+.create__descr_char_counter.good {
+    color: #21ba45;
+}
 
 .create__image_holder {
     display: flex;

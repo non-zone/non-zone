@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './slider.css';
 
 const Slide = (props) => {
-    const [active, setActive] = useState(false);
-    const { onChange, name, description, value, svg = '' } = props;
+    const { onChange, name, description, value, active, svg = '' } = props;
     return (
         <div
             className={
                 'slider__slide ' + (active ? 'slider__slide-active' : '')
             }
             onClick={() => {
-                setActive(!active);
                 onChange(value);
             }}
         >
@@ -34,8 +32,7 @@ const Slide = (props) => {
     );
 };
 
-export const Slider = (props) => {
-    const { elements, onChange } = props;
+export const Slider = ({ elements, activeElement, onChange }) => {
     return (
         <div className="slider__container">
             <div className="slider__wrapper">
@@ -46,6 +43,7 @@ export const Slider = (props) => {
                         name={slide[0]}
                         description={slide[1]}
                         value={slide[2]}
+                        active={slide[2] === activeElement}
                         svg={slide[3]}
                     />
                 ))}

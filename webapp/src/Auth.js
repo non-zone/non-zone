@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
             loading: user === undefined,
             error,
         }),
-        [user]
+        [user, error]
     );
     return <AuthContext.Provider value={val}>{children}</AuthContext.Provider>;
 };

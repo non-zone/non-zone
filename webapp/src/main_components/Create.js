@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Interface, svg, Slider, DialogWindow } from '../components';
 import './create.css';
 import { TakePicture } from './TakePicture';
+import cx from 'classnames';
+import { useParams } from 'react-router-dom';
+import { useLoadStory } from '../api';
+import { Spinner } from '../components/spinner/Spinner';
+
+const MIN_DESCR_LENGTH = 150;
+const MAX_DESCR_LENGTH = 600;
+
+const {
+    Create: { pin, shot, close },
+    Profile: { save },
+} = svg;
 
 const Congrats = ({ onClose }) => {
     return (
@@ -13,49 +25,90 @@ const Congrats = ({ onClose }) => {
     );
 };
 
-export const Create = ({ onClose, onSave }) => {
-    const [state, setState] = useState({ type: 'story' });
-    const {
-        Create: { pin, shot, close },
-    } = svg;
+export const CreateSaveStory = ({
+    existingData,
+    onClose,
+    onSave,
+    onPublish,
+}) => {
+    const [state, setState] = useState(
+        existingData || { type: 'story', title: '', description: '' }
+    );
+    useEffect(() => {
+        // once saved, replace the state with saved data
+        if (existingData) setState(existingData);
+    }, [existingData]);
 
-    //TODO
-    // const [loading, setLoading] = useState(false);
+    const descrLength = state.description?.length || 0;
+
+    const isCreated = !!existingData;
+    const isDirtyState = isCreated && existingData !== state;
+    const isPublished = existingData?.ocm_id;
+    const canPublish = isCreated && !isPublished && !isDirtyState;
+    const actionTitle =
+        (isPublished && 'Published') || (canPublish ? 'Publish' : 'Save');
+
+    const [loading, setLoading] = useState(false);
     const [showCongrats, setShowCongrats] = useState(false);
-    const _onSave = () => {
-        if (!state.title) return;
-        // setLoading(true);
-        setTimeout(() => setShowCongrats(true), 1000);
-        onSave(state)
-            .finally(() => {
-                // setLoading(false);
-                // onClose();
-            })
-            .catch((err) => alert(err.message));
+
+    const [errors, setErrors] = useState();
+
+    const handleAction = async () => {
+        if (isPublished || loading) return;
+        setErrors(null);
+
+        try {
+            // if (!state.title) return;
+
+            setLoading(true);
+            if (canPublish) {
+                const err = validate(state);
+                if (err) {
+                    console.log('ERRORS', err);
+                    setErrors(err);
+                    return;
+                }
+                await onPublish(state);
+                setShowCongrats(true);
+            } else {
+                await onSave(state);
+            }
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setLoading(false);
+            // onClose();
+        }
     };
 
     // console.log('create data:', state);
     return (
         <>
-            {showCongrats && <Congrats onClose={onClose} />}
+            {loading && <Spinner />}
+            {showCongrats && (
+                <Congrats onClose={() => setShowCongrats(false)} />
+            )}
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
                 centralButton={{
-                    svg: pin,
-                    name: 'Pin this non-zone',
-                    onClick: _onSave,
+                    svg: !isPublished && (canPublish ? pin : save),
+                    // name: 'Pin this non-zone',
+                    name: actionTitle,
+                    onClick: handleAction,
                 }}
                 rightButton={{
                     // onClick: signout,
                     // svg: shot,
                     svg: (
                         <TakePicture
-                            onChange={(image) =>
+                            onStartUpload={() => setLoading(true)}
+                            onChange={(image) => {
                                 setState({
                                     ...state,
                                     image,
-                                })
-                            }
+                                });
+                                setLoading(false);
+                            }}
                         >
                             {shot}
                         </TakePicture>
@@ -74,11 +127,20 @@ export const Create = ({ onClose, onSave }) => {
                     ></div> */}
                     {!!state.image && (
                         <div className="create__image_holder">
-                            <img className="create__image" src={state.image} />
+                            <img
+                                className="create__image"
+                                alt="snapshot"
+                                src={state.image}
+                            />
                         </div>
                     )}
+                    {!!errors?.image && (
+                        <span className="error-message">{errors.image}</span>
+                    )}
                     <input
-                        className="create__title"
+                        className={cx('create__title', {
+                            warning: !!errors?.title,
+                        })}
                         type="text"
                         value={state.title || ''}
                         placeholder="Title"
@@ -86,8 +148,13 @@ export const Create = ({ onClose, onSave }) => {
                             setState({ ...state, title: e.target.value })
                         }
                     ></input>
+                    {!!errors?.title && (
+                        <span className="error-message">{errors.title}</span>
+                    )}
                     <textarea
-                        className="create__textarea"
+                        className={cx('create__textarea', {
+                            warning: !!errors?.description,
+                        })}
                         type="text"
                         value={state.description || ''}
                         placeholder="Description"
@@ -95,9 +162,25 @@ export const Create = ({ onClose, onSave }) => {
                             setState({ ...state, description: e.target.value })
                         }
                     ></textarea>
+                    <div
+                        className={cx('create__descr_char_counter', {
+                            warning: descrLength > MAX_DESCR_LENGTH,
+                            good:
+                                descrLength >= MIN_DESCR_LENGTH &&
+                                descrLength <= MAX_DESCR_LENGTH,
+                        })}
+                    >
+                        {!!descrLength && `${descrLength} chars`}
+                    </div>
+                    {!!errors?.description && (
+                        <span className="error-message">
+                            {errors.description}
+                        </span>
+                    )}
                     <p className="create__welcome">Non-zone type?</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
+                        activeElement={state.type}
                         elements={[
                             ['#Story', '', 'story'],
                             ['#Memory', '', 'memory'],
@@ -109,4 +192,37 @@ export const Create = ({ onClose, onSave }) => {
             </div>
         </>
     );
+};
+
+export const EditStory = ({ onClose, onSave, onPublish }) => {
+    const { storyId } = useParams();
+
+    const { error, loading, data = null } = useLoadStory(storyId);
+
+    if (!storyId) return <div>Story id not found</div>;
+    if (error) return <div>Error loading story: {error}</div>;
+    if (loading) return <div>Loading...</div>;
+    // return <div>{JSON.stringify(data)}</div>;
+    return (
+        <CreateSaveStory
+            existingData={data}
+            onClose={onClose}
+            onSave={onSave}
+            onPublish={() => onPublish(data)}
+        />
+    );
+};
+
+const validate = ({ title, description, image }) => {
+    if (!title) return { title: 'Title is required' };
+    if (
+        description.length < MIN_DESCR_LENGTH ||
+        description.length > MAX_DESCR_LENGTH
+    )
+        return {
+            description: `Description must be between ${MIN_DESCR_LENGTH} and ${MAX_DESCR_LENGTH} characters`,
+        };
+    if (!image) return { image: 'Having photo is required' };
+
+    return null;
 };

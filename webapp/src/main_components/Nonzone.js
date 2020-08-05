@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Interface, svg, Sliderr } from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
@@ -10,7 +10,11 @@ export const Nonzone = ({ onClose }) => {
     const { object } = useLoadSingleObject(objectId);
 
     const {
-        Nonzone: { star, flag, close },
+        Nonzone: {
+            // star,
+            // flag,
+            close,
+        },
     } = svg;
     return (
         <>
@@ -37,6 +41,7 @@ export const Nonzone = ({ onClose }) => {
                     {!!object?.logoURL && (
                         <div className="nonzone__image_holder">
                             <img
+                                alt="snapshot"
                                 className="nonzone__image"
                                 src={object?.logoURL}
                             />

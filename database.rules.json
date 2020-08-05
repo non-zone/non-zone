@@ -1,9 +1,10 @@
 {
     "rules": {
         "objects": {
+            ".read": true,
+            ".indexOn": "uid",
             "$object_id": {
-                ".read": true,
-                ".write": "!data.exists() && auth != null"
+                ".write": "auth != null && ((!data.exists() || (data.child('uid').val() == auth.uid) && (!newData.child('uid').exists() || newData.child('uid').val() == auth.uid)))"
             }
         },
         "users-activity": {

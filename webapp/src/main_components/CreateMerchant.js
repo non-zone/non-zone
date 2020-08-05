@@ -9,14 +9,13 @@ export const CreateMerchant = ({ onClose, onSave }) => {
         Create: { pin, shot, close },
     } = svg;
 
-    //TODO
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const _onSave = () => {
         if (!state.title) return;
-        setLoading(true);
+        // setLoading(true);
         onSave(state)
             .finally(() => {
-                setLoading(false);
+                // setLoading(false);
                 onClose();
             })
             .catch((err) => alert(err.message));

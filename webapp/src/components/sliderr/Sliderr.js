@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './sliderr.css';
 
 const Slide = (props) => {
-    const { onChange, name, description, value, svg = '' } = props;
+    const { name, description, svg = '' } = props;
     return (
         <div className={'sliderr__slide'}>
             {svg}
