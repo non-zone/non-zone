@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useAuth, signout, useUserPublicProfile, useUserWallet } from '../Auth';
 import {
     Interface,
@@ -7,13 +6,12 @@ import {
     Profile,
     Slider,
     DialogWindow,
-    Image,
+    // Image,
 } from '../components';
 import './myprofile.css';
-import { updateUserProfile } from '../api';
+import { updateUserProfile, useLoadUserStories } from '../api';
 
 export const MyProfile = ({ onClose }) => {
-    const router = useHistory();
     const [input, setInput] = useState();
     const {
         Profile: { close, save, logout },
@@ -28,6 +26,10 @@ export const MyProfile = ({ onClose }) => {
 
     const [showCongrats, setShowCongrats] = useState(false);
     const isNewUser = useRef();
+
+    // load all stories including unpublished
+    const { data: stories } = useLoadUserStories(user?.uid, false);
+    console.log('TODO list user stories:', stories);
 
     if (user && !profileLoading && !profile?.nickname) {
         isNewUser.current = true;

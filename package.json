@@ -1,25 +1,27 @@
 {
-  "name": "non-zone",
-  "version": "1.0.0",
-  "description": "Non-Zone is the global map for experiential and solo-travelers",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/non-zone/non-zone.git"
-  },
-  "keywords": [
-    "non-zone",
-    "travel",
-    "experience",
-    "story"
-  ],
-  "author": "Non-Zone team",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/non-zone/non-zone/issues"
-  },
-  "homepage": "https://github.com/non-zone/non-zone#readme"
+    "name": "non-zone",
+    "version": "1.0.0",
+    "description": "Non-Zone is the global map for experiential and solo-travelers",
+    "main": "index.js",
+    "scripts": {
+        "deploy:dev": "NONZONE_ENV='development' yarn --cwd webapp build && firebase deploy -P default",
+        "deploy:prod": "NONZONE_ENV='production' yarn --cwd webapp build && firebase deploy -P production",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/non-zone/non-zone.git"
+    },
+    "keywords": [
+        "non-zone",
+        "travel",
+        "experience",
+        "story"
+    ],
+    "author": "Non-Zone team",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/non-zone/non-zone/issues"
+    },
+    "homepage": "https://github.com/non-zone/non-zone#readme"
 }

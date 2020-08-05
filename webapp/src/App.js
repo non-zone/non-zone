@@ -3,14 +3,13 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
     useHistory,
 } from 'react-router-dom';
 import './App.css';
 import {
     CommunityMap,
     Pin,
-    initFirebase,
+    initFirebase as initOcmFirebase,
     detectLocation,
 } from '@opencommunitymap/react-sdk';
 import mapStyles from './MapsGoogleDarkStyle.json';
@@ -20,9 +19,10 @@ import {
     ProfileWidget,
     getRenderObject,
     MyProfile,
-    Create,
+    CreateSaveStory,
     Nonzone,
     CreateMerchant,
+    EditStory,
 } from './main_components';
 import {
     AuthProvider,
@@ -35,16 +35,21 @@ import 'firebase/analytics';
 import 'firebase/auth';
 import 'firebase/database';
 import firebaseConfig from './firebaseConfig';
-import { addNewObject } from './api';
+import firebaseConfigDev from './firebaseConfigDev';
+import { saveObject, publishObject } from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
 
-firebase.initializeApp(firebaseConfig);
+const { NONZONE_ENV = 'development' } = process.env;
+const fbConf =
+    NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
+
+console.log('Init with', fbConf);
+firebase.initializeApp(fbConf);
 firebase.analytics();
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
-// init OCM firebase too
-const ocmFirebaseApp = initFirebase(process.env.NODE_ENV);
+initOcmFirebase(NONZONE_ENV);
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
@@ -75,9 +80,12 @@ const Map = () => {
         router.replace('/profile');
     }
 
-    const onCreate = (kind) => async (info) => {
+    const onSaveCallback = (kind) => async (info) => {
         const data = { loc: center, uid: user.uid, kind, ...info };
-        return addNewObject(data);
+        return saveObject(data);
+    };
+    const onPublish = async (info) => {
+        return publishObject(info);
     };
 
     return (
@@ -151,16 +159,32 @@ const Map = () => {
             </Route>
             <Route path="/create">
                 {!isMerchantMode ? (
-                    <Create
+                    <CreateSaveStory
                         onClose={() => router.push('/')}
-                        onSave={onCreate('story')}
+                        onSave={(data) =>
+                            onSaveCallback('story')(data)
+                                .then((storyId) =>
+                                    router.push(`/edit/${storyId}`)
+                                )
+                                .catch((err) => {
+                                    console.log('Error saving story:', err);
+                                    alert(`Error saving story: ${err.message}`);
+                                })
+                        }
                     />
                 ) : (
                     <CreateMerchant
                         onClose={() => router.push('/')}
-                        onSave={onCreate('place')}
+                        onSave={onSaveCallback('place')}
                     />
                 )}
+            </Route>
+            <Route path="/edit/:storyId">
+                <EditStory
+                    onClose={() => router.push('/')}
+                    onSave={onSaveCallback('story')}
+                    onPublish={onPublish}
+                />
             </Route>
             <Route path="/nonzone/:objectId">
                 <Nonzone onClose={() => router.push('/')} />

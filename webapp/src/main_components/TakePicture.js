@@ -16,7 +16,7 @@ export const uploadToCloudinary = (cloudName, image) => {
 const uploadImage = (image) =>
     uploadToCloudinary(REACT_APP_CLOUDINARY_CLOUD_NAME, image);
 
-export const TakePicture = ({ children, onChange }) => {
+export const TakePicture = ({ children, onChange, onStartUpload }) => {
     return (
         <>
             <input
@@ -24,6 +24,7 @@ export const TakePicture = ({ children, onChange }) => {
                 accept="camera/*"
                 className="takepicture__input"
                 onChange={async (e) => {
+                    onStartUpload && onStartUpload();
                     const info = await uploadImage(e.target.files[0]);
                     onChange(info.secure_url);
                 }}
