@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import mapStyle from '../constants/mapStyle';
 
 class MapScreen extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class MapScreen extends Component {
   render() {
     return (
         <View style={styles.container}>
-          <MapView style={styles.mapStyle} minZoomLevel={4}>
+          <MapView style={styles.mapStyle} minZoomLevel={4} customMapStyle={mapStyle} provider={PROVIDER_GOOGLE}>
             {this.state.markers.map(marker => (
                 <Marker
                     key={marker.title}
