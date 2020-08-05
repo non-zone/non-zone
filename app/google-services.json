@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "777225273742",
+    "firebase_url": "https://non-zone.firebaseio.com",
+    "project_id": "non-zone",
+    "storage_bucket": "non-zone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777225273742:android:120fb8efbd96ce4890a4df",
+        "android_client_info": {
+          "package_name": "com.nonzone.nonzoneapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777225273742-vhdvg0cdsve3amuv29heb1rlss9e1iah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjdLB85oNFWigNfVEYw9naluR_lGU3cVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777225273742-vhdvg0cdsve3amuv29heb1rlss9e1iah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
