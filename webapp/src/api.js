@@ -176,7 +176,7 @@ export const useLoadUserStories = (uid, publishedOnly = true) => {
                 }
             );
         return unsub;
-    }, [uid]);
+    }, [uid, publishedOnly]);
     return { data, error, loading: data === undefined };
 };
 
