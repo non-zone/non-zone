@@ -123,7 +123,7 @@ export const MyProfile = ({ onClose }) => {
                 <input
                     className="myprofile__nickname"
                     type="text"
-                    value={inputValue}
+                    value={inputValue || ''}
                     placeholder="Your nickname"
                     onChange={(e) => {
                         console.log('Input nickname', e, e.target.value);
