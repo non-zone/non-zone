@@ -9,9 +9,12 @@ import BottomTabNavigator from './navigation/BottomTabNavigator';
 import LinkingConfiguration from './navigation/LinkingConfiguration';
 import ShowStoryScreen from './screens/ShowStoryScreen';
 
+import { YellowBox } from 'react-native';
+
 const Stack = createStackNavigator();
 
 export default function App(props) {
+    YellowBox.ignoreWarnings(['Setting a timer']);
     const isLoadingComplete = useCachedResources();
 
     if (!isLoadingComplete) {
