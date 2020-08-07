@@ -2,12 +2,12 @@ import React from 'react';
 import { Interface, svg, Sliderr } from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
-import { useLoadSingleObject } from '@opencommunitymap/react-sdk';
+import { useLoadStory } from '../api';
 
 export const Nonzone = ({ onClose }) => {
     const { objectId } = useParams();
     console.log('Nonzoneid:', objectId);
-    const { object } = useLoadSingleObject(objectId);
+    const { error, loading, data: object } = useLoadStory(objectId);
 
     const {
         Nonzone: {
@@ -38,12 +38,12 @@ export const Nonzone = ({ onClose }) => {
                             backgroundImage: `url(${object?.logoURL})`,
                         }}
                     ></div> */}
-                    {!!object?.logoURL && (
+                    {!!object?.image && (
                         <div className="nonzone__image_holder">
                             <img
                                 alt="snapshot"
                                 className="nonzone__image"
-                                src={object?.logoURL}
+                                src={object?.image}
                             />
                         </div>
                     )}
@@ -53,7 +53,7 @@ export const Nonzone = ({ onClose }) => {
                     <p className="nonzone__type">Non-zone type</p>
                     <Sliderr
                         onChange={(a) => console.log(a)}
-                        elements={[['#' + object?.external_data?.type]]}
+                        elements={[['#' + object?.kind]]}
                     />
                     <div className="nonzone__bottom"></div>
                 </div>

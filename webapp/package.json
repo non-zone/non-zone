@@ -3,17 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@opencommunitymap/react-sdk": "^0.1.0-rc4",
+    "@geonet/geohash": "^1.0.14",
+    "@opencommunitymap/react-sdk": "^0.1.0-rc5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "arql-ops": "^1.0.0",
+    "arweave": "^1.9.1",
     "axios": "^0.19.2",
     "firebase": "^7.15.0",
     "firebaseui": "^4.5.1",
+    "nanoid": "^3.1.12",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "smartweave": "https://arweave.net/AM-u4X2po-3Tx7fma3lRonCfLwrjI42IALwDL_YFXBs"
   },
   "scripts": {
     "start": "react-scripts start",

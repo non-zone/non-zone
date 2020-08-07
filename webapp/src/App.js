@@ -36,8 +36,10 @@ import 'firebase/auth';
 import 'firebase/database';
 import firebaseConfig from './firebaseConfig';
 import firebaseConfigDev from './firebaseConfigDev';
-import { saveObject, publishObject } from './api';
+import { saveObject, publishObject, useLoadStoriesByRegion } from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
+import arweaveKey from './arweave-key.json';
+window.sessionStorage.setItem('arweave_wallet', JSON.stringify(arweaveKey));
 
 const { NONZONE_ENV = 'development' } = process.env;
 const fbConf =
@@ -61,8 +63,14 @@ const isMerchantMode = window.location.search === '?create-service';
 const Map = () => {
     const [center, setCenter] = useState();
     const [zoom, setZoom] = useState();
+    const [bounds, setBounds] = useState();
     const [showMerchants, setShowMerchants] = useState(false);
     const router = useHistory();
+
+    const { error, loading: loadingStories, data } = useLoadStoriesByRegion(
+        bounds
+    );
+    console.log('LoadStoriesHook', { error, loadingStories, data });
 
     useEffect(() => {
         detectLocation()
@@ -98,6 +106,7 @@ const Map = () => {
                     mapStyles={mapStyles}
                     centerPin={<Pin color="#79CAB5" />}
                     center={center}
+                    data={data}
                     defaultCenter={defaultCenter}
                     zoom={zoom}
                     showZoomControls={false}
@@ -133,8 +142,8 @@ const Map = () => {
                             />
                         </NavigationWidget>
                     }
-                    onChange={(newCenter, bounds, newZoom) => {
-                        console.log({ newCenter, newZoom });
+                    onChange={(newCenter, newBounds, newZoom) => {
+                        console.log({ newCenter, newBounds, newZoom });
                         if (
                             center?.latitude === newCenter.latitude &&
                             center?.longitude === newCenter.longitude &&
@@ -148,6 +157,7 @@ const Map = () => {
                             });
                             return; // save unneeded reload
                         }
+                        setBounds(newBounds);
                         setCenter(newCenter);
                         setZoom(newZoom);
                         setTimeout(() => storeLastLocation(newCenter), 0);

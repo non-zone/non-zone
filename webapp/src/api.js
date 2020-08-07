@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import fb from './integrations/firebase';
+import arweave from './integrations/arweave';
 import ocm from './integrations/ocm';
+
+// const io = fb;
+const io = arweave;
 
 // temp, force update in hooks
 let tick = 0;
 
 export const saveObject = async (data) => {
-    const id = await fb.saveObject(data);
+    const id = await io.saveObject(data);
     ++tick;
     return id;
 };
@@ -16,7 +20,7 @@ export const publishObject = async (data) => {
 
     const ocm_id = await ocm.publish(data);
 
-    await fb.savePartialObject(data.id, {
+    await io.savePartialObject(data.id, {
         ocm_id,
         published: true,
     });
@@ -31,7 +35,7 @@ export const useLoadStory = (id) => {
     useEffect(() => {
         if (!id) return;
 
-        fb.loadObjectById(id)
+        io.loadObjectById(id)
             .then((obj) => {
                 console.log('Loaded story', obj, tick);
                 setData(obj);
@@ -52,7 +56,7 @@ export const useLoadUserStories = (uid, publishedOnly = true) => {
         if (!uid) return;
         (async () => {
             try {
-                const arr = await fb.loadObjectsByUser(uid, publishedOnly);
+                const arr = await io.loadObjectsByUser(uid, publishedOnly);
                 console.log('Loaded stories', arr, tick);
                 setData(arr);
             } catch (err) {
@@ -64,6 +68,26 @@ export const useLoadUserStories = (uid, publishedOnly = true) => {
     return { data, error, loading: data === undefined };
 };
 
+export const useLoadStoriesByRegion = (bounds) => {
+    console.debug('useLoadStoriesByRegion', bounds);
+    const [data, setData] = useState();
+    const [error, setError] = useState();
+    useEffect(() => {
+        if (!bounds || !bounds.maxLat) return;
+        (async () => {
+            try {
+                const arr = await io.loadObjectsByRegion(bounds);
+                console.log('Loaded stories', arr, tick);
+                setData(arr);
+            } catch (err) {
+                console.log(err);
+                setError(err.message);
+            }
+        })();
+    }, [bounds, tick]);
+    return { data, error, loading: data === undefined };
+};
+
 export const updateUserProfile = async (uid, data) => {
-    return fb.saveProfile(uid, data);
+    return io.saveProfile(uid, data);
 };
