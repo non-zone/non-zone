@@ -19,7 +19,7 @@ const MapObject = (props) => {
                             className="mapobject__button"
                             onClick={() => onClick()}
                         >
-                            open this non-zone
+                            Open this Story
                         </button>
                     </div>
                 </>
