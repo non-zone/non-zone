@@ -43,7 +43,7 @@ export const CreateSaveStory = ({
 
     const isCreated = !!existingData;
     const isDirtyState = isCreated && existingData !== state;
-    const isPublished = existingData?.ocm_id;
+    const isPublished = existingData?.published;
     const canPublish = isCreated && !isPublished && !isDirtyState;
     const actionTitle =
         (isPublished && 'Published') || (canPublish ? 'Publish' : 'Save');
