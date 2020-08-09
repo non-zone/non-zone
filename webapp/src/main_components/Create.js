@@ -25,6 +25,18 @@ const Congrats = ({ onClose }) => {
     );
 };
 
+const ErrorMessage = ({ children }) => {
+    const ref = React.useRef();
+    useEffect(() => {
+        ref.current.scrollIntoView();
+    }, []);
+    return (
+        <div className="error-message" ref={ref}>
+            {children}
+        </div>
+    );
+};
+
 export const CreateSaveStory = ({
     existingData,
     onClose,
@@ -135,7 +147,7 @@ export const CreateSaveStory = ({
                         </div>
                     )}
                     {!!errors?.image && (
-                        <span className="error-message">{errors.image}</span>
+                        <ErrorMessage>{errors.image}</ErrorMessage>
                     )}
                     <input
                         className={cx('create__title', {
@@ -149,7 +161,7 @@ export const CreateSaveStory = ({
                         }
                     ></input>
                     {!!errors?.title && (
-                        <span className="error-message">{errors.title}</span>
+                        <ErrorMessage>{errors.title}</ErrorMessage>
                     )}
                     <textarea
                         className={cx('create__textarea', {
@@ -173,9 +185,7 @@ export const CreateSaveStory = ({
                         {!!descrLength && `${descrLength} chars`}
                     </div>
                     {!!errors?.description && (
-                        <span className="error-message">
-                            {errors.description}
-                        </span>
+                        <ErrorMessage>{errors.description}</ErrorMessage>
                     )}
                     <p className="create__welcome">Non-zone type?</p>
                     <Slider
