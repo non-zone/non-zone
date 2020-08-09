@@ -50,7 +50,7 @@ export const Nonzone = ({ onClose }) => {
                     <p className="nonzone__type">{object?.title}</p>
                     <p className="nonzone__author"></p>
                     <p className="nonzone__text">{object?.description}</p>
-                    <p className="nonzone__type">Non-zone type</p>
+                    <p className="nonzone__type">Story type</p>
                     <Sliderr
                         onChange={(a) => console.log(a)}
                         elements={[['#' + object?.external_data?.type]]}

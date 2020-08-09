@@ -19,7 +19,7 @@ const Congrats = ({ onClose }) => {
     return (
         <DialogWindow
             amount={-5}
-            title={'Congrats! You created a new non-zone!'}
+            title={'Congrats! You added a new Story!'}
             onClose={onClose}
         />
     );
@@ -187,7 +187,7 @@ export const CreateSaveStory = ({
                     {!!errors?.description && (
                         <ErrorMessage>{errors.description}</ErrorMessage>
                     )}
-                    <p className="create__welcome">Non-zone type?</p>
+                    <p className="create__welcome">Story type</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
                         activeElement={state.type}
