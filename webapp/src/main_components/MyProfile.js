@@ -82,7 +82,7 @@ export const MyProfile = ({ onClose }) => {
                     amount={10}
                     title="Congratulations"
                     text="Use your Zone Points to interact with your favorite
-                    non-zones, or redeem them with experience-providers in the
+                    Stories, or redeem them with experience-providers in the
 					area."
                     onClose={() => {
                         setShowCongrats(false);
@@ -140,20 +140,20 @@ export const MyProfile = ({ onClose }) => {
                     elements={[
                         [
                             'Zoner',
-                            'Create, pin and own new Non-Zones',
-                            '1',
+                            'Create, pin and own new Stories',
+                            'Zoner',
                             zoner,
                         ],
                         [
                             'Merchant',
                             'Provide unique experiences to explorers',
-                            '2',
+                            'Merchant',
                             merchant,
                         ],
                         [
                             'Explorer',
-                            'Interact and discover exciting Non-zones',
-                            '3',
+                            'Interact and discover exciting Stories',
+                            'Explorer',
                             explorer,
                         ],
                     ]}
