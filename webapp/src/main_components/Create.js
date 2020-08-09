@@ -214,7 +214,9 @@ export const EditStory = ({ onClose, onSave, onPublish }) => {
 };
 
 const validate = ({ title, description, image }) => {
-    if (!title) return { title: 'Title is required' };
+    const titleWords = title.trim().split(/\s+/).length;
+    if (titleWords < 3 || titleWords > 5)
+        return { title: 'Title should be between 3 and 5 words' };
     if (
         description.length < MIN_DESCR_LENGTH ||
         description.length > MAX_DESCR_LENGTH
