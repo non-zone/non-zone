@@ -79,6 +79,7 @@ export const CreateMerchant = ({ onClose, onSave }) => {
                     <p className="create__welcome">Type of Service</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
+                        activeElement={state.type}
                         elements={[
                             ['#Food', '', 'food'],
                             ['#Art&Leisure', '', 'art-and-leisure'],
