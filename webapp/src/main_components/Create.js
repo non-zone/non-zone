@@ -5,10 +5,13 @@ import { TakePicture } from './TakePicture';
 import cx from 'classnames';
 import { useParams } from 'react-router-dom';
 import { useLoadStory } from '../api';
+import { useAuth, useUserWallet } from '../Auth';
 import { Spinner } from '../components/spinner/Spinner';
 
 const MIN_DESCR_LENGTH = 150;
 const MAX_DESCR_LENGTH = 600;
+
+const STORY_COST = 5;
 
 const {
     Create: { pin, shot, close },
@@ -18,10 +21,22 @@ const {
 const Congrats = ({ onClose }) => {
     return (
         <DialogWindow
-            amount={5}
-            title={'Congrats! You created a new non-zone!'}
+            amount={-STORY_COST}
+            title={'Congrats! You added a new Story!'}
             onClose={onClose}
         />
+    );
+};
+
+const ErrorMessage = ({ children }) => {
+    const ref = React.useRef();
+    useEffect(() => {
+        ref.current.scrollIntoView();
+    }, []);
+    return (
+        <div className="error-message" ref={ref}>
+            {children}
+        </div>
     );
 };
 
@@ -39,11 +54,14 @@ export const CreateSaveStory = ({
         if (existingData) setState(existingData);
     }, [existingData]);
 
+    const { user } = useAuth();
+    const { balance } = useUserWallet(user?.uid);
+
     const descrLength = state.description?.length || 0;
 
     const isCreated = !!existingData;
     const isDirtyState = isCreated && existingData !== state;
-    const isPublished = existingData?.ocm_id;
+    const isPublished = existingData?.published;
     const canPublish = isCreated && !isPublished && !isDirtyState;
     const actionTitle =
         (isPublished && 'Published') || (canPublish ? 'Publish' : 'Save');
@@ -62,7 +80,7 @@ export const CreateSaveStory = ({
 
             setLoading(true);
             if (canPublish) {
-                const err = validate(state);
+                const err = validate(state) || validateBalance(balance);
                 if (err) {
                     console.log('ERRORS', err);
                     setErrors(err);
@@ -135,7 +153,7 @@ export const CreateSaveStory = ({
                         </div>
                     )}
                     {!!errors?.image && (
-                        <span className="error-message">{errors.image}</span>
+                        <ErrorMessage>{errors.image}</ErrorMessage>
                     )}
                     <input
                         className={cx('create__title', {
@@ -149,7 +167,7 @@ export const CreateSaveStory = ({
                         }
                     ></input>
                     {!!errors?.title && (
-                        <span className="error-message">{errors.title}</span>
+                        <ErrorMessage>{errors.title}</ErrorMessage>
                     )}
                     <textarea
                         className={cx('create__textarea', {
@@ -173,11 +191,12 @@ export const CreateSaveStory = ({
                         {!!descrLength && `${descrLength} chars`}
                     </div>
                     {!!errors?.description && (
-                        <span className="error-message">
-                            {errors.description}
-                        </span>
+                        <ErrorMessage>{errors.description}</ErrorMessage>
                     )}
-                    <p className="create__welcome">Non-zone type?</p>
+                    {!!errors?.wallet && (
+                        <ErrorMessage>{errors.wallet}</ErrorMessage>
+                    )}
+                    <p className="create__welcome">Story type</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
                         activeElement={state.type}
@@ -214,7 +233,9 @@ export const EditStory = ({ onClose, onSave, onPublish }) => {
 };
 
 const validate = ({ title, description, image }) => {
-    if (!title) return { title: 'Title is required' };
+    const titleWords = title.trim().split(/\s+/).length;
+    if (titleWords < 3 || titleWords > 5)
+        return { title: 'Title should be between 3 and 5 words' };
     if (
         description.length < MIN_DESCR_LENGTH ||
         description.length > MAX_DESCR_LENGTH
@@ -225,4 +246,12 @@ const validate = ({ title, description, image }) => {
     if (!image) return { image: 'Having photo is required' };
 
     return null;
+};
+
+const validateBalance = (balance) => {
+    if (balance < STORY_COST) {
+        return {
+            wallet: `You need to have at least ${STORY_COST}SPACES in your Non-Zone Wallet`,
+        };
+    }
 };

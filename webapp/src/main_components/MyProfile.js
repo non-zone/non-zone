@@ -13,6 +13,7 @@ import { updateUserProfile, useLoadUserStories } from '../api';
 
 export const MyProfile = ({ onClose }) => {
     const [input, setInput] = useState();
+    const [type, setType] = useState('Zoner');
     const {
         Profile: { close, save, logout },
         Slider: { zoner, explorer, merchant },
@@ -81,7 +82,7 @@ export const MyProfile = ({ onClose }) => {
                     amount={10}
                     title="Congratulations"
                     text="Use your Zone Points to interact with your favorite
-                    non-zones, or redeem them with experience-providers in the
+                    Stories, or redeem them with experience-providers in the
 					area."
                     onClose={() => {
                         setShowCongrats(false);
@@ -134,24 +135,25 @@ export const MyProfile = ({ onClose }) => {
                     How do you see yourself the most?
                 </p>
                 <Slider
-                    onChange={(a) => console.log(a)}
+                    onChange={setType}
+                    activeElement={type}
                     elements={[
                         [
                             'Zoner',
-                            'Create, pin and own new Non-Zones',
-                            '1',
+                            'Create, pin and own new Stories',
+                            'Zoner',
                             zoner,
                         ],
                         [
                             'Merchant',
                             'Provide unique experiences to explorers',
-                            '2',
+                            'Merchant',
                             merchant,
                         ],
                         [
                             'Explorer',
-                            'Interact and discover exciting Non-zones',
-                            '3',
+                            'Interact and discover exciting Stories',
+                            'Explorer',
                             explorer,
                         ],
                     ]}

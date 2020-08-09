@@ -21,7 +21,7 @@ export const NavigationWidget = ({
                 }}
                 centralButton={{
                     onClick: createZone,
-                    name: 'Create a non-zone',
+                    name: 'Add your Story',
                     svg: create,
                 }}
                 rightButton={{
