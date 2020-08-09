@@ -5,10 +5,13 @@ import { TakePicture } from './TakePicture';
 import cx from 'classnames';
 import { useParams } from 'react-router-dom';
 import { useLoadStory } from '../api';
+import { useAuth, useUserWallet } from '../Auth';
 import { Spinner } from '../components/spinner/Spinner';
 
 const MIN_DESCR_LENGTH = 150;
 const MAX_DESCR_LENGTH = 600;
+
+const STORY_COST = 5;
 
 const {
     Create: { pin, shot, close },
@@ -18,7 +21,7 @@ const {
 const Congrats = ({ onClose }) => {
     return (
         <DialogWindow
-            amount={-5}
+            amount={-STORY_COST}
             title={'Congrats! You added a new Story!'}
             onClose={onClose}
         />
@@ -51,6 +54,9 @@ export const CreateSaveStory = ({
         if (existingData) setState(existingData);
     }, [existingData]);
 
+    const { user } = useAuth();
+    const { balance } = useUserWallet(user?.uid);
+
     const descrLength = state.description?.length || 0;
 
     const isCreated = !!existingData;
@@ -74,7 +80,7 @@ export const CreateSaveStory = ({
 
             setLoading(true);
             if (canPublish) {
-                const err = validate(state);
+                const err = validate(state) || validateBalance(balance);
                 if (err) {
                     console.log('ERRORS', err);
                     setErrors(err);
@@ -187,6 +193,9 @@ export const CreateSaveStory = ({
                     {!!errors?.description && (
                         <ErrorMessage>{errors.description}</ErrorMessage>
                     )}
+                    {!!errors?.wallet && (
+                        <ErrorMessage>{errors.wallet}</ErrorMessage>
+                    )}
                     <p className="create__welcome">Story type</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
@@ -237,4 +246,12 @@ const validate = ({ title, description, image }) => {
     if (!image) return { image: 'Having photo is required' };
 
     return null;
+};
+
+const validateBalance = (balance) => {
+    if (balance < STORY_COST) {
+        return {
+            wallet: `You need to have at least ${STORY_COST}SPACES in your Non-Zone Wallet`,
+        };
+    }
 };
