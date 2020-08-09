@@ -34,7 +34,7 @@ export const DialogWindow = (props) => {
                             points
                         </p>
                         <p className="dialogwindow__amount">
-                            {(amount >= 0 ? '+' : '-') + amount + 'SPACE'}
+                            {(amount >= 0 ? '+' : '') + amount + 'SPACE'}
                         </p>
                     </>
                 ) : (
