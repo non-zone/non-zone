@@ -21,7 +21,7 @@ const types = {
 const getActionValue = (type) => {
     switch (type) {
         case types.OBJECT_PUBLISH:
-            return 5;
+            return -5;
         case types.PROFILE_CREATE:
             return 10;
         default:

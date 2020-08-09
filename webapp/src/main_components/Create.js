@@ -18,7 +18,7 @@ const {
 const Congrats = ({ onClose }) => {
     return (
         <DialogWindow
-            amount={5}
+            amount={-5}
             title={'Congrats! You created a new non-zone!'}
             onClose={onClose}
         />
