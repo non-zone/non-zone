@@ -6,33 +6,31 @@ import './dialogwindow.css';
  *
  * @param {props} props
  * @param {number} amount - amount of coins which user has earned // put this props to display special type of this window
- * @param {Function} onClose - closing hanlder
  * @param {Function} onClick - additional functional
  * @param {string} title - title for this window
+ * @param {string} secondaryAction - second button title, optional
+ * @param {Function} onClickSecondary - second button handler
  */
 
 export const DialogWindow = (props) => {
     const {
         amount = 0,
-        onClose = () => alert('this is handler'),
-        // onClick = () => alert('onClose'),
+        onClick = () => alert('onClose'),
         text = '',
         title = 'Warning',
+        subtitle = '',
+        action = 'Got it!',
+        secondaryAction = null,
+        onClickSecondary,
     } = props;
-    const onClickHandler = () => {
-        // onClick();
-        onClose();
-    };
+
     return (
         <div className="dialogwindow">
             <div className="dialogwindow__box dialogwindow-animation ">
                 {title ? <h1 className="dialogwindow__title">{title}</h1> : ''}
                 {amount ? (
                     <>
-                        <p className="dialogwindow__header">
-                            You’ve {amount >= 0 ? 'earned' : 'spent'} Non-Zone
-                            points
-                        </p>
+                        <p className="dialogwindow__header">{subtitle}</p>
                         <p className="dialogwindow__amount">
                             {(amount >= 0 ? '+' : '') + amount + 'SPACE'}
                         </p>
@@ -43,11 +41,19 @@ export const DialogWindow = (props) => {
                 <p className="dialogwindow__text">{text}</p>
             </div>
             <button
-                onClick={() => onClickHandler()}
+                onClick={onClick}
                 className="dialogwindow__button dialogwindow-animation "
             >
-                Got it!
+                {action}
             </button>
+            {!!secondaryAction && (
+                <button
+                    onClick={onClickSecondary}
+                    className="dialogwindow__button dialogwindow-animation secondary "
+                >
+                    {secondaryAction}
+                </button>
+            )}
         </div>
     );
 };

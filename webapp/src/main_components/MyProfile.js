@@ -81,10 +81,11 @@ export const MyProfile = ({ onClose }) => {
                 <DialogWindow
                     amount={10}
                     title="Congratulations"
+                    subtitle="You’ve earned Non-Zone points"
                     text="Use your Zone Points to interact with your favorite
                     Stories, or redeem them with experience-providers in the
 					area."
-                    onClose={() => {
+                    onClick={() => {
                         setShowCongrats(false);
                         onClose();
                     }}
