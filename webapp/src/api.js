@@ -184,3 +184,14 @@ export const updateUserProfile = (uid, data) => {
     if (!uid) throw new Error('uid empty');
     return firebase.database().ref(`/users-public/${uid}`).update(data);
 };
+
+export const checkInitialBalance = async () => {
+    try {
+        const res = await firebase
+            .functions()
+            .httpsCallable('checkRedeemBalance')();
+        console.log('checkRedeemBalance', res);
+    } catch (err) {
+        console.log('Error checking redeem balance', err);
+    }
+};

@@ -36,7 +36,7 @@ import 'firebase/auth';
 import 'firebase/database';
 import firebaseConfig from './firebaseConfig';
 import firebaseConfigDev from './firebaseConfigDev';
-import { saveObject, publishObject } from './api';
+import { saveObject, publishObject, checkInitialBalance } from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
 
 const { NONZONE_ENV = 'development' } = process.env;
@@ -79,6 +79,13 @@ const Map = () => {
     if (user && !loading && !profile) {
         router.replace('/profile');
     }
+
+    const userUid = user?.uid;
+    useEffect(() => {
+        if (userUid) {
+            checkInitialBalance();
+        }
+    }, [userUid]);
 
     const onSaveCallback = (kind) => async (info) => {
         const data = { loc: center, uid: user.uid, kind, ...info };
