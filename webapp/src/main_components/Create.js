@@ -21,9 +21,10 @@ const {
 const Congrats = ({ onClose }) => {
     return (
         <DialogWindow
-            amount={-STORY_COST}
             title={'Congrats! You added a new Story!'}
-            onClose={onClose}
+            subtitle="You’ve spent Non-Zone points"
+            amount={-STORY_COST}
+            onClick={onClose}
         />
     );
 };
