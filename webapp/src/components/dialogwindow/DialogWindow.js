@@ -32,7 +32,7 @@ export const DialogWindow = (props) => {
                     <>
                         <p className="dialogwindow__header">{subtitle}</p>
                         <p className="dialogwindow__amount">
-                            {(amount >= 0 ? '+' : '') + amount + 'SPACE'}
+                            {(amount >= 0 ? '+' : '') + amount + ' SPACE'}
                         </p>
                     </>
                 ) : (
