@@ -69,6 +69,7 @@ export const CreateSaveStory = ({
 
     const [loading, setLoading] = useState(false);
     const [showCongrats, setShowCongrats] = useState(false);
+    const [showPublish, setShowPublish] = useState(false);
 
     const [errors, setErrors] = useState();
 
@@ -87,11 +88,28 @@ export const CreateSaveStory = ({
                     setErrors(err);
                     return;
                 }
-                await onPublish(state);
-                setShowCongrats(true);
+                setShowPublish(true);
+                // await onPublish(state);
+                // setShowCongrats(true);
             } else {
                 await onSave(state);
             }
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setLoading(false);
+            // onClose();
+        }
+    };
+
+    const handlePublish = async () => {
+        try {
+            // if (!state.title) return;
+
+            setLoading(true);
+            await onPublish(state);
+            setShowPublish(false);
+            setShowCongrats(true);
         } catch (err) {
             alert(err.message);
         } finally {
@@ -104,6 +122,17 @@ export const CreateSaveStory = ({
     return (
         <>
             {loading && <Spinner />}
+            {showPublish && (
+                <DialogWindow
+                    amount={STORY_COST}
+                    title={`This will cost`}
+                    subtitle=""
+                    action="Let's do it!"
+                    secondaryAction="Save For Later"
+                    onClick={() => handlePublish()}
+                    onClickSecondary={() => setShowPublish(false)}
+                />
+            )}
             {showCongrats && (
                 <Congrats onClose={() => setShowCongrats(false)} />
             )}
