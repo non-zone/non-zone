@@ -39,9 +39,9 @@ import firebaseConfigDev from './firebaseConfigDev';
 import { saveObject, publishObject, checkInitialBalance } from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
 
-const { NONZONE_ENV = 'development' } = process.env;
+const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
 const fbConf =
-    NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
+    REACT_APP_NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
 
 console.log('Init with', fbConf);
 firebase.initializeApp(fbConf);
@@ -49,7 +49,7 @@ firebase.analytics();
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
-initOcmFirebase(NONZONE_ENV);
+initOcmFirebase(REACT_APP_NONZONE_ENV);
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
