@@ -13,8 +13,8 @@ const initialTags = {
 const getWallet = () => JSON.parse(window.sessionStorage.getItem('wallet'));
 
 /** *
- * kind: story|place
- * type: memory|search|story
+ * kind: memory|search|story
+ * type: story|place
  * loc: {latitude: number, longitude: number}
  */
 const saveObject = async ({
@@ -38,7 +38,8 @@ const saveObject = async ({
         ...initialTags,
         'Nonzone-Id': id || nanoid(),
         'Nonzone-Author': uid,
-        'Nonzone-Type': kind,
+        'Nonzone-Type': type,
+        'Nonzone-Kind': kind,
         'Nonzone-Status': 'published',
         Version: version ? version + 1 : 1,
         // 'Content-Type': 'text/html',
@@ -52,9 +53,6 @@ const saveObject = async ({
     }
 
     const data = {
-        // uid,
-        // kind,
-        kind: type,
         loc,
         title,
         description: description || '',
@@ -64,9 +62,9 @@ const saveObject = async ({
         data.created = timestamp;
     }
     const key = getWallet();
+    if (!key) throw new Error('Wallet must be set');
 
     console.log('post', key, tags, data);
-    // return 0;
 
     // '<html><head><meta charset="UTF-8"><title>Hello, world!</title></head><body><div>Hello, world!</div></body></html>',
     let transaction = await arweave.createTransaction(
@@ -113,7 +111,8 @@ const getVal = (tag) => tag?.get('value', { decode: true, string: true });
 const restoreTagsInfo = {
     id: 'Nonzone-Id',
     uid: 'Nonzone-Author',
-    kind: 'Nonzone-Type',
+    type: 'Nonzone-Type',
+    kind: 'Nonzone-Kind',
     status: 'Nonzone-Status',
     version: 'Version',
     timestamp: 'Timestamp',

@@ -30,13 +30,13 @@ const publish = async (data) => {
     } = data;
 
     const requestBody = {
-        type: kind,
+        type,
         loc,
         title,
         description,
         logoURL: image,
         image,
-        external_data: { type, image, uid, id },
+        external_data: { type, kind, image, uid, id },
         valid_until: '2100-01-01', //temp
     };
 
