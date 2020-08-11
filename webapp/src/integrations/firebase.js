@@ -208,6 +208,10 @@ const getCurrency = () => 'SPACE';
 const getPublishPrice = async () => 5;
 const isPrepublishSupported = () => true;
 
+const sendTip = async () => {
+    throw new Error('Not implemented');
+};
+
 export default {
     saveObject,
     savePartialObject,
@@ -220,4 +224,5 @@ export default {
     getCurrency,
     getPublishPrice,
     isPrepublishSupported,
+    sendTip,
 };

@@ -1,5 +1,9 @@
 import Arweave from 'arweave';
-import { createContractFromTx } from 'smartweave';
+import {
+    createContractFromTx,
+    selectWeightedPstHolder,
+    readContract,
+} from 'smartweave';
 import { nanoid } from 'nanoid';
 import Geohash from '@geonet/geohash';
 import { and, or, equals } from 'arql-ops';
@@ -306,6 +310,46 @@ const getPublishPrice = async (data) => {
 };
 const isPrepublishSupported = () => false;
 
+const sendTip = async (contractId, amountAR, refId) => {
+    console.log('send tip', { contractId, amount: amountAR });
+    const key = getWallet();
+    if (!key) throw new Error('Wallet must be set');
+
+    const contract = await readContract(arweave, contractId);
+    const target = selectWeightedPstHolder(contract.balances);
+    const quantity = arweave.ar.arToWinston(amountAR);
+
+    const tags = {
+        ...initialTags,
+        'Nonzone-Type': 'tip',
+        'Nonzone-Ref-Id': refId,
+    };
+    const data = {
+        target,
+        quantity,
+    };
+
+    console.log('post', key, tags, data);
+
+    // '<html><head><meta charset="UTF-8"><title>Hello, world!</title></head><body><div>Hello, world!</div></body></html>',
+    let transaction = await arweave.createTransaction(data, key);
+    for (const [key, value] of Object.entries(tags)) {
+        transaction.addTag(key, value);
+    }
+    console.log('Transaction:', transaction);
+    await arweave.transactions.sign(transaction, key);
+    console.log('Signed:', transaction);
+
+    const response = await arweave.transactions.post(transaction);
+
+    console.log('Response:', response);
+    // HTTP response codes (200 - ok, 400 - invalid transaction, 500 - error)
+    if (response.status >= 200 && response.status < 300) {
+        return transaction.id;
+    }
+    throw new Error(response.statusText);
+};
+
 export default {
     saveObject,
     savePartialObject,
@@ -315,8 +359,8 @@ export default {
     saveProfile,
     subscribeToUserService,
     signOut,
-
     getCurrency,
     getPublishPrice,
     isPrepublishSupported,
+    sendTip,
 };
