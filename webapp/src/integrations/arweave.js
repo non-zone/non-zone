@@ -1,4 +1,5 @@
 import Arweave from 'arweave';
+import { createContractFromTx } from 'smartweave';
 import { nanoid } from 'nanoid';
 import Geohash from '@geonet/geohash';
 import { and, or, equals } from 'arql-ops';
@@ -11,6 +12,16 @@ const initialTags = {
 };
 
 const getWallet = () => JSON.parse(window.sessionStorage.getItem('wallet'));
+
+const referContractTxId = 'ff8wOKWGIS6xKlhA8U6t70ydZOozixF5jQMp4yjoTc8';
+const nonzoneWalletAddress = '35a5He4pYjHIlgWMDVj23IQFnGvV5UMavjgL5FpdyTg';
+const getContractInitialState = (userAddress, ticker) => ({
+    ticker,
+    balances: {
+        [userAddress]: 9000000,
+        [nonzoneWalletAddress]: 1000000,
+    },
+});
 
 /** *
  * kind: memory|search|story
@@ -34,9 +45,10 @@ const saveObject = async ({
         throw new Error('Coordinates are not detected');
 
     const timestamp = new Date().toISOString();
+    const nonzoneId = id || nanoid();
     const tags = {
         ...initialTags,
-        'Nonzone-Id': id || nanoid(),
+        'Nonzone-Id': nonzoneId,
         'Nonzone-Author': uid,
         'Nonzone-Type': type,
         'Nonzone-Kind': kind,
@@ -58,11 +70,27 @@ const saveObject = async ({
         description: description || '',
         image,
     };
-    if (!id) {
-        data.created = timestamp;
-    }
     const key = getWallet();
     if (!key) throw new Error('Wallet must be set');
+
+    if (!id) {
+        data.created = timestamp;
+
+        // Create PST contract
+        const address = await arweave.wallets.jwkToAddress(key);
+        const initState = getContractInitialState(
+            address,
+            `NONZONE_STORY_${nonzoneId}`
+        );
+        const contractId = await createContractFromTx(
+            arweave,
+            key,
+            referContractTxId,
+            JSON.stringify(initState)
+        );
+        console.log('Created contract', contractId, initState);
+        tags['Nonzone-Contract-Id'] = contractId;
+    }
 
     console.log('post', key, tags, data);
 
@@ -80,14 +108,12 @@ const saveObject = async ({
     await arweave.transactions.sign(transaction, key);
     console.log('Signed:', transaction);
 
-    return 0;
-
     const response = await arweave.transactions.post(transaction);
 
     console.log('Response:', response);
     // HTTP response codes (200 - ok, 400 - invalid transaction, 500 - error)
     if (response.status >= 200 && response.status < 300) {
-        return tags['Nonzone-Id'];
+        return nonzoneId;
     }
     throw new Error(response.statusText);
 
@@ -118,6 +144,7 @@ const restoreTagsInfo = {
     status: 'Nonzone-Status',
     version: 'Version',
     timestamp: 'Timestamp',
+    contractId: 'Nonzone-Contract-Id',
 };
 
 const loadObjectByTxId = async (txId) => {
@@ -136,9 +163,13 @@ const loadObjectByTxId = async (txId) => {
             tagsObj[getName(tag)] = tag;
         }
         for (const key in restoreTagsInfo) {
-            data[key] = getVal(tagsObj[restoreTagsInfo[key]]) || 'n/a';
+            data[key] = getVal(tagsObj[restoreTagsInfo[key]]) || '';
         }
+        if (data.status === 'published') data.published = true;
         console.log(data, tagsObj);
+        console.log(
+            Object.entries(tagsObj).map(([key, tag]) => [key, getVal(tag)])
+        );
 
         return data;
     } catch (err) {
