@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { initFirebase as initOcmFirebase } from '@opencommunitymap/react-sdk';
 
 const {
     NONZONE_ENV = 'development',
@@ -13,6 +14,7 @@ const HOST =
         : 'https://community-map-dev.web.app');
 
 console.log({ HOST, TOKEN });
+initOcmFirebase(NONZONE_ENV);
 
 const publish = async (data) => {
     const uri = `${HOST}/api/v0/object/?token=${TOKEN}`;

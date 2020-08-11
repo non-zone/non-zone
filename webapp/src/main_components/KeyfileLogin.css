@@ -1,0 +1,38 @@
+.keyfile-login {
+    position: fixed;
+    padding-top: 10px;
+    height: 100%;
+    width: 100vw;
+    background-color: black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.file-input {
+    height: 200px;
+    padding: 1em;
+    border: 2px dashed #55d4c3;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* margin: auto; */
+    max-width: 320px;
+}
+.file-input p {
+    color: #55d4c3 !important;
+}
+.file-input input {
+    opacity: 0;
+    position: absolute;
+    background: none;
+    width: 100%;
+    height: 100%;
+}
+.keyfile-login button {
+    max-width: 100px;
+}

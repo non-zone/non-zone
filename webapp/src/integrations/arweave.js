@@ -10,8 +10,7 @@ const initialTags = {
     'App-Version': '0.0.1',
 };
 
-const getWallet = () =>
-    JSON.parse(window.sessionStorage.getItem('arweave_wallet'));
+const getWallet = () => JSON.parse(window.sessionStorage.getItem('wallet'));
 
 /** *
  * kind: story|place
@@ -214,6 +213,55 @@ const saveProfile = async (uid, data) => {
     throw new Error('Not implemented');
 };
 
+const wallet2data = async (wallet) => {
+    const address = await arweave.wallets.jwkToAddress(wallet);
+    console.log('JWK', { wallet, address });
+    const balance = await arweave.wallets.getBalance(address);
+    const user = {
+        uid: address,
+        photoURL: '/user.png',
+    };
+    const profile = {
+        nickname: 'UserX', // temp
+    };
+    return { user, balance, profile };
+};
+
+let refreshUserDataCb;
+
+const subscribeToUserService = async (cb) => {
+    refreshUserDataCb = cb;
+    console.log('Check wallet');
+    const walletStr = sessionStorage.getItem('wallet');
+    if (walletStr) {
+        console.log('Found stored wallet', walletStr);
+        try {
+            const wallet = JSON.parse(walletStr);
+            const data = await wallet2data(wallet);
+            return cb(data);
+        } catch (err) {
+            cb(null, err);
+        }
+    } else {
+        cb(null);
+    }
+};
+
+export const signInWithFile = async (wallet) => {
+    try {
+        const data = await wallet2data(wallet);
+        sessionStorage.setItem('wallet', JSON.stringify(wallet));
+        refreshUserDataCb(data);
+    } catch (err) {
+        refreshUserDataCb(null, err);
+    }
+};
+
+const signOut = () => {
+    sessionStorage.removeItem('wallet');
+    refreshUserDataCb(null);
+};
+
 export default {
     saveObject,
     savePartialObject,
@@ -221,4 +269,6 @@ export default {
     loadObjectsByRegion,
     loadObjectsByUser,
     saveProfile,
+    subscribeToUserService,
+    signOut,
 };

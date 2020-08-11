@@ -1,5 +1,4 @@
 import React from 'react';
-import 'firebase/auth';
 import { useAuth } from '../Auth';
 import { Profile } from '../components';
 

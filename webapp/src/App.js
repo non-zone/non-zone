@@ -5,13 +5,10 @@ import {
     Route,
     useHistory,
 } from 'react-router-dom';
+import { store } from './redux';
+import { Provider } from 'react-redux';
 import './App.css';
-import {
-    CommunityMap,
-    Pin,
-    initFirebase as initOcmFirebase,
-    detectLocation,
-} from '@opencommunitymap/react-sdk';
+import { CommunityMap, Pin, detectLocation } from '@opencommunitymap/react-sdk';
 import mapStyles from './MapsGoogleDarkStyle.json';
 import {
     NavigationWidget,
@@ -24,38 +21,43 @@ import {
     CreateMerchant,
     EditStory,
 } from './main_components';
+import { AuthProvider, useAuth, useUserPublicProfile } from './Auth';
 import {
-    AuthProvider,
-    useAuth,
-    useUserPublicProfile,
-    googleSignIn,
-} from './Auth';
-import * as firebase from 'firebase/app';
-import 'firebase/analytics';
-import 'firebase/auth';
-import 'firebase/database';
-import firebaseConfig from './firebaseConfig';
-import firebaseConfigDev from './firebaseConfigDev';
-import { saveObject, publishObject, useLoadStoriesByRegion } from './api';
+    saveObject,
+    publishObject,
+    useLoadStoriesByRegion,
+    subscribeToUserService,
+    signOut,
+} from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
-import arweaveKey from './arweave-key.json';
-window.sessionStorage.setItem('arweave_wallet', JSON.stringify(arweaveKey));
-
-const { NONZONE_ENV = 'development' } = process.env;
-const fbConf =
-    NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
-
-console.log('Init with', fbConf);
-firebase.initializeApp(fbConf);
-firebase.analytics();
+import { KeyfileLogin } from './main_components/KeyfileLogin';
+import { signInWithFile } from './integrations/arweave';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
-initOcmFirebase(NONZONE_ENV);
+subscribeToUserService((data, err) => {
+    if (err) {
+        console.log('Error loading user:', err);
+    }
+    const { user, balance, profile } = data || {
+        user: null,
+        balance: 0,
+        profile: null,
+    };
+    console.log('On User Auth', { user, balance, profile, err });
+    store.dispatch({ type: 'USER', payload: user });
+    store.dispatch({ type: 'BALANCE', payload: balance });
+    store.dispatch({ type: 'PROFILE', payload: profile });
+});
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
     longitude: 23.32,
+};
+
+const handleKeyfileLogin = (file) => {
+    console.log('FILE', file);
+    signInWithFile(file);
 };
 
 const isMerchantMode = window.location.search === '?create-service';
@@ -84,7 +86,7 @@ const Map = () => {
     const { user } = useAuth();
     const { profile, loading } = useUserPublicProfile(user?.uid);
 
-    if (user && !loading && !profile) {
+    if (user && !loading && !profile?.nickname) {
         router.replace('/profile');
     }
 
@@ -106,7 +108,7 @@ const Map = () => {
                     mapStyles={mapStyles}
                     centerPin={<Pin color="#79CAB5" />}
                     center={center}
-                    data={data}
+                    data={data || []}
                     defaultCenter={defaultCenter}
                     zoom={zoom}
                     showZoomControls={false}
@@ -131,8 +133,11 @@ const Map = () => {
                             toggleMerchants={() => {
                                 setShowMerchants((val) => !val);
                             }}
-                            createZone={() =>
-                                user ? router.push('/create') : googleSignIn()
+                            createZone={
+                                () =>
+                                    user
+                                        ? router.push('/create')
+                                        : router.push('/login') // googleSignIn()
                             }
                             // zoomIn={() => setZoom((zoom = 18) => zoom + 1)}
                             // zoomOut={() => setZoom((zoom = 18) => zoom - 1)}
@@ -173,11 +178,18 @@ const Map = () => {
                     onClose={() => router.push('/')}
                     onSignOut={() => {
                         signOut();
-                        initAuth();
                         router.push('/');
                     }}
                 />
             </Route>
+            <Route path="/login">
+                <KeyfileLogin
+                    onCancel={() => router.push('/')}
+                    onFileUpload={(file) => {
+                        handleKeyfileLogin(file);
+                        router.push('/');
+                    }}
+                />
             </Route>
             <Route path="/create">
                 {!isMerchantMode ? (
@@ -230,9 +242,11 @@ function App() {
 }
 
 export default () => (
-    <Router>
-        <AuthProvider>
-            <App />
-        </AuthProvider>
-    </Router>
+    <Provider store={store}>
+        <Router>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </Router>
+    </Provider>
 );
