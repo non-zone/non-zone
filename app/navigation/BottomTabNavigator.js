@@ -3,7 +3,6 @@ import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
 import ProfileScreen from '../screens/ProfileScreen';
-import CreateStoryScreen from '../screens/CreateStoryScreen';
 import MapScreen from '../screens/MapScreen';
 
 const BottomTab = createBottomTabNavigator();
@@ -17,16 +16,6 @@ export default function BottomTabNavigator({ navigation, route }) {
 
     return (
         <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
-            <BottomTab.Screen
-                name="CreateStory"
-                component={CreateStoryScreen}
-                options={{
-                    title: 'Create Story',
-                    tabBarIcon: ({ focused }) => (
-                        <TabBarIcon focused={focused} name="md-add" />
-                    ),
-                }}
-            />
             <BottomTab.Screen
                 name="Map"
                 component={MapScreen}

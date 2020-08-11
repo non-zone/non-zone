@@ -8,6 +8,7 @@ import useCachedResources from './hooks/useCachedResources';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import LinkingConfiguration from './navigation/LinkingConfiguration';
 import ShowStoryScreen from './screens/ShowStoryScreen';
+import CreateStoryScreen from './screens/CreateStoryScreen';
 
 import { YellowBox } from 'react-native';
 
@@ -34,6 +35,13 @@ export default function App(props) {
                             component={ShowStoryScreen}
                             options={({ route }) => ({
                                 title: route.params.title,
+                            })}
+                        />
+                        <Stack.Screen
+                            name="CreateStory"
+                            component={CreateStoryScreen}
+                            options={({ route }) => ({
+                                title: 'Create story',
                             })}
                         />
                     </Stack.Navigator>
