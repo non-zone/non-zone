@@ -205,6 +205,7 @@ const Map = () => {
                                     alert(`Error saving story: ${err.message}`);
                                 })
                         }
+                        onPublish={onPublish}
                     />
                 ) : (
                     <CreateMerchant

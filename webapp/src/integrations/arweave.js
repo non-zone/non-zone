@@ -80,6 +80,8 @@ const saveObject = async ({
     await arweave.transactions.sign(transaction, key);
     console.log('Signed:', transaction);
 
+    return 0;
+
     const response = await arweave.transactions.post(transaction);
 
     console.log('Response:', response);
@@ -263,8 +265,10 @@ const signOut = () => {
 
 const getCurrency = () => 'AR';
 const getPublishPrice = async (data) => {
-    const size = JSON.stringify(data).size;
+    // it seems actual transaction is a bit bigger
+    const size = 32 + JSON.stringify(data).length;
     const price = await arweave.transactions.getPrice(size);
+    console.log('Size:', size);
     console.log('Price (winston):', price);
     console.log('Price (AR):', arweave.ar.winstonToAr(price));
     return arweave.ar.winstonToAr(price);

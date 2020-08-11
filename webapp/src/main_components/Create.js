@@ -17,6 +17,7 @@ const MIN_DESCR_LENGTH = 150;
 const MAX_DESCR_LENGTH = 600;
 
 const CURRENCY = getCurrency();
+const PREBUBLISH_SUPPORT = isPrepublishSupported();
 
 const {
     Create: { pin, shot, close },
@@ -69,7 +70,8 @@ export const CreateSaveStory = ({
     const isCreated = !!existingData;
     const isDirtyState = isCreated && existingData !== state;
     const isPublished = existingData?.published;
-    const canPublish = isCreated && !isPublished && !isDirtyState;
+    const canPublish =
+        !PREBUBLISH_SUPPORT || (isCreated && !isPublished && !isDirtyState);
     const actionTitle =
         (isPublished && 'Published') || (canPublish ? 'Publish' : 'Save');
 
@@ -105,8 +107,6 @@ export const CreateSaveStory = ({
                 }
                 setCost(price);
                 setShowPublish(true);
-                // await onPublish(state);
-                // setShowCongrats(true);
             } else {
                 await onSave(state);
             }
@@ -123,7 +123,11 @@ export const CreateSaveStory = ({
             // if (!state.title) return;
 
             setLoading(true);
-            await onPublish(state);
+            if (PREBUBLISH_SUPPORT) {
+                await onPublish(state);
+            } else {
+                await onSave(state); // temp
+            }
             setShowPublish(false);
             setShowCongrats(true);
         } catch (err) {
