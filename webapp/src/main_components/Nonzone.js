@@ -7,7 +7,7 @@ import { useLoadSingleObject } from '@opencommunitymap/react-sdk';
 export const Nonzone = ({ onClose }) => {
     const { objectId } = useParams();
     console.log('Nonzoneid:', objectId);
-    const { object } = useLoadSingleObject(objectId);
+    const object = useLoadSingleObject(objectId);
 
     const {
         Nonzone: {

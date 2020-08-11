@@ -58,7 +58,7 @@ export const getRenderObject = (cbOnClick, showMerchants) => ({
                     : description
             }
             type={type}
-            onClick={() => cbOnClick(id)}
+            onClick={() => cbOnClick(external_data?.id || id)}
         />
     );
 };
