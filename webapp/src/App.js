@@ -139,6 +139,10 @@ const Map = () => {
                         >
                             <ProfileWidget
                                 onShowProfile={() => router.push('/profile')}
+                                onSignIn={() => {
+                                    // googleSignIn()
+                                    router.push('/login');
+                                }}
                             />
                         </NavigationWidget>
                     }
@@ -165,7 +169,15 @@ const Map = () => {
                 />
             </Route>
             <Route path="/profile">
-                <MyProfile onClose={() => router.push('/')} />
+                <MyProfile
+                    onClose={() => router.push('/')}
+                    onSignOut={() => {
+                        signOut();
+                        initAuth();
+                        router.push('/');
+                    }}
+                />
+            </Route>
             </Route>
             <Route path="/create">
                 {!isMerchantMode ? (

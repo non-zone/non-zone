@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useAuth, signout, useUserPublicProfile, useUserWallet } from '../Auth';
+import { useAuth, useUserPublicProfile, useUserWallet } from '../Auth';
 import {
     Interface,
     svg,
@@ -11,7 +11,7 @@ import {
 import './myprofile.css';
 import { updateUserProfile, useLoadUserStories } from '../api';
 
-export const MyProfile = ({ onClose }) => {
+export const MyProfile = ({ onClose, onSignOut }) => {
     const [input, setInput] = useState();
     const [type, setType] = useState('Zoner');
     const {
@@ -68,7 +68,6 @@ export const MyProfile = ({ onClose }) => {
             })
             .catch((err) => alert(err.message));
     };
-    const onSignout = () => signout();
 
     return (
         <>
@@ -93,7 +92,11 @@ export const MyProfile = ({ onClose }) => {
             ) : (
                 ''
             )}
-            <Profile avatarUrl={user?.photoURL} onClick={() => {}} />
+            <Profile
+                signed={!!user}
+                avatarUrl={user?.photoURL}
+                onClick={() => {}}
+            />
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
                 centralButton={{
@@ -102,7 +105,7 @@ export const MyProfile = ({ onClose }) => {
                     onClick: onSave,
                 }}
                 rightButton={{
-                    onClick: onSignout,
+                    onClick: onSignOut,
                     svg: logout,
                 }}
             />
