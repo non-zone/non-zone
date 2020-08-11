@@ -9,7 +9,9 @@ import {
     // Image,
 } from '../components';
 import './myprofile.css';
-import { updateUserProfile, useLoadUserStories } from '../api';
+import { updateUserProfile, useLoadUserStories, getCurrency } from '../api';
+
+const CURRENCY = getCurrency();
 
 export const MyProfile = ({ onClose, onSignOut }) => {
     const [input, setInput] = useState();
@@ -79,6 +81,7 @@ export const MyProfile = ({ onClose, onSignOut }) => {
             {showCongrats ? (
                 <DialogWindow
                     amount={10}
+                    currency={CURRENCY}
                     title="Congratulations"
                     subtitle="You’ve earned Non-Zone points"
                     text="Use your Zone Points to interact with your favorite

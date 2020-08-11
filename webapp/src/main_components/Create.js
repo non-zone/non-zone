@@ -4,26 +4,32 @@ import './create.css';
 import { TakePicture } from './TakePicture';
 import cx from 'classnames';
 import { useParams } from 'react-router-dom';
-import { useLoadStory } from '../api';
+import {
+    useLoadStory,
+    isPrepublishSupported,
+    getPublishPrice,
+    getCurrency,
+} from '../api';
 import { useAuth, useUserWallet } from '../Auth';
 import { Spinner } from '../components/spinner/Spinner';
 
 const MIN_DESCR_LENGTH = 150;
 const MAX_DESCR_LENGTH = 600;
 
-const STORY_COST = 5;
+const CURRENCY = getCurrency();
 
 const {
     Create: { pin, shot, close },
     Profile: { save },
 } = svg;
 
-const Congrats = ({ onClose }) => {
+const Congrats = ({ cost, onClose }) => {
     return (
         <DialogWindow
             title={'Congrats! You added a new Story!'}
             subtitle="You’ve spent Non-Zone points"
-            amount={-STORY_COST}
+            amount={-cost}
+            currency={CURRENCY}
             onClick={onClose}
         />
     );
@@ -71,6 +77,8 @@ export const CreateSaveStory = ({
     const [showCongrats, setShowCongrats] = useState(false);
     const [showPublish, setShowPublish] = useState(false);
 
+    const [cost, setCost] = useState();
+
     const [errors, setErrors] = useState();
 
     const handleAction = async () => {
@@ -82,12 +90,20 @@ export const CreateSaveStory = ({
 
             setLoading(true);
             if (canPublish) {
-                const err = validate(state) || validateBalance(balance);
+                let err = validate(state);
                 if (err) {
                     console.log('ERRORS', err);
                     setErrors(err);
                     return;
                 }
+                const price = await getPublishPrice(state);
+                err = validateBalance(balance, price);
+                if (err) {
+                    console.log('ERRORS', err);
+                    setErrors(err);
+                    return;
+                }
+                setCost(price);
                 setShowPublish(true);
                 // await onPublish(state);
                 // setShowCongrats(true);
@@ -124,7 +140,8 @@ export const CreateSaveStory = ({
             {loading && <Spinner />}
             {showPublish && (
                 <DialogWindow
-                    amount={STORY_COST}
+                    amount={cost}
+                    currency={CURRENCY}
                     title={`This will cost`}
                     subtitle=""
                     action="Let's do it!"
@@ -278,10 +295,10 @@ const validate = ({ title, description, image }) => {
     return null;
 };
 
-const validateBalance = (balance) => {
-    if (balance < STORY_COST) {
+const validateBalance = (balance, cost) => {
+    if (balance < cost) {
         return {
-            wallet: `You need to have at least ${STORY_COST}SPACES in your Non-Zone Wallet`,
+            wallet: `You need to have at least ${cost}SPACES in your Non-Zone Wallet`,
         };
     }
 };

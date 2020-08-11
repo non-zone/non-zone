@@ -204,6 +204,10 @@ const signOut = () => {
     firebase.auth().signOut();
 };
 
+const getCurrency = () => 'SPACE';
+const getPublishPrice = async () => 5;
+const isPrepublishSupported = () => true;
+
 export default {
     saveObject,
     savePartialObject,
@@ -213,4 +217,7 @@ export default {
     saveProfile,
     subscribeToUserService,
     signOut,
+    getCurrency,
+    getPublishPrice,
+    isPrepublishSupported,
 };

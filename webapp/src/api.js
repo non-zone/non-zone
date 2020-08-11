@@ -89,3 +89,7 @@ export const subscribeToUserService = (cb) => {
 };
 
 export const signOut = () => io.signOut();
+
+export const getCurrency = () => io.getCurrency();
+export const getPublishPrice = async (data) => io.getPublishPrice(data);
+export const isPrepublishSupported = () => io.isPrepublishSupported();

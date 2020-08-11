@@ -261,6 +261,16 @@ const signOut = () => {
     refreshUserDataCb(null);
 };
 
+const getCurrency = () => 'AR';
+const getPublishPrice = async (data) => {
+    const size = JSON.stringify(data).size;
+    const price = await arweave.transactions.getPrice(size);
+    console.log('Price (winston):', price);
+    console.log('Price (AR):', arweave.ar.winstonToAr(price));
+    return arweave.ar.winstonToAr(price);
+};
+const isPrepublishSupported = () => false;
+
 export default {
     saveObject,
     savePartialObject,
@@ -270,4 +280,8 @@ export default {
     saveProfile,
     subscribeToUserService,
     signOut,
+
+    getCurrency,
+    getPublishPrice,
+    isPrepublishSupported,
 };
