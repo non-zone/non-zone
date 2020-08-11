@@ -10,11 +10,13 @@ import LinkingConfiguration from './navigation/LinkingConfiguration';
 import ShowStoryScreen from './screens/ShowStoryScreen';
 import CreateStoryScreen from './screens/CreateStoryScreen';
 
+import { AuthProvider } from './services/auth';
+
 import { YellowBox } from 'react-native';
 
 const Stack = createStackNavigator();
 
-export default function App(props) {
+export default function App() {
     YellowBox.ignoreWarnings(['Setting a timer']);
     const isLoadingComplete = useCachedResources();
 
@@ -22,31 +24,35 @@ export default function App(props) {
         return null;
     } else {
         return (
-            <View style={styles.container}>
-                {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
-                <NavigationContainer linking={LinkingConfiguration}>
-                    <Stack.Navigator>
-                        <Stack.Screen
-                            name="Root"
-                            component={BottomTabNavigator}
-                        />
-                        <Stack.Screen
-                            name="ShowStory"
-                            component={ShowStoryScreen}
-                            options={({ route }) => ({
-                                title: route.params.title,
-                            })}
-                        />
-                        <Stack.Screen
-                            name="CreateStory"
-                            component={CreateStoryScreen}
-                            options={({ route }) => ({
-                                title: 'Create story',
-                            })}
-                        />
-                    </Stack.Navigator>
-                </NavigationContainer>
-            </View>
+            <AuthProvider>
+                <View style={styles.container}>
+                    {Platform.OS === 'ios' && (
+                        <StatusBar barStyle="dark-content" />
+                    )}
+                    <NavigationContainer linking={LinkingConfiguration}>
+                        <Stack.Navigator>
+                            <Stack.Screen
+                                name="Root"
+                                component={BottomTabNavigator}
+                            />
+                            <Stack.Screen
+                                name="ShowStory"
+                                component={ShowStoryScreen}
+                                options={({ route }) => ({
+                                    title: route.params.title,
+                                })}
+                            />
+                            <Stack.Screen
+                                name="CreateStory"
+                                component={CreateStoryScreen}
+                                options={({ route }) => ({
+                                    title: 'Create story',
+                                })}
+                            />
+                        </Stack.Navigator>
+                    </NavigationContainer>
+                </View>
+            </AuthProvider>
         );
     }
 }

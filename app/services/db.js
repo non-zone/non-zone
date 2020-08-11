@@ -34,7 +34,7 @@ export const useLoadStory = (id) => {
 
 // TODO add map bounds
 export const useLoadStories = (publishedOnly = true) => {
-    console.debug('useLoadUserStories');
+    // console.debug('useLoadUserStories');
     const [data, setData] = useState();
     const [error, setError] = useState();
     useEffect(() => {
@@ -48,7 +48,7 @@ export const useLoadStories = (publishedOnly = true) => {
                 (snap) => {
                     if (snap && snap.val()) {
                         const obj = snap.val();
-                        console.debug('Loaded  stories', obj);
+                        // console.debug('Loaded  stories', obj);
                         const arr = Object.entries(obj)
                             .map(([id, data]) => ({
                                 id,
@@ -57,7 +57,7 @@ export const useLoadStories = (publishedOnly = true) => {
                             .filter(
                                 (story) => !publishedOnly || !!story.published
                             );
-                        console.debug('Loaded user stories arr', arr);
+                        // console.debug('Loaded user stories arr', arr);
 
                         setData(arr);
                     } else {

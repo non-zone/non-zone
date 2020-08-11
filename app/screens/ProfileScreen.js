@@ -10,6 +10,7 @@ import {
 } from 'expo-auth-session';
 import firebase from 'firebase';
 import { Button, Platform, View, StyleSheet } from 'react-native';
+import { googleSignIn, signout, useAuth } from '../services/auth';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -26,6 +27,8 @@ function useNonce() {
 }
 
 export default function ProfileScreen() {
+    const { user } = useAuth();
+
     const nonce = useNonce();
     // Endpoint
     const discovery = useAutoDiscovery('https://accounts.google.com');
@@ -55,43 +58,33 @@ export default function ProfileScreen() {
             const credential = firebase.auth.GoogleAuthProvider.credential(
                 id_token
             );
-            try {
-                firebase
-                    .auth()
-                    .signInWithCredential(credential)
-                    .then((e) => {
-                        console.log(e);
-                    });
-            } catch (e) {
-                console.log(e);
-            }
+            googleSignIn(credential);
         }
     }, [response]);
 
     return (
         <View style={styles.contentContainer}>
-            <View style={styles.buttonContainer}>
-                <Button
-                    disabled={!request || !nonce}
-                    title="Login"
-                    onPress={() => {
-                        promptAsync({ useProxy, redirectUri });
-                    }}
-                />
-            </View>
-            <View style={styles.buttonContainer}>
-                <Button
-                    title="Logout"
-                    onPress={() => {
-                        firebase
-                            .auth()
-                            .signOut()
-                            .then(() => {
-                                console.log('signed out');
-                            });
-                    }}
-                />
-            </View>
+            {!user && (
+                <View style={styles.buttonContainer}>
+                    <Button
+                        disabled={!request || !nonce}
+                        title="Login"
+                        onPress={() => {
+                            promptAsync({ useProxy, redirectUri });
+                        }}
+                    />
+                </View>
+            )}
+            {user && (
+                <View style={styles.buttonContainer}>
+                    <Button
+                        title="Logout"
+                        onPress={() => {
+                            signout();
+                        }}
+                    />
+                </View>
+            )}
         </View>
     );
 }

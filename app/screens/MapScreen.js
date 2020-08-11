@@ -6,7 +6,7 @@ import { useLoadStories } from '../services/db';
 
 export const MapScreen = (props) => {
     const { error, loading, data = [] } = useLoadStories();
-    console.log({ error, loading, data });
+    // console.log({ error, loading, data });
 
     return (
         <View style={styles.container}>
