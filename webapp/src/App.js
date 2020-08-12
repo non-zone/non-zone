@@ -45,9 +45,9 @@ subscribeToUserService((data, err) => {
         profile: null,
     };
     console.log('On User Auth', { user, balance, profile, err });
-    store.dispatch({ type: 'USER', payload: user });
     store.dispatch({ type: 'BALANCE', payload: balance });
     store.dispatch({ type: 'PROFILE', payload: profile });
+    store.dispatch({ type: 'USER', payload: user });
 });
 
 const defaultCenter = restoreLastLocation() || {
