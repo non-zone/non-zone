@@ -30,9 +30,10 @@ export const Nonzone = ({ onClose }) => {
 
     const {
         Nonzone: {
-            star,
+            // star,
             // flag,
             close,
+            tip,
         },
     } = svg;
     return (
@@ -67,16 +68,21 @@ export const Nonzone = ({ onClose }) => {
             )}
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
-                // centralButton={{
-                //     svg: flag,
-                //     name: 'Save this non-zone',
-                //     onClick: () => alert('it works'),
-                // }}
+                // centralButton={
+                //     object?.contractId
+                //         ? {
+                //               onClick: () => setTipState('ask'),
+                //               svg: tip,
+                //               name: 'Send tip',
+                //           }
+                //         : null
+                // }
                 rightButton={
                     object?.contractId
                         ? {
                               onClick: () => setTipState('ask'),
-                              svg: star,
+                              svg: tip,
+                              title: 'Send a tip',
                           }
                         : null
                 }
