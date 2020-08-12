@@ -128,7 +128,7 @@ export const MyProfile = ({ onClose, onSignOut }) => {
                 )}
                 {!walletLoading && !isNewUser.current && (
                     <p className="myprofile__welcome">
-                        Your balance is <strong>{balance}</strong> SPACES
+                        Your balance is <strong>{balance}</strong> {CURRENCY}
                     </p>
                 )}
 

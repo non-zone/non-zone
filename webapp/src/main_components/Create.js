@@ -100,7 +100,7 @@ export const CreateSaveStory = ({
                     return;
                 }
                 const price = await getPublishPrice(state);
-                err = validateBalance(balance, price);
+                err = validateBalance(balance, price, CURRENCY);
                 if (err) {
                     console.log('ERRORS', err);
                     setErrors(err);
@@ -301,10 +301,10 @@ const validate = ({ title, description, image }) => {
     return null;
 };
 
-const validateBalance = (balance, cost) => {
+const validateBalance = (balance, cost, currency) => {
     if (balance < cost) {
         return {
-            wallet: `You need to have at least ${cost}SPACES in your Non-Zone Wallet`,
+            wallet: `You need to have at least ${cost} ${currency} in your Non-Zone Wallet`,
         };
     }
 };
