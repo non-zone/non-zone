@@ -13,10 +13,11 @@ export const publishObject = async (data) => {
 
     // const ocm_id = await ocm.publish(data);
 
-    await io.savePartialObject(data.id, {
-        // ocm_id,
-        published: true,
-    });
+    await io.publishObject(data);
+    //  {
+    //     // ocm_id,
+    //     published: true,
+    // });
 };
 
 export const useLoadStory = (id) => {

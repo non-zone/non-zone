@@ -27,7 +27,8 @@ const {
 const Congrats = ({ cost, onClose }) => {
     return (
         <DialogWindow
-            title={'Congrats! You added a new Story!'}
+            title={'Congrats! You published a new Story!'}
+            text="It will be available in a few minutes"
             subtitle="You’ve spent Non-Zone points"
             amount={-cost}
             currency={CURRENCY}
@@ -123,11 +124,7 @@ export const CreateSaveStory = ({
             // if (!state.title) return;
 
             setLoading(true);
-            if (PREBUBLISH_SUPPORT) {
-                await onPublish(state);
-            } else {
-                await onSave(state); // temp
-            }
+            await onPublish(state);
             setShowPublish(false);
             setShowCongrats(true);
         } catch (err) {
@@ -155,7 +152,12 @@ export const CreateSaveStory = ({
                 />
             )}
             {showCongrats && (
-                <Congrats onClose={() => setShowCongrats(false)} />
+                <Congrats
+                    onClose={() => {
+                        onClose();
+                        //setShowCongrats(false);
+                    }}
+                />
             )}
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}

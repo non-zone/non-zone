@@ -95,7 +95,13 @@ const Map = () => {
         return saveObject(data);
     };
     const onPublish = async (info) => {
-        return publishObject(info);
+        const data = {
+            loc: center,
+            uid: user.uid,
+            kind: info.kind || 'story',
+            ...info,
+        };
+        return publishObject(data);
     };
 
     return (

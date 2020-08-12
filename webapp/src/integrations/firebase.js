@@ -57,8 +57,10 @@ const saveObject = async ({
     return objRef.key;
 };
 
-const savePartialObject = async (id, data) => {
-    return firebase.database().ref(`/objects/`).child(id).update(data);
+const publishObject = async (data) => {
+    return firebase.database().ref(`/objects/`).child(data.id).update({
+        published: true,
+    });
 };
 
 const loadObjectById = async (id) => {
@@ -214,7 +216,7 @@ const sendTip = async () => {
 
 export default {
     saveObject,
-    savePartialObject,
+    publishObject,
     loadObjectById,
     loadObjectsByUser,
     loadObjectsByRegion,

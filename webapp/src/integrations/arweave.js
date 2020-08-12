@@ -36,7 +36,7 @@ const getContractInitialState = (userAddress, ticker) => ({
  * type: story|place
  * loc: {latitude: number, longitude: number}
  */
-const saveObject = async ({
+const publishObject = async ({
     id,
     kind,
     type,
@@ -137,7 +137,7 @@ const saveObject = async ({
     // console.log('Completed');
 };
 
-const savePartialObject = async (id, data) => {
+const saveObject = async (id, data) => {
     throw new Error('Not implemented');
     // return firebase.database().ref(`/objects/`).child(id).update(data);
 };
@@ -360,7 +360,7 @@ const sendTip = async (contractId, amountAR, refId) => {
 
 export default {
     saveObject,
-    savePartialObject,
+    publishObject,
     loadObjectById,
     loadObjectsByRegion,
     loadObjectsByUser,
