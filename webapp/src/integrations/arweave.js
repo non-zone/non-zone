@@ -31,6 +31,12 @@ const getContractInitialState = (userAddress, ticker) => ({
     },
 });
 
+const assertValidObject = (obj) => {
+    const { title, description, loc } = obj;
+    if (!title || !description || !loc || !loc.latitude || !loc.longitude)
+        throw new Error('Invalid object');
+};
+
 /** *
  * kind: memory|search|story
  * type: story|place
@@ -78,6 +84,9 @@ const publishObject = async ({
         description: description || '',
         image,
     };
+
+    assertValidObject(data);
+
     const key = getWallet();
     if (!key) throw new Error('Wallet must be set');
 
@@ -178,6 +187,8 @@ const loadObjectByTxId = async (txId) => {
         console.log(
             Object.entries(tagsObj).map(([key, tag]) => [key, getVal(tag)])
         );
+
+        assertValidObject(data);
 
         return data;
     } catch (err) {
