@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Input, Button, Image } from 'react-native-elements';
+import { Input, Button, Image, Text } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import { useAuth } from '../services/auth';
+import { saveObject } from '../services/db';
 
-export default function CreateStoryScreen({ route }) {
+const REACT_APP_CLOUDINARY_CLOUD_NAME = 'ocm-cloud';
+
+export default function CreateStoryScreen({ route, navigation }) {
     const position = route.params;
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState(null);
+    const { user } = useAuth();
 
     useEffect(() => {
         const getPermission = async () => {
@@ -30,7 +35,7 @@ export default function CreateStoryScreen({ route }) {
                 );
                 if (status !== 'granted') {
                     alert(
-                        'Sorry, we need camera roll permissions to make this work!'
+                        'Sorry, we need camera permissions to make this work!'
                     );
                 }
             }
@@ -45,9 +50,10 @@ export default function CreateStoryScreen({ route }) {
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: false,
                 quality: 1,
+                base64: true,
             });
             if (!result.cancelled) {
-                setImage(result.uri);
+                setImage('data:image/jpeg;base64,' + result.base64);
             }
 
             console.log(result);
@@ -62,9 +68,10 @@ export default function CreateStoryScreen({ route }) {
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: false,
                 quality: 1,
+                base64: true,
             });
             if (!result.cancelled) {
-                setImage(result.uri);
+                setImage('data:image/jpeg;base64,' + result.base64);
             }
 
             console.log(result);
@@ -73,7 +80,47 @@ export default function CreateStoryScreen({ route }) {
         }
     };
 
-    return (
+    const uploadToCloudinary = (cloudName, image) => {
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+        let data = new FormData();
+        data.append('file', image);
+        data.append('upload_preset', 'gallery_preset');
+        data.append('cloud_name', cloudName);
+        return fetch(url, {
+            method: 'POST',
+            body: data,
+        }).then((res) => res.json());
+    };
+
+    const _saveStory = async () => {
+        if (image) {
+            const uploadedImage = await uploadToCloudinary(
+                REACT_APP_CLOUDINARY_CLOUD_NAME,
+                image
+            );
+            console.log(uploadedImage);
+
+            const result = await saveObject({
+                id: null,
+                kind: 'story',
+                type: 'story',
+                loc: position,
+                uid: user.uid,
+                title,
+                description,
+                image: uploadedImage.secure_url,
+            });
+            console.log(result);
+            if (result) {
+                alert('Story saved!');
+                navigation.navigate('Root');
+            } else {
+                alert('something went wrong!');
+            }
+        }
+    };
+
+    return user ? (
         <ScrollView
             style={styles.container}
             contentContainerStyle={styles.contentContainer}
@@ -104,8 +151,13 @@ export default function CreateStoryScreen({ route }) {
                 titleStyle={styles.buttonTitle}
                 buttonStyle={styles.button}
                 title="Create story"
+                onPress={_saveStory}
             />
         </ScrollView>
+    ) : (
+        <View style={styles.contentContainer}>
+            <Text>Please login first</Text>
+        </View>
     );
 }
 

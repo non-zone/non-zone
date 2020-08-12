@@ -74,6 +74,95 @@ export const useLoadStories = (publishedOnly = true) => {
     return { data, error, loading: data === undefined };
 };
 
+const postToOCM = async (data) => {
+    const uri = `${HOST}/api/v0/object/?token=${TOKEN}`;
+    const {
+        id,
+        kind,
+        type,
+        loc,
+        uid,
+        title = '',
+        description = '',
+        image = null,
+    } = data;
+
+    const requestBody = {
+        type: kind,
+        loc,
+        title,
+        description,
+        logoURL: image,
+        image,
+        external_data: { type, image, uid, id },
+        valid_until: '2100-01-01', //temp
+    };
+
+    console.debug('Post object to OCM', uri, JSON.stringify(requestBody));
+
+    const res = await axios.post(uri, requestBody);
+    console.debug('Result:', res.data);
+    return res.data.id;
+};
+
+export const publishObject = async (data) => {
+    if (data.ocm_id) throw new Error('Cannot modify published object yet');
+
+    const ocm_id = await postToOCM(data);
+
+    return firebase.database().ref(`/objects/`).child(data.id).update({
+        ocm_id,
+        published: true,
+    });
+};
+
+/**
+ * Creates new object in OCM DB
+ *
+ * @param {props} object Props of create map object
+ *
+ * kind: story|place
+ * type: memory|search|story
+ * loc: {latitude: number, longitude: number}
+ */
+export const saveObject = async ({
+    id,
+    kind,
+    type,
+    loc,
+    uid,
+    title = '',
+    description = '',
+    image = null,
+}) => {
+    if (!uid) throw new Error('uid empty');
+    if (!loc || !(loc.latitude || loc.longitude))
+        throw new Error('Coordinates are not detected');
+
+    const timestamp = new Date().toISOString();
+    const db = firebase.database();
+    const objRef = !id
+        ? db.ref(`/objects/`).push()
+        : db.ref('/objects/').child(id);
+    const data = {
+        uid,
+        kind,
+        type,
+        loc,
+        title,
+        description: description || '',
+        image,
+        updated: timestamp,
+    };
+    if (!id) {
+        data.created = timestamp;
+        data.published = false;
+    }
+    console.log('save story:', data);
+    await objRef.update(data);
+    return objRef.key;
+};
+
 // const DataContext = React.createContext()
 
 // export const DataProvider
