@@ -21,6 +21,7 @@ export const Sliderr = (props) => {
                     <Slide
                         onChange={onChange}
                         name={slide[0]}
+                        key={slide[0]}
                         description={slide[1]}
                         value={slide[2]}
                         svg={slide[3]}
