@@ -256,7 +256,8 @@ const saveProfile = async (uid, data) => {
 const wallet2data = async (wallet) => {
     const address = await arweave.wallets.jwkToAddress(wallet);
     console.log('JWK', { wallet, address });
-    const balance = await arweave.wallets.getBalance(address);
+    const balanceWinston = await arweave.wallets.getBalance(address);
+    const balance = arweave.ar.winstonToAr(balanceWinston);
     const user = {
         uid: address,
         photoURL: '/user.png',
