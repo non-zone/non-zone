@@ -20,6 +20,7 @@ export const Nonzone = ({ onClose }) => {
             setTipState('success');
         } catch (err) {
             alert(err.toString());
+            setTipState('ask');
         }
     };
 
