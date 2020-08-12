@@ -24,8 +24,11 @@ const initialTags = {
 
 const getWallet = () => JSON.parse(window.sessionStorage.getItem('wallet'));
 
+const nonzonePSTContractId = 'HKpiK9oSWcDHTuU0_w5Fva4CUqfkvo2Kp22temOFACE';
+
 const referContractTxId = 'ff8wOKWGIS6xKlhA8U6t70ydZOozixF5jQMp4yjoTc8';
 const nonzoneWalletAddress = '35a5He4pYjHIlgWMDVj23IQFnGvV5UMavjgL5FpdyTg';
+
 const getContractInitialState = (userAddress, ticker) => ({
     ticker,
     balances: {
@@ -335,7 +338,21 @@ const sendTip = async (contractId, amountAR, refId) => {
     if (!key) throw new Error('Wallet must be set');
 
     const contract = await readContract(arweave, contractId);
-    const target = selectWeightedPstHolder(contract.balances);
+    // pick up one of story's PST shareholders
+    let target = selectWeightedPstHolder(contract.balances);
+    console.log('selectWeightedPstHolder:', target);
+
+    if (target === nonzoneWalletAddress) {
+        console.log('target is NonZone app, select one of its shareholders');
+        // if the shareholder is nonzone app, pick one of nonzone app PST shareholders
+        const nonzonePSTContract = await readContract(
+            arweave,
+            nonzonePSTContractId
+        );
+        target = selectWeightedPstHolder(nonzonePSTContract.balances);
+        console.log('App PST selectWeightedPstHolder:', target);
+    }
+
     const quantity = arweave.ar.arToWinston(amountAR);
 
     const tags = {
