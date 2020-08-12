@@ -3,12 +3,12 @@ import 'firebase/analytics';
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/functions';
-import firebaseConfig from './firebaseConfig';
-import firebaseConfigDev from './firebaseConfigDev';
+import firebaseConfig from '../firebaseConfig';
+import firebaseConfigDev from '../firebaseConfigDev';
 
-const { NONZONE_ENV = 'development' } = process.env;
+const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
 const fbConf =
-    NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
+    REACT_APP_NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
 
 console.log('Init with', fbConf);
 firebase.initializeApp(fbConf);
