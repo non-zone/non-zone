@@ -8,12 +8,15 @@ import { nanoid } from 'nanoid';
 import Geohash from '@geonet/geohash';
 import { and, or, equals } from 'arql-ops';
 
+const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
+const appName =
+    REACT_APP_NONZONE_ENV === 'production' ? 'Non-Zone' : 'NonZone-Test';
+
 const arweave = Arweave.init({
     host: 'arweave.net',
     port: 443,
     protocol: 'https',
 });
-const appName = 'NonZone-Test';
 const initialTags = {
     'App-Name': appName,
     'App-Version': '0.0.1',
