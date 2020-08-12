@@ -8,7 +8,11 @@ import { nanoid } from 'nanoid';
 import Geohash from '@geonet/geohash';
 import { and, or, equals } from 'arql-ops';
 
-const arweave = Arweave.init();
+const arweave = Arweave.init({
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+});
 const appName = 'NonZone-Test';
 const initialTags = {
     'App-Name': appName,
