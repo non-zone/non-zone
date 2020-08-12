@@ -270,7 +270,7 @@ const wallet2data = async (wallet) => {
     const balance = arweave.ar.winstonToAr(balanceWinston);
     const user = {
         uid: address,
-        photoURL: '/user.png',
+        photoURL: 'user.png',
     };
     const profile = {
         nickname: address, // temp
