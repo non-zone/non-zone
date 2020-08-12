@@ -10,8 +10,15 @@ export const KeyfileLogin = ({ onFileUpload, onCancel }) => {
                     onChange={(e) => {
                         const fileReader = new FileReader();
                         fileReader.onload = async (e) => {
-                            const file = JSON.parse(e.target.result);
-                            onFileUpload(file);
+                            try {
+                                const file = JSON.parse(e.target.result);
+                                onFileUpload(file);
+                            } catch (err) {
+                                alert(
+                                    "Unable to process the keyfile. Make sure it's valid Arweave wallet keyfile. " +
+                                        err.toString()
+                                );
+                            }
                         };
                         fileReader.readAsText(e.target.files[0]);
                     }}
