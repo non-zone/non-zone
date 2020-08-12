@@ -3,6 +3,9 @@ import { Interface, svg, Sliderr, Spinner, DialogWindow } from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
 import { useLoadStory, sendTip, getCurrency } from '../api';
+import { useAuth } from '../Auth';
+import { KeyfileLogin } from './KeyfileLogin';
+import { signInWithFile } from '../integrations/arweave';
 
 const TIP_AMOUNT = 0.01;
 
@@ -10,6 +13,7 @@ export const Nonzone = ({ onClose }) => {
     const { objectId } = useParams();
     console.log('Nonzoneid:', objectId);
     const { error, loading, data: object } = useLoadStory(objectId);
+    const { user } = useAuth();
 
     const [tipState, setTipState] = useState('');
 
@@ -42,7 +46,15 @@ export const Nonzone = ({ onClose }) => {
                     onClick={() => setTipState(null)}
                 />
             )}
-            {tipState === 'ask' && (
+            {tipState === 'ask' && !user && (
+                <KeyfileLogin
+                    onCancel={() => setTipState(null)}
+                    onFileUpload={(file) => {
+                        signInWithFile(file);
+                    }}
+                />
+            )}
+            {tipState === 'ask' && !!user && (
                 <DialogWindow
                     amount={TIP_AMOUNT}
                     currency={getCurrency()}
