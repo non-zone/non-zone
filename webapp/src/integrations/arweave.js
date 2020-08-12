@@ -304,8 +304,12 @@ const signOut = () => {
 
 const getCurrency = () => 'AR';
 const getPublishPrice = async (data) => {
-    // it seems actual transaction is a bit bigger
-    const size = 32 + JSON.stringify(data).length;
+    const enc = JSON.stringify({
+        ...data,
+        timestamp: new Date().toISOString(),
+    });
+    // just in case add a bit more, somehow the actual transaction data is bigger than this
+    const size = 64 + arweave.utils.stringToBuffer(enc).byteLength;
     const price = await arweave.transactions.getPrice(size);
     console.log('Size:', size);
     console.log('Price (winston):', price);
