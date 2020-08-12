@@ -81,9 +81,7 @@ export const useLoadStoriesByRegion = (bounds) => {
     return { data, error, loading: data === undefined };
 };
 
-export const updateUserProfile = async (uid, data) => {
-    return io.saveProfile(uid, data);
-};
+export const updateUserProfile = io.saveProfile;
 
 export const subscribeToUserService = (cb) => {
     return io.subscribeToUserService(cb);

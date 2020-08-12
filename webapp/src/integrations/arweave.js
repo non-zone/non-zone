@@ -247,11 +247,7 @@ const loadObjectsByUser = async (uid, publishedOnly = true) => {
     return [];
 };
 
-const saveProfile = async (uid, data) => {
-    if (!uid) throw new Error('uid empty');
-    // TODO
-    throw new Error('Not implemented');
-};
+const saveProfile = null; // TODO
 
 const wallet2data = async (wallet) => {
     const address = await arweave.wallets.jwkToAddress(wallet);
@@ -263,7 +259,7 @@ const wallet2data = async (wallet) => {
         photoURL: '/user.png',
     };
     const profile = {
-        nickname: 'UserX', // temp
+        nickname: address, // temp
     };
     return { user, balance, profile };
 };

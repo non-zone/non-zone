@@ -102,11 +102,15 @@ export const MyProfile = ({ onClose, onSignOut }) => {
             />
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
-                centralButton={{
-                    svg: save,
-                    name: 'Update profile',
-                    onClick: onSave,
-                }}
+                centralButton={
+                    updateUserProfile
+                        ? {
+                              svg: save,
+                              name: 'Update profile',
+                              onClick: onSave,
+                          }
+                        : null
+                }
                 rightButton={{
                     onClick: onSignOut,
                     svg: logout,
@@ -129,6 +133,7 @@ export const MyProfile = ({ onClose, onSignOut }) => {
                 )}
 
                 <input
+                    disabled={!updateUserProfile}
                     className="myprofile__nickname"
                     type="text"
                     value={inputValue || ''}
