@@ -215,6 +215,7 @@ export const CreateSaveStory = ({
                         type="text"
                         value={state.title || ''}
                         placeholder="Title"
+                        autoFocus
                         onChange={(e) =>
                             setState({ ...state, title: e.target.value })
                         }
