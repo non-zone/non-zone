@@ -156,7 +156,8 @@ export const saveObject = async ({
     };
     if (!id) {
         data.created = timestamp;
-        data.published = false;
+        // set published to true for the moment so we can see it appear on the map instantly
+        data.published = true;
     }
     console.log('save story:', data);
     await objRef.update(data);
