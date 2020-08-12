@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -90,13 +90,16 @@ const Map = () => {
         router.replace('/profile');
     }
 
+    const centerRef = useRef(center);
+    centerRef.current = center;
+
     const onSaveCallback = (kind) => async (info) => {
-        const data = { loc: center, uid: user.uid, kind, ...info };
+        const data = { loc: centerRef.current, uid: user.uid, kind, ...info };
         return saveObject(data);
     };
     const onPublish = async (info) => {
         const data = {
-            loc: center,
+            loc: centerRef.current,
             uid: user.uid,
             kind: info.kind || 'story',
             ...info,
