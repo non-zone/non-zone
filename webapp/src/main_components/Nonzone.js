@@ -3,19 +3,22 @@ import { Interface, svg, Sliderr, Spinner, DialogWindow } from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
 import { useLoadStory, sendTip, getCurrency } from '../api';
-import { useAuth } from '../Auth';
+import { useAuth, useUserWallet } from '../Auth';
 import { KeyfileLogin } from './KeyfileLogin';
 import { signInWithFile } from '../integrations/arweave';
 
 const TIP_AMOUNT = 0.01;
+const MIN_FUNDS_FOR_TIP = TIP_AMOUNT + 0.00000001;
 
 export const Nonzone = ({ onClose }) => {
     const { objectId } = useParams();
     console.log('Nonzoneid:', objectId);
     const { error, loading, data: object } = useLoadStory(objectId);
     const { user } = useAuth();
+    const { balance } = useUserWallet(user?.uid);
 
     const [tipState, setTipState] = useState('');
+    const enoughFundsForTip = !!balance && balance >= MIN_FUNDS_FOR_TIP;
 
     const onConfirmSendTip = async () => {
         try {
@@ -55,7 +58,14 @@ export const Nonzone = ({ onClose }) => {
                     }}
                 />
             )}
-            {tipState === 'ask' && !!user && (
+            {tipState === 'ask' && !!user && !enoughFundsForTip && (
+                <DialogWindow
+                    title="Insufficient balance :("
+                    text={`You need to have at least ${MIN_FUNDS_FOR_TIP} ${getCurrency()}`}
+                    onClick={() => setTipState(null)}
+                />
+            )}
+            {tipState === 'ask' && !!user && enoughFundsForTip && (
                 <DialogWindow
                     amount={TIP_AMOUNT}
                     currency={getCurrency()}
