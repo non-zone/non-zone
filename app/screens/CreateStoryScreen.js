@@ -147,12 +147,7 @@ export default function CreateStoryScreen({ route, navigation }) {
                     style={{ width: 200, height: 200 }}
                 />
             )}
-            <Button
-                titleStyle={styles.buttonTitle}
-                buttonStyle={styles.button}
-                title="Create story"
-                onPress={_saveStory}
-            />
+            <Button title="Create story" onPress={_saveStory} />
         </ScrollView>
     ) : (
         <View style={styles.contentContainer}>
@@ -164,16 +159,9 @@ export default function CreateStoryScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fafafa',
     },
     contentContainer: {
         flex: 1,
         paddingTop: 15,
-    },
-    button: {
-        backgroundColor: '#212121',
-    },
-    buttonTitle: {
-        color: '#55d4c3',
     },
 });

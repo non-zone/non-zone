@@ -5,22 +5,28 @@
         "platforms": ["ios", "android", "web"],
         "version": "1.0.0",
         "orientation": "portrait",
-        "icon": "./assets/images/icon.png",
+        "icon": "./assets/images/marker.png",
         "scheme": "nonzone",
         "splash": {
-            "image": "./assets/images/splash.png",
+            "image": "./assets/images/marker.png",
             "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
+            "backgroundColor": "#1b1d1f"
         },
         "updates": {
             "fallbackToCacheTimeout": 0
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "app.nonzone.nonzone",
+            "buildNumber": "1.0.0"
+        },
+        "android": {
+            "package": "app.nonzone.nonzone",
+            "versionCode": 1
         },
         "web": {
-            "favicon": "./assets/images/favicon.png"
+            "favicon": "./assets/images/favicon.ico"
         }
     }
 }

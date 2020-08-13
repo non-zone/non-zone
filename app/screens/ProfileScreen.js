@@ -9,8 +9,11 @@ import {
     Prompt,
 } from 'expo-auth-session';
 import firebase from 'firebase';
-import { Button, Platform, View, StyleSheet } from 'react-native';
+import { Platform, View, StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
 import { googleSignIn, signout, useAuth } from '../services/auth';
+
+import colors from '../constants/Colors';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -68,6 +71,7 @@ export default function ProfileScreen() {
                 <View style={styles.buttonContainer}>
                     <Button
                         disabled={!request || !nonce}
+                        color={colors.tintColor}
                         title="Login"
                         onPress={() => {
                             promptAsync({ useProxy, redirectUri });

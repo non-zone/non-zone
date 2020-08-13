@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { StyleSheet, Text, Image } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
+import { Text } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default function ShowStoryScreen({ route }) {
@@ -21,7 +22,6 @@ export default function ShowStoryScreen({ route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fafafa',
     },
     contentContainer: {
         flex: 1,
