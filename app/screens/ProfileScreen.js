@@ -10,10 +10,11 @@ import {
 } from 'expo-auth-session';
 import firebase from 'firebase';
 import { Platform, View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Avatar, Card, Text, Input } from 'react-native-elements';
 import { googleSignIn, signout, useAuth } from '../services/auth';
 
 import colors from '../constants/Colors';
+import Layout from '../constants/Layout';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -68,19 +69,53 @@ export default function ProfileScreen() {
     return (
         <View style={styles.contentContainer}>
             {!user && (
-                <View style={styles.buttonContainer}>
-                    <Button
-                        disabled={!request || !nonce}
-                        color={colors.tintColor}
-                        title="Login"
-                        onPress={() => {
-                            promptAsync({ useProxy, redirectUri });
-                        }}
-                    />
+                <View style={styles.container}>
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            disabled={!request || !nonce}
+                            color={colors.tintColor}
+                            title="Login"
+                            onPress={() => {
+                                promptAsync({ useProxy, redirectUri });
+                            }}
+                        />
+                    </View>
                 </View>
             )}
             {user && (
-                <View style={styles.buttonContainer}>
+                <View style={styles.container}>
+                    <Avatar
+                        size="large"
+                        rounded
+                        source={{
+                            uri: user.photoURL,
+                        }}
+                        containerStyle={{ alignSelf: 'center' }}
+                    />
+                    <View
+                        style={{
+                            width: Layout.window.width - 20,
+                            marginTop: 20,
+                        }}
+                    >
+                        <Text style={styles.text}>
+                            Welcome to <Text style={styles.bold}>Non-zone</Text>
+                        </Text>
+                        <Text>
+                            This is your{' '}
+                            <Text style={styles.bold}>secret place</Text>, help
+                            us to make it{' '}
+                            <Text style={styles.bold}>more personal</Text> for
+                            you.
+                        </Text>
+                        <Input
+                            disabled
+                            placeholder="Your nickname"
+                            value={user.displayName}
+                            inputContainerStyle={{ marginTop: 20 }}
+                        />
+                    </View>
+
                     <Button
                         title="Logout"
                         onPress={() => {
@@ -94,13 +129,20 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-    contentContainer: {
+    container: {
         flex: 1,
-        paddingTop: 15,
+        marginHorizontal: 10,
+    },
+    contentContainer: {
+        marginTop: 50,
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    buttonContainer: {
-        marginTop: 20,
+    text: {
+        fontSize: 16,
+    },
+    bold: {
+        fontWeight: 'bold',
     },
 });

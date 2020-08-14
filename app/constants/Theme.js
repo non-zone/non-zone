@@ -28,4 +28,9 @@ export const generalTheme = {
             marginTop: 10,
         },
     },
+    Input: {
+        inputStyle: {
+            color: colors.textColor,
+        },
+    },
 };

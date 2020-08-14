@@ -8,6 +8,8 @@ import * as Permissions from 'expo-permissions';
 import { useAuth } from '../services/auth';
 import { saveObject } from '../services/db';
 
+import ProfileScreen from './ProfileScreen';
+
 const REACT_APP_CLOUDINARY_CLOUD_NAME = 'ocm-cloud';
 
 export default function CreateStoryScreen({ route, navigation }) {
@@ -136,32 +138,48 @@ export default function CreateStoryScreen({ route, navigation }) {
                 onChangeText={(text) => setDescription(text)}
                 multiline
             />
-            <Button
-                title="Pick an image from camera roll"
-                onPress={_pickImage}
-            />
-            <Button title="Take a photo" onPress={_captureImage} />
+            <View style={styles.buttonBox}>
+                <Button
+                    containerStyle={{ flex: 1, paddingRight: 5 }}
+                    icon={{ name: 'folder', size: 30, color: 'white' }}
+                    title="Browse"
+                    onPress={_pickImage}
+                />
+                <Button
+                    containerStyle={{ flex: 1, paddingLeft: 5 }}
+                    icon={{ name: 'camera', size: 30, color: 'white' }}
+                    title="Capture"
+                    onPress={_captureImage}
+                />
+            </View>
             {image && (
                 <Image
                     source={{ uri: image }}
-                    style={{ width: 200, height: 200 }}
+                    style={{
+                        height: 200,
+                        resizeMode: 'contain',
+                        marginVertical: 20,
+                    }}
                 />
             )}
             <Button title="Create story" onPress={_saveStory} />
         </ScrollView>
     ) : (
-        <View style={styles.contentContainer}>
-            <Text>Please login first</Text>
-        </View>
+        <ProfileScreen />
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginHorizontal: 10,
     },
     contentContainer: {
-        flex: 1,
-        paddingTop: 15,
+        paddingVertical: 15,
+    },
+    buttonBox: {
+        flexDirection: 'row',
+        alignContent: 'center',
+        justifyContent: 'center',
     },
 });

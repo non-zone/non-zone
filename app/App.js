@@ -45,7 +45,7 @@ export default function App() {
                                     name="ShowStory"
                                     component={ShowStoryScreen}
                                     options={({ route }) => ({
-                                        title: route.params.title,
+                                        title: 'Story',
                                     })}
                                 />
                                 <Stack.Screen
