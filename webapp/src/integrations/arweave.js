@@ -300,6 +300,9 @@ const subscribeToUserService = async (cb) => {
         cb(null);
     }
 };
+export const checkInitialBalance = () => {
+    // noop
+};
 
 export const signInWithFile = async (wallet) => {
     try {

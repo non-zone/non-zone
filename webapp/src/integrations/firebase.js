@@ -192,6 +192,17 @@ const subscribeToBalance = (uid, cb) => {
         );
 };
 
+export const checkInitialBalance = async () => {
+    try {
+        const res = await firebase
+            .functions()
+            .httpsCallable('checkRedeemBalance')();
+        console.log('checkRedeemBalance', res);
+    } catch (err) {
+        console.log('Error checking redeem balance', err);
+    }
+};
+
 export const googleSignIn = () => {
     return firebase
         .auth()

@@ -95,3 +95,5 @@ export const isPrepublishSupported = () => io.isPrepublishSupported();
 
 export const sendTip = (contractId, amount, refId) =>
     io.sendTip(contractId, amount, refId);
+
+export const checkInitialBalance = io.checkInitialBalance;

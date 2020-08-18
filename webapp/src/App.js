@@ -28,6 +28,7 @@ import {
     useLoadStoriesByRegion,
     subscribeToUserService,
     signOut,
+    checkInitialBalance,
 } from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
 import { KeyfileLogin } from './main_components/KeyfileLogin';
@@ -89,6 +90,13 @@ const Map = () => {
     if (user && !loading && !profile?.nickname) {
         router.replace('/profile');
     }
+
+    const userUid = user?.uid;
+    useEffect(() => {
+        if (userUid) {
+            checkInitialBalance();
+        }
+    }, [userUid]);
 
     const centerRef = useRef(center);
     centerRef.current = center;

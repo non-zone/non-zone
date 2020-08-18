@@ -16,6 +16,7 @@ const types = {
     OBJECT_DELETE: 'OBJECT_DELETE',
     OBJECT_PUBLISH: 'OBJECT_PUBLISH',
     PROFILE_CREATE: 'PROFILE_CREATE',
+    REDEEM_SPACE: 'REDEEM_SPACE',
 };
 
 const getActionValue = (type) => {
@@ -23,6 +24,8 @@ const getActionValue = (type) => {
         case types.OBJECT_PUBLISH:
             return -5;
         case types.PROFILE_CREATE:
+            return 10;
+        case types.REDEEM_SPACE:
             return 10;
         default:
             return 0;
@@ -105,3 +108,31 @@ exports.onObjectChanged = functions.database
         };
         return applyNewActivity(uid, newActivity);
     });
+
+exports.checkRedeemBalance = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'The function must be called ' + 'while authenticated.'
+        );
+    }
+    const uid = context.auth.uid;
+    const date = new Date().toISOString().substr(0, 10);
+    const ref = firebase.database().ref('/user-redeem').child(uid).child(date);
+    const snap = await ref.once('value');
+    if (snap && snap.val()) {
+        return 0;
+    }
+
+    const type = types.REDEEM_SPACE;
+    const newActivity = {
+        type,
+        timestamp: new Date().toISOString(),
+    };
+    await applyNewActivity(uid, newActivity);
+
+    await ref.set(true);
+
+    return getActionValue(type);
+});
