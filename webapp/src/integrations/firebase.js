@@ -5,6 +5,8 @@ import 'firebase/database';
 import 'firebase/functions';
 import firebaseConfig from '../firebaseConfig';
 import firebaseConfigDev from '../firebaseConfigDev';
+import { useEffect } from 'react';
+import React from 'react';
 
 const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
 const fbConf =
@@ -14,12 +16,28 @@ console.log('Init with', fbConf);
 firebase.initializeApp(fbConf);
 firebase.analytics();
 
+export const Login = ({ onCancel, onSignedIn }) => {
+    const ref = React.useRef();
+    ref.current = { onCancel, onSignedIn };
+    useEffect(() => {
+        googleSignIn()
+            .then((userCreds) => {
+                console.log('userCreds', userCreds);
+                return userCreds
+                    ? ref.current.onSignedIn?.()
+                    : ref.current.onCancel();
+            })
+            .catch((err) => console.error(err));
+    }, []);
+    return <div />;
+};
+
 /** *
  * kind: story|place
  * type: memory|search|story
  * loc: {latitude: number, longitude: number}
  */
-const saveObject = async ({
+export const saveObject = async ({
     id,
     kind,
     type,
@@ -57,13 +75,13 @@ const saveObject = async ({
     return objRef.key;
 };
 
-const publishObject = async (data) => {
+export const publishObject = async (data) => {
     return firebase.database().ref(`/objects/`).child(data.id).update({
         published: true,
     });
 };
 
-const loadObjectById = async (id) => {
+export const loadObjectById = async (id) => {
     const snap = await firebase
         .database()
         .ref(`/objects/`)
@@ -73,7 +91,7 @@ const loadObjectById = async (id) => {
     return snap && snap.val() ? { ...snap.val(), id: snap.key } : null;
 };
 
-const loadObjectsByUser = async (uid, publishedOnly = true) => {
+export const loadObjectsByUser = async (uid, publishedOnly = true) => {
     const snap = await firebase
         .database()
         .ref(`/objects/`)
@@ -95,7 +113,7 @@ const loadObjectsByUser = async (uid, publishedOnly = true) => {
     return arr;
 };
 
-const loadObjectsByRegion = async (bounds) => {
+export const loadObjectsByRegion = async (bounds) => {
     const snap = await firebase
         .database()
         .ref(`/objects/`)
@@ -117,21 +135,21 @@ const loadObjectsByRegion = async (bounds) => {
     return arr;
 };
 
-const saveProfile = async (uid, data) => {
+export const saveProfile = async (uid, data) => {
     if (!uid) throw new Error('uid empty');
     return firebase.database().ref(`/users-public/${uid}`).update(data);
 };
 
-const subscribeToUserService = (cb) => {
+export const subscribeToUserService = (cb) => {
     let unsubProfile;
     let unsubBalance;
     let data = { user: null, profile: null, balance: null };
-    const ready = !!(data.user && data.profile && data.balance !== null);
+    const ready = () => !!(data.user && data.profile && data.balance !== null);
 
     firebase.auth().onIdTokenChanged(
         (user) => {
             console.debug('Loaded user', user);
-            cb(user, null);
+            // cb(user, null);
 
             if (user?.uid && user.uid === data.user?.uid) return;
 
@@ -146,7 +164,10 @@ const subscribeToUserService = (cb) => {
                 unsubBalance();
             }
 
-            if (!user) return;
+            if (!user) {
+                cb(null);
+                return;
+            }
 
             unsubProfile = subcribeToProfile(user.uid, (profile) => {
                 data.profile = profile;
@@ -164,7 +185,7 @@ const subscribeToUserService = (cb) => {
     );
 };
 
-const subcribeToProfile = (uid, cb) => {
+export const subcribeToProfile = (uid, cb) => {
     return firebase
         .database()
         .ref(`/users-public/${uid}`)
@@ -177,7 +198,7 @@ const subcribeToProfile = (uid, cb) => {
             (err) => console.log('Error loading public user profile')
         );
 };
-const subscribeToBalance = (uid, cb) => {
+export const subscribeToBalance = (uid, cb) => {
     return firebase
         .database()
         .ref(`/users-wallets/${uid}`)
@@ -203,7 +224,7 @@ export const checkInitialBalance = async () => {
     }
 };
 
-export const googleSignIn = () => {
+const googleSignIn = () => {
     return firebase
         .auth()
         .signInWithPopup(new firebase.auth.GoogleAuthProvider())
@@ -213,29 +234,14 @@ export const googleSignIn = () => {
         .catch((err) => console.log('Error signing in:', err));
 };
 
-const signOut = () => {
+export const signOut = () => {
     firebase.auth().signOut();
 };
 
-const getCurrency = () => 'SPACE';
-const getPublishPrice = async () => 5;
-const isPrepublishSupported = () => true;
+export const getCurrency = () => 'SPACE';
+export const getPublishPrice = async () => 5;
+export const isPrepublishSupported = () => true;
 
-const sendTip = async () => {
+export const sendTip = async () => {
     throw new Error('Not implemented');
-};
-
-export default {
-    saveObject,
-    publishObject,
-    loadObjectById,
-    loadObjectsByUser,
-    loadObjectsByRegion,
-    saveProfile,
-    subscribeToUserService,
-    signOut,
-    getCurrency,
-    getPublishPrice,
-    isPrepublishSupported,
-    sendTip,
 };

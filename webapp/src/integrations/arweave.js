@@ -7,6 +7,8 @@ import {
 import { nanoid } from 'nanoid';
 import Geohash from '@geonet/geohash';
 import { and, or, equals } from 'arql-ops';
+import React from 'react';
+import { KeyfileLogin } from './KeyfileLogin';
 
 const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
 const appName =
@@ -21,6 +23,20 @@ const initialTags = {
     'App-Name': appName,
     'App-Version': '0.0.1',
 };
+
+export const Login = ({ onCancel, onSignedIn }) => (
+    <KeyfileLogin
+        onCancel={onCancel}
+        onFileUpload={async (file) => {
+            try {
+                await signInWithFile(file);
+                onSignedIn();
+            } catch (err) {
+                console.error(err);
+            }
+        }}
+    />
+);
 
 const getWallet = () => JSON.parse(window.sessionStorage.getItem('wallet'));
 
@@ -48,7 +64,7 @@ const assertValidObject = (obj) => {
  * type: story|place
  * loc: {latitude: number, longitude: number}
  */
-const publishObject = async ({
+export const publishObject = async ({
     id,
     kind,
     type,
@@ -152,7 +168,7 @@ const publishObject = async ({
     // console.log('Completed');
 };
 
-const saveObject = async (id, data) => {
+export const saveObject = async (id, data) => {
     throw new Error('Not implemented');
     // return firebase.database().ref(`/objects/`).child(id).update(data);
 };
@@ -170,7 +186,7 @@ const restoreTagsInfo = {
     contractId: 'Nonzone-Contract-Id',
 };
 
-const loadObjectByTxId = async (txId) => {
+export const loadObjectByTxId = async (txId) => {
     console.log('loadObjectByTxId', txId);
     try {
         const tx = await arweave.transactions.get(txId);
@@ -209,7 +225,7 @@ const loadObjectByTxId = async (txId) => {
     }
 };
 
-const loadObjectById = async (id) => {
+export const loadObjectById = async (id) => {
     console.log('loadObjectById', id);
     const query = and(equals('App-Name', appName), equals('Nonzone-Id', id));
 
@@ -241,7 +257,7 @@ const detectPrecisionAndHashes = async (bounds) => {
     }
 };
 
-const loadObjectsByRegion = async (bounds) => {
+export const loadObjectsByRegion = async (bounds) => {
     console.log('Load data by region', bounds);
     const { hashes, precision } = await detectPrecisionAndHashes(bounds);
 
@@ -259,12 +275,12 @@ const loadObjectsByRegion = async (bounds) => {
     console.log('objects', objects);
     return objects.filter((o) => !!o);
 };
-const loadObjectsByUser = async (uid, publishedOnly = true) => {
+export const loadObjectsByUser = async (uid, publishedOnly = true) => {
     // TODO
     return [];
 };
 
-const saveProfile = null; // TODO
+export const saveProfile = null; // TODO
 
 const wallet2data = async (wallet) => {
     const address = await arweave.wallets.jwkToAddress(wallet);
@@ -283,7 +299,7 @@ const wallet2data = async (wallet) => {
 
 let refreshUserDataCb;
 
-const subscribeToUserService = async (cb) => {
+export const subscribeToUserService = async (cb) => {
     refreshUserDataCb = cb;
     console.log('Check wallet');
     const walletStr = sessionStorage.getItem('wallet');
@@ -314,13 +330,13 @@ export const signInWithFile = async (wallet) => {
     }
 };
 
-const signOut = () => {
+export const signOut = () => {
     sessionStorage.removeItem('wallet');
     refreshUserDataCb(null);
 };
 
-const getCurrency = () => 'AR';
-const getPublishPrice = async (data) => {
+export const getCurrency = () => 'AR';
+export const getPublishPrice = async (data) => {
     const enc = JSON.stringify({
         ...data,
         timestamp: new Date().toISOString(),
@@ -333,9 +349,9 @@ const getPublishPrice = async (data) => {
     console.log('Price (AR):', arweave.ar.winstonToAr(price));
     return arweave.ar.winstonToAr(price);
 };
-const isPrepublishSupported = () => false;
+export const isPrepublishSupported = () => false;
 
-const sendTip = async (contractId, amountAR, refId) => {
+export const sendTip = async (contractId, amountAR, refId) => {
     console.log('send tip', { contractId, amount: amountAR });
     const key = getWallet();
     if (!key) throw new Error('Wallet must be set');
@@ -387,20 +403,4 @@ const sendTip = async (contractId, amountAR, refId) => {
         return transaction.id;
     }
     throw new Error(response.statusText);
-};
-
-export default {
-    saveObject,
-    publishObject,
-    loadObjectById,
-    loadObjectsByRegion,
-    loadObjectsByUser,
-    saveProfile,
-    subscribeToUserService,
-    checkInitialBalance,
-    signOut,
-    getCurrency,
-    getPublishPrice,
-    isPrepublishSupported,
-    sendTip,
 };

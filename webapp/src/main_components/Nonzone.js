@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { Interface, svg, Sliderr, Spinner, DialogWindow } from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
-import { useLoadStory, sendTip, getCurrency } from '../api';
+import { useLoadStory, sendTip, getCurrency, Login } from '../api';
 import { useAuth, useUserWallet } from '../Auth';
-import { KeyfileLogin } from './KeyfileLogin';
-import { signInWithFile } from '../integrations/arweave';
 
 const TIP_AMOUNT = 0.01;
 const MIN_FUNDS_FOR_TIP = TIP_AMOUNT + 0.00000001;
@@ -51,12 +49,7 @@ export const Nonzone = ({ onClose }) => {
                 />
             )}
             {tipState === 'ask' && !user && (
-                <KeyfileLogin
-                    onCancel={() => setTipState(null)}
-                    onFileUpload={(file) => {
-                        signInWithFile(file);
-                    }}
-                />
+                <Login onCancel={() => setTipState(null)} />
             )}
             {tipState === 'ask' && !!user && !enoughFundsForTip && (
                 <DialogWindow

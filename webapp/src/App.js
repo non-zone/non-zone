@@ -29,10 +29,9 @@ import {
     subscribeToUserService,
     signOut,
     checkInitialBalance,
+    Login,
 } from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
-import { KeyfileLogin } from './main_components/KeyfileLogin';
-import { signInWithFile } from './integrations/arweave';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
@@ -54,11 +53,6 @@ subscribeToUserService((data, err) => {
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
     longitude: 23.32,
-};
-
-const handleKeyfileLogin = (file) => {
-    console.log('FILE', file);
-    signInWithFile(file);
 };
 
 const isMerchantMode = window.location.search === '?create-service';
@@ -200,10 +194,9 @@ const Map = () => {
                 />
             </Route>
             <Route path="/login">
-                <KeyfileLogin
+                <Login
                     onCancel={() => router.push('/')}
-                    onFileUpload={(file) => {
-                        handleKeyfileLogin(file);
+                    onSignedIn={() => {
                         router.push('/');
                     }}
                 />

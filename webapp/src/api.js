@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-// import ocm from './integrations/ocm';
-// import io from './integrations/firebase';
-import io from './integrations/arweave';
+import io from './integrations';
+
+export const Login = io.Login;
 
 export const saveObject = async (data) => {
     const id = await io.saveObject(data);
@@ -83,13 +83,11 @@ export const useLoadStoriesByRegion = (bounds) => {
 
 export const updateUserProfile = io.saveProfile;
 
-export const subscribeToUserService = (cb) => {
-    return io.subscribeToUserService(cb);
-};
+export const subscribeToUserService = io.subscribeToUserService;
 
-export const signOut = () => io.signOut();
+export const signOut = io.signOut;
 
-export const getCurrency = () => io.getCurrency();
+export const getCurrency = io.getCurrency;
 export const getPublishPrice = async (data) => io.getPublishPrice(data);
 export const isPrepublishSupported = () => io.isPrepublishSupported();
 
