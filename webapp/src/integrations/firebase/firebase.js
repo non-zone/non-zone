@@ -3,8 +3,8 @@ import 'firebase/analytics';
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/functions';
-import firebaseConfig from '../firebaseConfig';
-import firebaseConfigDev from '../firebaseConfigDev';
+import firebaseConfig from '../../firebaseConfig';
+import firebaseConfigDev from '../../firebaseConfigDev';
 import { useEffect } from 'react';
 import React from 'react';
 
