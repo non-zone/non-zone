@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useAuth, signout, useUserPublicProfile, useUserWallet } from '../Auth';
+import { useAuth, useUserPublicProfile, useUserWallet } from '../Auth';
 import {
     Interface,
     svg,
@@ -9,9 +9,11 @@ import {
     // Image,
 } from '../components';
 import './myprofile.css';
-import { updateUserProfile, useLoadUserStories } from '../api';
+import { updateUserProfile, useLoadUserStories, getCurrency } from '../api';
 
-export const MyProfile = ({ onClose }) => {
+const CURRENCY = getCurrency();
+
+export const MyProfile = ({ onClose, onSignOut }) => {
     const [input, setInput] = useState();
     const [type, setType] = useState('Zoner');
     const {
@@ -68,7 +70,6 @@ export const MyProfile = ({ onClose }) => {
             })
             .catch((err) => alert(err.message));
     };
-    const onSignout = () => signout();
 
     return (
         <>
@@ -80,6 +81,7 @@ export const MyProfile = ({ onClose }) => {
             {showCongrats ? (
                 <DialogWindow
                     amount={10}
+                    currency={CURRENCY}
                     title="Congratulations"
                     subtitle="You’ve earned Non-Zone points"
                     text="Use your Zone Points to interact with your favorite
@@ -93,16 +95,24 @@ export const MyProfile = ({ onClose }) => {
             ) : (
                 ''
             )}
-            <Profile avatarUrl={user?.photoURL} onClick={() => {}} />
+            <Profile
+                signed={!!user}
+                avatarUrl={user?.photoURL}
+                onClick={() => {}}
+            />
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
-                centralButton={{
-                    svg: save,
-                    name: 'Update profile',
-                    onClick: onSave,
-                }}
+                centralButton={
+                    updateUserProfile
+                        ? {
+                              svg: save,
+                              name: 'Update profile',
+                              onClick: onSave,
+                          }
+                        : null
+                }
                 rightButton={{
-                    onClick: onSignout,
+                    onClick: onSignOut,
                     svg: logout,
                 }}
             />
@@ -118,14 +128,15 @@ export const MyProfile = ({ onClose }) => {
                 )}
                 {!walletLoading && !isNewUser.current && (
                     <p className="myprofile__welcome">
-                        Your balance is <strong>{balance}</strong> SPACES
+                        Your balance is <strong>{balance}</strong> {CURRENCY}
                     </p>
                 )}
 
                 <input
+                    disabled={!updateUserProfile}
                     className="myprofile__nickname"
                     type="text"
-                    value={inputValue}
+                    value={inputValue || ''}
                     placeholder="Your nickname"
                     onChange={(e) => {
                         console.log('Input nickname', e, e.target.value);

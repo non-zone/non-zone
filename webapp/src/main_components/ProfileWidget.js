@@ -1,17 +1,17 @@
 import React from 'react';
-import 'firebase/auth';
-import { useAuth, googleSignIn } from '../Auth';
+import { useAuth } from '../Auth';
 import { Profile } from '../components';
 
-export const ProfileWidget = ({ onShowProfile }) => {
+export const ProfileWidget = ({ onShowProfile, onSignIn }) => {
     const { user, loading } = useAuth();
 
     if (loading) return <span />;
 
     return (
         <Profile
+            signed={!!user}
             avatarUrl={user?.photoURL}
-            onClick={() => (user ? onShowProfile() : googleSignIn())}
+            onClick={() => (user ? onShowProfile() : onSignIn())}
         />
     );
 };

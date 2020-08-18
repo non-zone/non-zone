@@ -4,7 +4,6 @@ import './dialogwindow.css';
 /**
  * Dialogwindow - represents all types of tips and messages in ainterface
  *
- * @param {props} props
  * @param {number} amount - amount of coins which user has earned // put this props to display special type of this window
  * @param {Function} onClick - additional functional
  * @param {string} title - title for this window
@@ -12,18 +11,17 @@ import './dialogwindow.css';
  * @param {Function} onClickSecondary - second button handler
  */
 
-export const DialogWindow = (props) => {
-    const {
-        amount = 0,
-        onClick = () => alert('onClose'),
-        text = '',
-        title = 'Warning',
-        subtitle = '',
-        action = 'Got it!',
-        secondaryAction = null,
-        onClickSecondary,
-    } = props;
-
+export const DialogWindow = ({
+    amount = 0,
+    currency = 'SPACE',
+    onClick = () => alert('onClose'),
+    text = '',
+    title = 'Warning',
+    subtitle = '',
+    action = 'Got it!',
+    secondaryAction = null,
+    onClickSecondary,
+}) => {
     return (
         <div className="dialogwindow">
             <div className="dialogwindow__box dialogwindow-animation ">
@@ -32,7 +30,7 @@ export const DialogWindow = (props) => {
                     <>
                         <p className="dialogwindow__header">{subtitle}</p>
                         <p className="dialogwindow__amount">
-                            {(amount >= 0 ? '+' : '') + amount + ' SPACE'}
+                            {(amount >= 0 ? '+' : '') + amount + ' ' + currency}
                         </p>
                     </>
                 ) : (

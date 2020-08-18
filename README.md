@@ -43,6 +43,18 @@ See the instructions printed in console for more information.
 
 ### Deployment of webapp and functions
 
+#### Deploy firebase + OCM integration
+
 Create _.env.dev_ and _.env.prod_ files with _REACT_APP_OCM_TOKEN_ variable.
 
 In project root execute either `yarn deploy:dev` or `yarn deploy:prod` command - it will set the appropriate environment variable, build the webapp module and deploy _webapp_, _functions_ along with _database.rules_.
+
+#### Deploy Arweave
+
+Use _yarn aw:build:dev_ or _yarn aw:build:prod_ commands for DEV/PROD builds using Arweave integration. Then deploy with _yarn aw:deploy_.
+
+```
+yarn aw:build:prod
+
+yarn aw:deploy --key-file arweave.wallet.json
+```

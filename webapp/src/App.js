@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-    BrowserRouter as Router,
+    HashRouter as Router,
     Switch,
     Route,
     useHistory,
 } from 'react-router-dom';
+import { store } from './redux';
+import { Provider } from 'react-redux';
 import './App.css';
-import {
-    CommunityMap,
-    Pin,
-    initFirebase as initOcmFirebase,
-    detectLocation,
-} from '@opencommunitymap/react-sdk';
+import { CommunityMap, Pin, detectLocation } from '@opencommunitymap/react-sdk';
 import mapStyles from './MapsGoogleDarkStyle.json';
 import {
     NavigationWidget,
@@ -24,32 +21,34 @@ import {
     CreateMerchant,
     EditStory,
 } from './main_components';
+import { AuthProvider, useAuth, useUserPublicProfile } from './Auth';
 import {
-    AuthProvider,
-    useAuth,
-    useUserPublicProfile,
-    googleSignIn,
-} from './Auth';
-import * as firebase from 'firebase/app';
-import 'firebase/analytics';
-import 'firebase/auth';
-import 'firebase/database';
-import firebaseConfig from './firebaseConfig';
-import firebaseConfigDev from './firebaseConfigDev';
-import { saveObject, publishObject, checkInitialBalance } from './api';
+    saveObject,
+    publishObject,
+    useLoadStoriesByRegion,
+    subscribeToUserService,
+    signOut,
+    checkInitialBalance,
+    Login,
+} from './api';
 import { restoreLastLocation, storeLastLocation } from './utils';
-
-const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
-const fbConf =
-    REACT_APP_NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
-
-console.log('Init with', fbConf);
-firebase.initializeApp(fbConf);
-firebase.analytics();
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
 
-initOcmFirebase(REACT_APP_NONZONE_ENV);
+subscribeToUserService((data, err) => {
+    if (err) {
+        console.log('Error loading user:', err);
+    }
+    const { user, balance, profile } = data || {
+        user: null,
+        balance: 0,
+        profile: null,
+    };
+    console.log('On User Auth', { user, balance, profile, err });
+    store.dispatch({ type: 'BALANCE', payload: balance });
+    store.dispatch({ type: 'PROFILE', payload: profile });
+    store.dispatch({ type: 'USER', payload: user });
+});
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
@@ -61,8 +60,14 @@ const isMerchantMode = window.location.search === '?create-service';
 const Map = () => {
     const [center, setCenter] = useState();
     const [zoom, setZoom] = useState();
+    const [bounds, setBounds] = useState();
     const [showMerchants, setShowMerchants] = useState(false);
     const router = useHistory();
+
+    const { error, loading: loadingStories, data } = useLoadStoriesByRegion(
+        bounds
+    );
+    console.log('LoadStoriesHook', { error, loadingStories, data });
 
     useEffect(() => {
         detectLocation()
@@ -76,7 +81,7 @@ const Map = () => {
     const { user } = useAuth();
     const { profile, loading } = useUserPublicProfile(user?.uid);
 
-    if (user && !loading && !profile) {
+    if (user && !loading && !profile?.nickname) {
         router.replace('/profile');
     }
 
@@ -87,12 +92,21 @@ const Map = () => {
         }
     }, [userUid]);
 
+    const centerRef = useRef(center);
+    centerRef.current = center;
+
     const onSaveCallback = (kind) => async (info) => {
-        const data = { loc: center, uid: user.uid, kind, ...info };
+        const data = { loc: centerRef.current, uid: user.uid, kind, ...info };
         return saveObject(data);
     };
     const onPublish = async (info) => {
-        return publishObject(info);
+        const data = {
+            loc: centerRef.current,
+            uid: user.uid,
+            kind: info.kind || 'story',
+            ...info,
+        };
+        return publishObject(data);
     };
 
     return (
@@ -105,6 +119,7 @@ const Map = () => {
                     mapStyles={mapStyles}
                     centerPin={<Pin color="#79CAB5" />}
                     center={center}
+                    data={data || []}
                     defaultCenter={defaultCenter}
                     zoom={zoom}
                     showZoomControls={false}
@@ -129,19 +144,26 @@ const Map = () => {
                             toggleMerchants={() => {
                                 setShowMerchants((val) => !val);
                             }}
-                            createZone={() =>
-                                user ? router.push('/create') : googleSignIn()
+                            createZone={
+                                () =>
+                                    user
+                                        ? router.push('/create')
+                                        : router.push('/login') // googleSignIn()
                             }
                             // zoomIn={() => setZoom((zoom = 18) => zoom + 1)}
                             // zoomOut={() => setZoom((zoom = 18) => zoom - 1)}
                         >
                             <ProfileWidget
                                 onShowProfile={() => router.push('/profile')}
+                                onSignIn={() => {
+                                    // googleSignIn()
+                                    router.push('/login');
+                                }}
                             />
                         </NavigationWidget>
                     }
-                    onChange={(newCenter, bounds, newZoom) => {
-                        console.log({ newCenter, newZoom });
+                    onChange={(newCenter, newBounds, newZoom) => {
+                        console.log({ newCenter, newBounds, newZoom });
                         if (
                             center?.latitude === newCenter.latitude &&
                             center?.longitude === newCenter.longitude &&
@@ -155,6 +177,7 @@ const Map = () => {
                             });
                             return; // save unneeded reload
                         }
+                        setBounds(newBounds);
                         setCenter(newCenter);
                         setZoom(newZoom);
                         setTimeout(() => storeLastLocation(newCenter), 0);
@@ -162,7 +185,21 @@ const Map = () => {
                 />
             </Route>
             <Route path="/profile">
-                <MyProfile onClose={() => router.push('/')} />
+                <MyProfile
+                    onClose={() => router.push('/')}
+                    onSignOut={() => {
+                        signOut();
+                        router.push('/');
+                    }}
+                />
+            </Route>
+            <Route path="/login">
+                <Login
+                    onCancel={() => router.push('/')}
+                    onSignedIn={() => {
+                        router.push('/');
+                    }}
+                />
             </Route>
             <Route path="/create">
                 {!isMerchantMode ? (
@@ -178,6 +215,7 @@ const Map = () => {
                                     alert(`Error saving story: ${err.message}`);
                                 })
                         }
+                        onPublish={onPublish}
                     />
                 ) : (
                     <CreateMerchant
@@ -215,9 +253,11 @@ function App() {
 }
 
 export default () => (
-    <Router>
-        <AuthProvider>
-            <App />
-        </AuthProvider>
-    </Router>
+    <Provider store={store}>
+        <Router>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </Router>
+    </Provider>
 );
