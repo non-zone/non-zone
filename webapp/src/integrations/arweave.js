@@ -397,6 +397,7 @@ export default {
     loadObjectsByUser,
     saveProfile,
     subscribeToUserService,
+    checkInitialBalance,
     signOut,
     getCurrency,
     getPublishPrice,
