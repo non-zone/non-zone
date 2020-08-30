@@ -12,14 +12,20 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 
 const types = {
     OBJECT_CREATE: 'OBJECT_CREATE',
+    OBJECT_UPDATE: 'OBJECT_UPDATE',
+    OBJECT_DELETE: 'OBJECT_DELETE',
+    OBJECT_PUBLISH: 'OBJECT_PUBLISH',
     PROFILE_CREATE: 'PROFILE_CREATE',
+    REDEEM_SPACE: 'REDEEM_SPACE',
 };
 
 const getActionValue = (type) => {
     switch (type) {
-        case types.OBJECT_CREATE:
-            return 5;
+        case types.OBJECT_PUBLISH:
+            return -5;
         case types.PROFILE_CREATE:
+            return 10;
+        case types.REDEEM_SPACE:
             return 10;
         default:
             return 0;
@@ -70,20 +76,63 @@ exports.onProfileCreated = functions.database
         return applyNewActivity(uid, newActivity);
     });
 
-exports.onObjectCreated = functions.database
+exports.onObjectChanged = functions.database
     .ref('objects/{objectId}')
-    .onCreate((snapshot, context) => {
+    .onUpdate((change, context) => {
         const { uid } = context.auth;
-        functions.logger.info('Object created', {
-            data: snapshot.val(),
+        const { before, after } = change;
+        functions.logger.info('Object changed', {
+            data: after.val(),
             id: context.params.objectId,
             uid,
         });
+        const isUpdated = before.exists() && after.exists();
+        const isDeleted = before.exists() && !after.exists();
+        const isPublished =
+            isUpdated && !before.val().published && !!after.val().published;
+        let type = types.OBJECT_CREATE;
+        if (isPublished) {
+            type = types.OBJECT_PUBLISH;
+        } else if (isUpdated) {
+            type = types.OBJECT_UPDATE;
+        } else if (isDeleted) {
+            type = types.OBJECT_DELETE;
+        } else {
+            type = 'UNKNOWN';
+        }
         const newActivity = {
-            type: types.OBJECT_CREATE,
+            type,
             timestamp: new Date().toISOString(),
             id: context.params.objectId,
-            data: snapshot.val(),
+            data: after.val(),
         };
         return applyNewActivity(uid, newActivity);
     });
+
+exports.checkRedeemBalance = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'The function must be called ' + 'while authenticated.'
+        );
+    }
+    const uid = context.auth.uid;
+    const date = new Date().toISOString().substr(0, 10);
+    const ref = firebase.database().ref('/user-redeem').child(uid).child(date);
+    const snap = await ref.once('value');
+    if (snap && snap.val()) {
+        return 0;
+    }
+
+    const type = types.REDEEM_SPACE;
+    const newActivity = {
+        type,
+        timestamp: new Date().toISOString(),
+    };
+    await applyNewActivity(uid, newActivity);
+
+    await ref.set(true);
+
+    return getActionValue(type);
+});

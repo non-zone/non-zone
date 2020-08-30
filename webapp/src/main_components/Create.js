@@ -4,24 +4,48 @@ import './create.css';
 import { TakePicture } from './TakePicture';
 import cx from 'classnames';
 import { useParams } from 'react-router-dom';
-import { useLoadStory } from '../api';
+import {
+    useLoadStory,
+    isPrepublishSupported,
+    getPublishPrice,
+    getCurrency,
+} from '../api';
+import { useAuth, useUserWallet } from '../Auth';
 import { Spinner } from '../components/spinner/Spinner';
 
 const MIN_DESCR_LENGTH = 150;
 const MAX_DESCR_LENGTH = 600;
+
+const CURRENCY = getCurrency();
+const PREBUBLISH_SUPPORT = isPrepublishSupported();
 
 const {
     Create: { pin, shot, close },
     Profile: { save },
 } = svg;
 
-const Congrats = ({ onClose }) => {
+const Congrats = ({ cost, onClose }) => {
     return (
         <DialogWindow
-            amount={5}
-            title={'Congrats! You created a new non-zone!'}
-            onClose={onClose}
+            title={'Congrats! You published a new Story!'}
+            text="It will be available in a few minutes"
+            subtitle="You’ve spent Non-Zone points"
+            amount={-cost}
+            currency={CURRENCY}
+            onClick={onClose}
         />
+    );
+};
+
+const ErrorMessage = ({ children }) => {
+    const ref = React.useRef();
+    useEffect(() => {
+        ref.current.scrollIntoView();
+    }, []);
+    return (
+        <div className="error-message" ref={ref}>
+            {children}
+        </div>
     );
 };
 
@@ -39,17 +63,24 @@ export const CreateSaveStory = ({
         if (existingData) setState(existingData);
     }, [existingData]);
 
+    const { user } = useAuth();
+    const { balance } = useUserWallet(user?.uid);
+
     const descrLength = state.description?.length || 0;
 
     const isCreated = !!existingData;
     const isDirtyState = isCreated && existingData !== state;
-    const isPublished = existingData?.ocm_id;
-    const canPublish = isCreated && !isPublished && !isDirtyState;
+    const isPublished = existingData?.published;
+    const canPublish =
+        !PREBUBLISH_SUPPORT || (isCreated && !isPublished && !isDirtyState);
     const actionTitle =
         (isPublished && 'Published') || (canPublish ? 'Publish' : 'Save');
 
     const [loading, setLoading] = useState(false);
     const [showCongrats, setShowCongrats] = useState(false);
+    const [showPublish, setShowPublish] = useState(false);
+
+    const [cost, setCost] = useState();
 
     const [errors, setErrors] = useState();
 
@@ -62,17 +93,40 @@ export const CreateSaveStory = ({
 
             setLoading(true);
             if (canPublish) {
-                const err = validate(state);
+                let err = validate(state);
                 if (err) {
                     console.log('ERRORS', err);
                     setErrors(err);
                     return;
                 }
-                await onPublish(state);
-                setShowCongrats(true);
+                const price = await getPublishPrice(state);
+                err = validateBalance(balance, price, CURRENCY);
+                if (err) {
+                    console.log('ERRORS', err);
+                    setErrors(err);
+                    return;
+                }
+                setCost(price);
+                setShowPublish(true);
             } else {
                 await onSave(state);
             }
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setLoading(false);
+            // onClose();
+        }
+    };
+
+    const handlePublish = async () => {
+        try {
+            // if (!state.title) return;
+
+            setLoading(true);
+            await onPublish(state);
+            setShowPublish(false);
+            setShowCongrats(true);
         } catch (err) {
             alert(err.message);
         } finally {
@@ -85,8 +139,25 @@ export const CreateSaveStory = ({
     return (
         <>
             {loading && <Spinner />}
+            {showPublish && (
+                <DialogWindow
+                    amount={cost}
+                    currency={CURRENCY}
+                    title={`This will cost`}
+                    subtitle=""
+                    action="Let's do it!"
+                    secondaryAction="Save For Later"
+                    onClick={() => handlePublish()}
+                    onClickSecondary={() => setShowPublish(false)}
+                />
+            )}
             {showCongrats && (
-                <Congrats onClose={() => setShowCongrats(false)} />
+                <Congrats
+                    onClose={() => {
+                        onClose();
+                        //setShowCongrats(false);
+                    }}
+                />
             )}
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
@@ -135,7 +206,7 @@ export const CreateSaveStory = ({
                         </div>
                     )}
                     {!!errors?.image && (
-                        <span className="error-message">{errors.image}</span>
+                        <ErrorMessage>{errors.image}</ErrorMessage>
                     )}
                     <input
                         className={cx('create__title', {
@@ -144,12 +215,13 @@ export const CreateSaveStory = ({
                         type="text"
                         value={state.title || ''}
                         placeholder="Title"
+                        autoFocus
                         onChange={(e) =>
                             setState({ ...state, title: e.target.value })
                         }
                     ></input>
                     {!!errors?.title && (
-                        <span className="error-message">{errors.title}</span>
+                        <ErrorMessage>{errors.title}</ErrorMessage>
                     )}
                     <textarea
                         className={cx('create__textarea', {
@@ -173,11 +245,12 @@ export const CreateSaveStory = ({
                         {!!descrLength && `${descrLength} chars`}
                     </div>
                     {!!errors?.description && (
-                        <span className="error-message">
-                            {errors.description}
-                        </span>
+                        <ErrorMessage>{errors.description}</ErrorMessage>
                     )}
-                    <p className="create__welcome">Non-zone type?</p>
+                    {!!errors?.wallet && (
+                        <ErrorMessage>{errors.wallet}</ErrorMessage>
+                    )}
+                    <p className="create__welcome">Story type</p>
                     <Slider
                         onChange={(type) => setState({ ...state, type })}
                         activeElement={state.type}
@@ -214,7 +287,9 @@ export const EditStory = ({ onClose, onSave, onPublish }) => {
 };
 
 const validate = ({ title, description, image }) => {
-    if (!title) return { title: 'Title is required' };
+    const titleWords = title.trim().split(/\s+/).length;
+    if (titleWords < 3 || titleWords > 5)
+        return { title: 'Title should be between 3 and 5 words' };
     if (
         description.length < MIN_DESCR_LENGTH ||
         description.length > MAX_DESCR_LENGTH
@@ -225,4 +300,12 @@ const validate = ({ title, description, image }) => {
     if (!image) return { image: 'Having photo is required' };
 
     return null;
+};
+
+const validateBalance = (balance, cost, currency) => {
+    if (balance < cost) {
+        return {
+            wallet: `You need to have at least ${cost} ${currency} in your Non-Zone Wallet`,
+        };
+    }
 };

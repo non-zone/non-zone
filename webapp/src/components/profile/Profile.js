@@ -2,6 +2,10 @@ import React from 'react';
 import { svg } from '../svg/svg';
 import './profile.css';
 
+const {
+    Profile: { sign },
+} = svg;
+
 /**
  * Profile represent Sign in button which became a profile button after authorisation
  *
@@ -9,27 +13,22 @@ import './profile.css';
  * @param {string} avatarUrl - link to a user profile image
  * @param {boolean} signed - status of user: signed in or not
  */
+export const Profile = ({ avatarUrl, signed, onClick }) => {
+    const image = avatarUrl || '/user.png';
 
-export const Profile = (props) => {
-  const {
-    avatarUrl = '',
-    signed,
-    onClick = () => alert('Set a handler'),
-  } = props;
-  const {
-    Profile: { sign },
-  } = svg;
-
-  return (
-    <div className="profile" onClick={onClick}>
-      {signed || avatarUrl ? (
-        <div
-          className="profile__avatar"
-          style={{ backgroundImage: `url(${avatarUrl})` }}
-        ></div>
-      ) : (
-        sign
-      )}
-    </div>
-  );
+    return (
+        <div className="profile" onClick={onClick}>
+            {signed ? (
+                <div
+                    className="profile__avatar"
+                    style={{
+                        backgroundImage: `url(${image})`,
+                        backgroundColor: 'white',
+                    }}
+                ></div>
+            ) : (
+                sign
+            )}
+        </div>
+    );
 };

@@ -4,7 +4,7 @@ import './create.css';
 import { TakePicture } from './TakePicture';
 
 export const CreateMerchant = ({ onClose, onSave }) => {
-    const [state, setState] = useState({ type: 'food' });
+    const [state, setState] = useState({ kind: 'food' });
     const {
         Create: { pin, shot, close },
     } = svg;
@@ -78,7 +78,8 @@ export const CreateMerchant = ({ onClose, onSave }) => {
                     ></textarea>
                     <p className="create__welcome">Type of Service</p>
                     <Slider
-                        onChange={(type) => setState({ ...state, type })}
+                        onChange={(kind) => setState({ ...state, kind })}
+                        activeElement={state.kind}
                         elements={[
                             ['#Food', '', 'food'],
                             ['#Art&Leisure', '', 'art-and-leisure'],

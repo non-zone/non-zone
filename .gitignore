@@ -62,6 +62,6 @@ node_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+.env*
 
 .idea

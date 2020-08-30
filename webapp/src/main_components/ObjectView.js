@@ -19,7 +19,7 @@ const MapObject = (props) => {
                             className="mapobject__button"
                             onClick={() => onClick()}
                         >
-                            open this non-zone
+                            Open this Story
                         </button>
                     </div>
                 </>
@@ -58,7 +58,7 @@ export const getRenderObject = (cbOnClick, showMerchants) => ({
                     : description
             }
             type={type}
-            onClick={() => cbOnClick(id)}
+            onClick={() => cbOnClick(external_data?.id || id)}
         />
     );
 };
