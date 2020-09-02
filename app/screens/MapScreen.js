@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { StyleSheet, View, Dimensions, Text } from 'react-native';
+import { Button } from 'react-native-elements';
+import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import mapStyle from '../constants/mapStyle';
 import { useLoadStories } from '../services/db';
 import * as Location from 'expo-location';
+import Colors from '../constants/Colors';
 
 const { width, height } = Dimensions.get('window');
 const SCREEN_HEIGHT = height;
@@ -62,10 +64,39 @@ export const MapScreen = (props) => {
                         title={marker.title}
                         description={marker.description}
                         image={require('../assets/images/marker.png')}
-                        onPress={() =>
-                            props.navigation.navigate('ShowStory', marker)
-                        }
-                    />
+                    >
+                        <Callout
+                            style={styles.calloutStyle}
+                            tooltip={true}
+                            onPress={() =>
+                                props.navigation.navigate('ShowStory', marker)
+                            }
+                        >
+                            <View style={styles.boxStyle}>
+                                <Text
+                                    style={{
+                                        color: 'white',
+                                        fontSize: 14,
+                                        fontWeight: 'bold',
+                                        marginBottom: 8,
+                                    }}
+                                >
+                                    {marker.title}
+                                </Text>
+                                <Text
+                                    numberOfLines={7}
+                                    ellipsizeMode="tail"
+                                    style={{ color: 'white', fontSize: 12 }}
+                                >
+                                    {marker.description.replace(
+                                        /[\r\n]+/gm,
+                                        ' '
+                                    )}
+                                </Text>
+                            </View>
+                            <Button title="Open this Story" />
+                        </Callout>
+                    </Marker>
                 ))}
             </MapView>
         </View>
@@ -84,5 +115,16 @@ const styles = StyleSheet.create({
     mapStyle: {
         width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
+    },
+    calloutStyle: {
+        width: 200,
+    },
+    boxStyle: {
+        paddingHorizontal: 12,
+        paddingVertical: 20,
+        backgroundColor: Colors.background,
+        borderColor: Colors.tintColor,
+        borderWidth: 2,
+        borderRadius: 10,
     },
 });
