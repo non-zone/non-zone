@@ -12,7 +12,7 @@ export const MapScreen = (props) => {
         <View style={styles.container}>
             <MapView
                 style={styles.mapStyle}
-                minZoomLevel={4}
+                minZoomLevel={2}
                 customMapStyle={mapStyle}
                 provider={PROVIDER_GOOGLE}
                 onLongPress={(mapEvent) => {
