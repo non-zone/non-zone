@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, Dimensions } from 'react-native';
 import { Text } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
+
+const { width } = Dimensions.get('window');
 
 export default function ShowStoryScreen({ route }) {
     const { title, image, description } = route.params;
@@ -14,7 +16,11 @@ export default function ShowStoryScreen({ route }) {
             <Text style={styles.description}>{description}</Text>
             <Image
                 source={{ uri: image }}
-                style={{ height: 200, resizeMode: 'contain', marginTop: 20 }}
+                style={{
+                    height: width,
+                    resizeMode: 'contain',
+                    marginTop: 20,
+                }}
             />
         </ScrollView>
     );
