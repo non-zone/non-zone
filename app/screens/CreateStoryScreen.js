@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Input, Button, Image, Text } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,6 +11,8 @@ import { saveObject } from '../services/db';
 import ProfileScreen from './ProfileScreen';
 
 const REACT_APP_CLOUDINARY_CLOUD_NAME = 'ocm-cloud';
+
+const { width } = Dimensions.get('window');
 
 export default function CreateStoryScreen({ route, navigation }) {
     const position = route.params;
@@ -156,7 +158,7 @@ export default function CreateStoryScreen({ route, navigation }) {
                 <Image
                     source={{ uri: image }}
                     style={{
-                        height: 200,
+                        height: width / 1.5,
                         resizeMode: 'contain',
                         marginVertical: 20,
                     }}
