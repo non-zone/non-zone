@@ -2,7 +2,12 @@
     "name": "non-zone",
     "version": "1.0.0",
     "description": "Non-Zone is the global map for experiential and solo-travelers",
-    "main": "index.js",
+    "private": true,
+    "workspaces": [
+        "app",
+        "nonzone-lib",
+        "webapp"
+    ],
     "scripts": {
         "deploy:dev": "source .env.dev && REACT_APP_NONZONE_ENV='development' yarn --cwd webapp build && firebase deploy -P default",
         "deploy:prod": "source .env.prod && REACT_APP_NONZONE_ENV='production' yarn --cwd webapp build && firebase deploy -P production",

@@ -1,10 +1,13 @@
 {
-    "main": "node_modules/expo/AppEntry.js",
+    "name": "non-zone-app",
+    "version": "1.0.0",
+    "main": "__generated__/AppEntry.js",
     "scripts": {
         "start": "expo start",
         "android": "expo start --android",
         "ios": "expo start --ios",
         "web": "expo start --web",
+        "postinstall": "expo-yarn-workspaces postinstall",
         "eject": "expo eject",
         "test": "jest --watchAll"
     },
@@ -29,9 +32,10 @@
         "expo-permissions": "~9.0.1",
         "expo-splash-screen": "^0.3.1",
         "expo-web-browser": "~8.3.1",
-        "firebase": "7.9.0",
-        "react": "16.11.0",
-        "react-dom": "16.11.0",
+        "firebase": "7.19.1",
+        "nonzone-lib": "1.0.0",
+        "react": "16.13.1",
+        "react-dom": "16.13.1",
         "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
         "react-native-elements": "^2.2.0",
         "react-native-gesture-handler": "~1.6.0",
@@ -43,6 +47,7 @@
     "devDependencies": {
         "@babel/core": "^7.8.6",
         "babel-preset-expo": "^8.2.3",
+        "expo-yarn-workspaces": "^1.2.1",
         "jest-expo": "^38.0.0"
     },
     "private": true
