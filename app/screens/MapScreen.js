@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import { Button } from 'react-native-elements';
 import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import mapStyle from '../constants/mapStyle';
-import { useLoadStories } from 'nonzone-lib';
+import { useLoadStoriesByRegion } from 'nonzone-lib';
 import * as Location from 'expo-location';
 import Colors from '../constants/Colors';
 
@@ -14,6 +14,16 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 10;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
+const loc2bounds = (loc) => {
+    const { latitude, longitude, latitudeDelta, longitudeDelta } = loc;
+    return {
+        minLat: latitude,
+        minLng: longitude,
+        maxLat: latitude + latitudeDelta,
+        maxLng: longitude + longitudeDelta,
+    };
+};
+
 export const MapScreen = (props) => {
     let [location, setLocation] = useState({
         latitude: 0,
@@ -21,6 +31,10 @@ export const MapScreen = (props) => {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
     });
+    const bounds = useMemo(
+        () => (location.latitude ? loc2bounds(location) : null),
+        [location]
+    );
 
     useEffect(() => {
         (async () => {
@@ -39,7 +53,8 @@ export const MapScreen = (props) => {
             });
         })();
     }, []);
-    const { error, loading, data = [] } = useLoadStories();
+
+    const { error, loading, data = [] } = useLoadStoriesByRegion(bounds);
     // console.log({ error, loading, data });
 
     return (
@@ -56,6 +71,7 @@ export const MapScreen = (props) => {
                     console.log(coordinate);
                     props.navigation.navigate('CreateStory', coordinate);
                 }}
+                onRegionChangeComplete={setLocation}
             >
                 {data.map((marker) => (
                     <Marker
