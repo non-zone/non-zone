@@ -9,7 +9,7 @@ import {
     isPrepublishSupported,
     getPublishPrice,
     getCurrency,
-} from '../api';
+} from 'nonzone-lib';
 import { useAuth, useUserWallet } from '../Auth';
 import { Spinner } from '../components/spinner/Spinner';
 

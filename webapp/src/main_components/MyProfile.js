@@ -9,7 +9,11 @@ import {
     // Image,
 } from '../components';
 import './myprofile.css';
-import { updateUserProfile, useLoadUserStories, getCurrency } from '../api';
+import {
+    updateUserProfile,
+    useLoadUserStories,
+    getCurrency,
+} from 'nonzone-lib';
 
 const CURRENCY = getCurrency();
 

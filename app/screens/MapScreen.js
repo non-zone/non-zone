@@ -3,7 +3,7 @@ import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import { Button } from 'react-native-elements';
 import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import mapStyle from '../constants/mapStyle';
-import { useLoadStories } from '../services/db';
+import { useLoadStories } from 'nonzone-lib';
 import * as Location from 'expo-location';
 import Colors from '../constants/Colors';
 

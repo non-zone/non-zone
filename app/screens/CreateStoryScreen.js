@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { useAuth } from '../services/auth';
-import { saveObject } from '../services/db';
+import { saveObject, publishObject } from 'nonzone-lib';
 
 import ProfileScreen from './ProfileScreen';
 
@@ -104,7 +104,7 @@ export default function CreateStoryScreen({ route, navigation }) {
             );
             console.log(uploadedImage);
 
-            const result = await saveObject({
+            const data = {
                 id: null,
                 kind: 'story',
                 type: 'story',
@@ -113,8 +113,11 @@ export default function CreateStoryScreen({ route, navigation }) {
                 title,
                 description,
                 image: uploadedImage.secure_url,
-            });
+            };
+            const result = await saveObject(data);
             console.log(result);
+            await publishObject(data);
+
             if (result) {
                 alert('Story saved!');
                 navigation.navigate('Root');

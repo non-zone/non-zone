@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Interface, svg, Sliderr, Spinner, DialogWindow } from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
-import { useLoadStory, sendTip, getCurrency, Login } from '../api';
+import { useLoadStory, sendTip, getCurrency, Login } from 'nonzone-lib';
 import { useAuth, useUserWallet } from '../Auth';
 
 const TIP_AMOUNT = 0.01;

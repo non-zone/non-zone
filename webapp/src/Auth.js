@@ -1,6 +1,6 @@
 import React, { useMemo, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import * as api from './api';
+import * as api from 'nonzone-lib';
 
 const AuthContext = React.createContext(undefined);
 
