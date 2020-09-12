@@ -5,8 +5,7 @@ import { Input, Button, Image, Text } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import { useAuth } from '../services/auth';
-import { saveObject, publishObject } from 'nonzone-lib';
+import { saveObject, publishObject, useAuth } from 'nonzone-lib';
 
 import ProfileScreen from './ProfileScreen';
 

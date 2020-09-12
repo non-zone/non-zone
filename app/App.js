@@ -10,7 +10,7 @@ import LinkingConfiguration from './navigation/LinkingConfiguration';
 import ShowStoryScreen from './screens/ShowStoryScreen';
 import CreateStoryScreen from './screens/CreateStoryScreen';
 
-import { AuthProvider } from './services/auth';
+import { AuthProvider } from 'nonzone-lib';
 
 import { YellowBox } from 'react-native';
 
