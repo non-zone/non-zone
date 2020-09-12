@@ -21,7 +21,6 @@
         "react-redux": "^7.2.1",
         "react-router-dom": "^5.2.0",
         "react-scripts": "3.4.3",
-        "redux": "^4.0.5",
         "smartweave": "https://arweave.net/AM-u4X2po-3Tx7fma3lRonCfLwrjI42IALwDL_YFXBs"
     },
     "scripts": {
