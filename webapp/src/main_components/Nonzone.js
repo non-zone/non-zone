@@ -32,7 +32,11 @@ export const Nonzone = ({ onClose }) => {
     const onConfirmSendTip = async () => {
         try {
             setTipState('pending');
-            await sendTip(object.contractId, TIP_AMOUNT, object.id);
+            await sendTip(
+                object.contractId || object?.uid,
+                TIP_AMOUNT,
+                object.id
+            );
             setTipState('success');
         } catch (err) {
             alert(err.toString());
@@ -100,7 +104,7 @@ export const Nonzone = ({ onClose }) => {
                         : null
                 }
                 rightButton={
-                    object?.contractId
+                    object?.contractId || object?.uid
                         ? {
                               onClick: () => setTipState('ask'),
                               svg: tip,

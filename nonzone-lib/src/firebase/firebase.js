@@ -254,8 +254,17 @@ export const getCurrency = () => 'SPACE';
 export const getPublishPrice = async () => 5;
 export const isPrepublishSupported = () => true;
 
-export const sendTip = async () => {
-    throw new Error('Not implemented');
+export const sendTip = async (recipient, amount, refId) => {
+    try {
+        const res = await firebase.functions().httpsCallable('tipUser')({
+            recipient,
+            amount,
+            refId,
+        });
+        console.log('sendTip', res);
+    } catch (err) {
+        console.log('Error sending tip', err);
+    }
 };
 
 const __setBookmark = async (uid, objectId, data) => {
