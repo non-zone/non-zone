@@ -27,7 +27,7 @@
         },
         "users-wallets": {
             "$uid": {
-                ".read": true,
+                ".read": "$uid === auth.uid",
                 ".write": false
             }
         }
