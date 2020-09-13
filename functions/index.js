@@ -17,9 +17,11 @@ const types = {
     OBJECT_PUBLISH: 'OBJECT_PUBLISH',
     PROFILE_CREATE: 'PROFILE_CREATE',
     REDEEM_SPACE: 'REDEEM_SPACE',
+    SEND_TIP: 'SEND_TIP',
+    RECEIVE_TIP: 'RECEIVE_TIP',
 };
 
-const getActionValue = (type) => {
+const getActionValue = (type, optionalAmount) => {
     switch (type) {
         case types.OBJECT_PUBLISH:
             return -5;
@@ -27,6 +29,10 @@ const getActionValue = (type) => {
             return 10;
         case types.REDEEM_SPACE:
             return 10;
+        case types.SEND_TIP:
+            return -optionalAmount;
+        case types.RECEIVE_TIP:
+            return optionalAmount;
         default:
             return 0;
     }
@@ -34,7 +40,7 @@ const getActionValue = (type) => {
 
 const calcBalance = (activity) => {
     const balance = activity.reduce((sum, act) => {
-        return sum + getActionValue(act.type);
+        return sum + getActionValue(act.type, act.amount);
     }, 0);
     functions.logger.info('Calculated balance', { balance, activity });
     return balance;
@@ -152,4 +158,89 @@ exports.checkRedeemBalance = functions.https.onCall(async (data, context) => {
     await ref.set(true);
 
     return getActionValue(type);
+});
+
+exports.tipUser = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'The function must be called ' + 'while authenticated.'
+        );
+    }
+    const { amount, recipient } = data;
+    if (!amount || !recipient) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'amount and recipient arguments are expected'
+        );
+    }
+
+    const uid = context.auth.uid;
+    if (uid === recipient) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'Cannot tip self'
+        );
+    }
+
+    const senderWalletRef = firebase.database().ref('users-wallets').child(uid);
+    const recipientWalletRef = firebase
+        .database()
+        .ref('users-wallets')
+        .child(uid);
+
+    const timestamp = new Date().toISOString();
+
+    const senderWallet = await senderWalletRef.once('value');
+    if (!senderWallet || senderWallet.balance < amount) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'Insufficient funds'
+        );
+    }
+
+    const recpWallet = await recipientWalletRef.once('value');
+    if (!recpWallet) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'Recipient not found'
+        );
+    }
+
+    const activitySender = {
+        type: types.SEND_TIP,
+        timestamp,
+        amount,
+        recipient,
+    };
+    await applyNewActivity(uid, activitySender);
+
+    const activityRecipient = {
+        type: types.RECEIVE_TIP,
+        timestamp,
+        amount,
+        sender: uid,
+    };
+    await applyNewActivity(recipient, activityRecipient);
+
+    return 'Tipping successful';
+
+    // perhaps a better implementation, but not how the others work at the moment
+    // TODO review in future
+    //
+    // await senderWalletRef.transaction(wallet => {
+    //     if(!wallet || wallet.balance < amount) {
+    //         throw new functions.https.HttpsError(
+    //             'failed-precondition',
+    //             'Balance too low'
+    //         );
+    //     }
+    //     wallet.balance -= amount;
+    //     return wallet
+    // })
+    // await receiptWalletRef.transaction(wallet => {
+    //     wallet.balance += amount;
+    //     return wallet
+    // })
 });
