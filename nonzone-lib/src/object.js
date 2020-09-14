@@ -26,15 +26,17 @@ export const useLoadStory = (id) => {
     useEffect(() => {
         if (!id) return;
 
-        io.loadObjectById(id)
-            .then((obj) => {
+        return io.subscribeToObjectById(
+            id,
+            (obj) => {
                 console.log('Loaded story', obj);
                 setData(obj);
-            })
-            .catch((err) => {
+            },
+            (err) => {
                 console.log(err);
                 setError(err.message);
-            });
+            }
+        );
     }, [id]);
     return { data, error, loading: data === undefined };
 };
@@ -65,16 +67,20 @@ export const useLoadStoriesByRegion = (bounds) => {
     const [error, setError] = useState();
     useEffect(() => {
         if (!bounds || !bounds.maxLat) return;
-        (async () => {
-            try {
-                const arr = await io.loadObjectsByRegion(bounds);
+
+        return io.subscribeToObjectsByRegion(
+            bounds,
+            (arr) => {
                 console.log('Loaded stories', arr);
                 setData(arr);
-            } catch (err) {
+            },
+            (err) => {
                 console.log(err);
                 setError(err.message);
             }
-        })();
+        );
     }, [bounds]);
     return { data, error, loading: data === undefined };
 };
+
+export const useLoadMyBookmarks = () => {};
