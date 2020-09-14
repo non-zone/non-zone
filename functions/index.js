@@ -125,6 +125,23 @@ exports.checkRedeemBalance = functions.https.onCall(async (data, context) => {
         return 0;
     }
 
+    // do not redeem for profile created today
+    const refActivity = firebase
+        .database()
+        .ref('/users-activity')
+        .child(uid)
+        .limitToFirst(1);
+    const snapFirstActivity = await refActivity.once('value');
+    if (
+        !snapFirstActivity ||
+        !snapFirstActivity.val() ||
+        Object.values(snapFirstActivity.val())[0].timestamp.substr(0, 10) ===
+            date
+    ) {
+        // profile created today or being created at the moment
+        return 0;
+    }
+
     const type = types.REDEEM_SPACE;
     const newActivity = {
         type,
