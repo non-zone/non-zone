@@ -113,11 +113,12 @@ export default function CreateStoryScreen({ route, navigation }) {
                 description,
                 image: uploadedImage.secure_url,
             };
-            const result = await saveObject(data);
-            console.log(result);
+            const id = await saveObject(data);
+            console.log('save object result', id);
+            data.id = id;
             await publishObject(data);
 
-            if (result) {
+            if (id) {
                 alert('Story saved!');
                 navigation.navigate('Root');
             } else {
