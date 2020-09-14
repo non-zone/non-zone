@@ -14,3 +14,6 @@ export const isPrepublishSupported = () => io.isPrepublishSupported();
 export const sendTip = (contractId, amount, refId) =>
     io.sendTip(contractId, amount, refId);
 
+export const setBookmarkObject = io.setBookmarkObject;
+export const clearBookmarkObject = io.clearBookmarkObject;
+export const subcribeToUserBookmarks = io.subcribeToUserBookmarks;

@@ -257,3 +257,36 @@ export const isPrepublishSupported = () => true;
 export const sendTip = async () => {
     throw new Error('Not implemented');
 };
+
+const __setBookmark = async (uid, objectId, data) => {
+    if (!uid) throw new Error('uid empty');
+    return firebase
+        .database()
+        .ref('users-bookmarks')
+        .child(uid)
+        .child(objectId)
+        .set(data);
+};
+export const setBookmarkObject = async (uid, objectId, title) =>
+    __setBookmark(uid, objectId, {
+        objectId,
+        title,
+        date: new Date().toISOString(),
+    });
+export const clearBookmarkObject = async (uid, objectId) =>
+    __setBookmark(uid, objectId, null);
+
+export const subcribeToUserBookmarks = (uid, cb) => {
+    return firebase
+        .database()
+        .ref('users-bookmarks')
+        .child(uid)
+        .on(
+            'value',
+            (snap) => {
+                // console.log('Snap:', snap);
+                cb(Object.values(snap?.val() || {}));
+            },
+            (err) => console.log('Error loading bookmarks:', err)
+        );
+};
