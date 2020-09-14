@@ -59,62 +59,73 @@ export const MapScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            <MapView
-                style={styles.mapStyle}
-                region={location}
-                minZoomLevel={2}
-                maxZoomLevel={18}
-                customMapStyle={mapStyle}
-                provider={PROVIDER_GOOGLE}
-                onLongPress={(mapEvent) => {
-                    const { coordinate } = mapEvent.nativeEvent;
-                    console.log(coordinate);
-                    props.navigation.navigate('CreateStory', coordinate);
-                }}
-                onRegionChangeComplete={setLocation}
-            >
-                {data.map((marker) => (
-                    <Marker
-                        key={marker.title}
-                        coordinate={marker.loc}
-                        title={marker.title}
-                        description={marker.description}
-                        image={require('../assets/images/marker.png')}
-                    >
-                        <Callout
-                            style={styles.calloutStyle}
-                            tooltip={true}
-                            onPress={() =>
-                                props.navigation.navigate('ShowStory', marker)
-                            }
+            {!!location && (
+                <MapView
+                    style={styles.mapStyle}
+                    initialRegion={location}
+                    minZoomLevel={2}
+                    maxZoomLevel={18}
+                    customMapStyle={mapStyle}
+                    provider={PROVIDER_GOOGLE}
+                    onLongPress={(mapEvent) => {
+                        const { coordinate } = mapEvent.nativeEvent;
+                        console.log(coordinate);
+                        props.navigation.navigate('CreateStory', coordinate);
+                    }}
+                    onRegionChangeComplete={(region) => {
+                        if (
+                            location.latitude !== region.latitude ||
+                            location.longitude !== region.longitude
+                        )
+                            setLocation(region);
+                    }}
+                >
+                    {data.map((marker) => (
+                        <Marker
+                            key={marker.title}
+                            coordinate={marker.loc}
+                            title={marker.title}
+                            description={marker.description}
+                            image={require('../assets/images/marker.png')}
                         >
-                            <View style={styles.boxStyle}>
-                                <Text
-                                    style={{
-                                        color: 'white',
-                                        fontSize: 14,
-                                        fontWeight: 'bold',
-                                        marginBottom: 8,
-                                    }}
-                                >
-                                    {marker.title}
-                                </Text>
-                                <Text
-                                    numberOfLines={7}
-                                    ellipsizeMode="tail"
-                                    style={{ color: 'white', fontSize: 12 }}
-                                >
-                                    {marker.description.replace(
-                                        /[\r\n]+/gm,
-                                        ' '
-                                    )}
-                                </Text>
-                            </View>
-                            <Button title="Open this Story" />
-                        </Callout>
-                    </Marker>
-                ))}
-            </MapView>
+                            <Callout
+                                style={styles.calloutStyle}
+                                tooltip={true}
+                                onPress={() =>
+                                    props.navigation.navigate(
+                                        'ShowStory',
+                                        marker
+                                    )
+                                }
+                            >
+                                <View style={styles.boxStyle}>
+                                    <Text
+                                        style={{
+                                            color: 'white',
+                                            fontSize: 14,
+                                            fontWeight: 'bold',
+                                            marginBottom: 8,
+                                        }}
+                                    >
+                                        {marker.title}
+                                    </Text>
+                                    <Text
+                                        numberOfLines={7}
+                                        ellipsizeMode="tail"
+                                        style={{ color: 'white', fontSize: 12 }}
+                                    >
+                                        {marker.description.replace(
+                                            /[\r\n]+/gm,
+                                            ' '
+                                        )}
+                                    </Text>
+                                </View>
+                                <Button title="Open this Story" />
+                            </Callout>
+                        </Marker>
+                    ))}
+                </MapView>
+            )}
         </View>
     );
 };
