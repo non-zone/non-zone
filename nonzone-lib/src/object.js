@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from './auth';
 import io from './io';
 
 export const saveObject = async (data) => {
@@ -83,4 +84,25 @@ export const useLoadStoriesByRegion = (bounds) => {
     return { data, error, loading: data === undefined };
 };
 
-export const useLoadMyBookmarks = () => {};
+export const useLoadMyBookmarks = () => {
+    const { user } = useAuth();
+
+    const [data, setData] = useState();
+    const [error, setError] = useState();
+    useEffect(() => {
+        if (!user) return;
+
+        return io.subcribeToUserBookmarks(
+            user.uid,
+            (arr) => {
+                // console.log('Loaded stories', arr);
+                setData(arr);
+            },
+            (err) => {
+                console.log(err);
+                setError(err.message);
+            }
+        );
+    }, [user]);
+    return { data, error, loading: data === undefined };
+};

@@ -413,3 +413,13 @@ export const sendTip = async (contractId, amountAR, refId) => {
     }
     throw new Error(response.statusText);
 };
+
+export const bookmarkObject = async () => {
+    throw new Error('Not implemented');
+};
+export const clearBookmarkObject = async () => {
+    throw new Error('Not implemented');
+};
+export const subcribeToUserBookmarks = () => {
+    throw new Error('Not implemented');
+};

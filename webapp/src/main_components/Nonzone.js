@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { Interface, svg, Sliderr, Spinner, DialogWindow } from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
-import { useLoadStory, sendTip, getCurrency, Login } from 'nonzone-lib';
+import {
+    useLoadStory,
+    sendTip,
+    Login,
+    setBookmarkObject,
+    clearBookmarkObject,
+    useLoadMyBookmarks,
+} from 'nonzone-lib';
 import { useAuth, useUserWallet } from 'nonzone-lib';
 
 const TIP_AMOUNT = 0.01;
@@ -14,6 +21,9 @@ export const Nonzone = ({ onClose }) => {
     const { error, loading, data: object } = useLoadStory(objectId);
     const { user } = useAuth();
     const { balance } = useUserWallet(user?.uid);
+
+    const { data: bookmarks } = useLoadMyBookmarks();
+    const isBookmarked = bookmarks?.some((b) => b.objectId === objectId);
 
     const [tipState, setTipState] = useState('');
     const enoughFundsForTip = !!balance && balance >= MIN_FUNDS_FOR_TIP;
@@ -31,7 +41,8 @@ export const Nonzone = ({ onClose }) => {
 
     const {
         Nonzone: {
-            // star,
+            star,
+            starGold,
             // flag,
             close,
             tip,
@@ -71,15 +82,22 @@ export const Nonzone = ({ onClose }) => {
             )}
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
-                // centralButton={
-                //     object?.contractId
-                //         ? {
-                //               onClick: () => setTipState('ask'),
-                //               svg: tip,
-                //               name: 'Send tip',
-                //           }
-                //         : null
-                // }
+                centralButton={
+                    !!user && !object?.contractId // temp
+                        ? {
+                              onClick: () =>
+                                  !isBookmarked
+                                      ? setBookmarkObject(
+                                            user.uid,
+                                            objectId,
+                                            object?.title
+                                        )
+                                      : clearBookmarkObject(user.uid, objectId),
+                              svg: isBookmarked ? starGold : star,
+                              name: 'Bookmark',
+                          }
+                        : null
+                }
                 rightButton={
                     object?.contractId
                         ? {

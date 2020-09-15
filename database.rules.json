@@ -13,6 +13,12 @@
                 ".write": false
             }
         },
+        "users-bookmarks": {
+            "$uid": {
+                ".read": "$uid === auth.uid",
+                ".write": "$uid === auth.uid"
+            }
+        },
         "users-public": {
             "$uid": {
                 ".read": true,
