@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import {
     useLoadStory,
     sendTip,
+    getCurrency,
     Login,
     setBookmarkObject,
     clearBookmarkObject,
