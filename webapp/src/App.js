@@ -5,8 +5,6 @@ import {
     Route,
     useHistory,
 } from 'react-router-dom';
-import { store } from './redux';
-import { Provider } from 'react-redux';
 import './App.css';
 import { CommunityMap, Pin, detectLocation } from '@opencommunitymap/react-sdk';
 import mapStyles from './MapsGoogleDarkStyle.json';
@@ -21,34 +19,20 @@ import {
     CreateMerchant,
     EditStory,
 } from './main_components';
-import { AuthProvider, useAuth, useUserPublicProfile } from './Auth';
 import {
+    AuthProvider,
+    useAuth,
+    useUserPublicProfile,
     saveObject,
     publishObject,
     useLoadStoriesByRegion,
-    subscribeToUserService,
     signOut,
     checkInitialBalance,
     Login,
-} from './api';
+} from 'nonzone-lib';
 import { restoreLastLocation, storeLastLocation } from './utils';
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
-
-subscribeToUserService((data, err) => {
-    if (err) {
-        console.log('Error loading user:', err);
-    }
-    const { user, balance, profile } = data || {
-        user: null,
-        balance: 0,
-        profile: null,
-    };
-    console.log('On User Auth', { user, balance, profile, err });
-    store.dispatch({ type: 'BALANCE', payload: balance });
-    store.dispatch({ type: 'PROFILE', payload: profile });
-    store.dispatch({ type: 'USER', payload: user });
-});
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
@@ -79,7 +63,7 @@ const Map = () => {
     }, []);
 
     const { user } = useAuth();
-    const { profile, loading } = useUserPublicProfile(user?.uid);
+    const { profile, loading } = useUserPublicProfile();
 
     if (user && !loading && !profile?.nickname) {
         router.replace('/profile');
@@ -253,11 +237,9 @@ function App() {
 }
 
 export default () => (
-    <Provider store={store}>
-        <Router>
-            <AuthProvider>
-                <App />
-            </AuthProvider>
-        </Router>
-    </Provider>
+    <Router>
+        <AuthProvider>
+            <App />
+        </AuthProvider>
+    </Router>
 );

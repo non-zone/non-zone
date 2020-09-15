@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import io from './integrations';
-
-export const Login = io.Login;
+import io from './io';
 
 export const saveObject = async (data) => {
     const id = await io.saveObject(data);
@@ -28,15 +26,17 @@ export const useLoadStory = (id) => {
     useEffect(() => {
         if (!id) return;
 
-        io.loadObjectById(id)
-            .then((obj) => {
+        return io.subscribeToObjectById(
+            id,
+            (obj) => {
                 console.log('Loaded story', obj);
                 setData(obj);
-            })
-            .catch((err) => {
+            },
+            (err) => {
                 console.log(err);
                 setError(err.message);
-            });
+            }
+        );
     }, [id]);
     return { data, error, loading: data === undefined };
 };
@@ -67,31 +67,20 @@ export const useLoadStoriesByRegion = (bounds) => {
     const [error, setError] = useState();
     useEffect(() => {
         if (!bounds || !bounds.maxLat) return;
-        (async () => {
-            try {
-                const arr = await io.loadObjectsByRegion(bounds);
-                console.log('Loaded stories', arr);
+
+        return io.subscribeToObjectsByRegion(
+            bounds,
+            (arr) => {
+                // console.log('Loaded stories', arr);
                 setData(arr);
-            } catch (err) {
+            },
+            (err) => {
                 console.log(err);
                 setError(err.message);
             }
-        })();
+        );
     }, [bounds]);
     return { data, error, loading: data === undefined };
 };
 
-export const updateUserProfile = io.saveProfile;
-
-export const subscribeToUserService = io.subscribeToUserService;
-
-export const signOut = io.signOut;
-
-export const getCurrency = io.getCurrency;
-export const getPublishPrice = async (data) => io.getPublishPrice(data);
-export const isPrepublishSupported = () => io.isPrepublishSupported();
-
-export const sendTip = (contractId, amount, refId) =>
-    io.sendTip(contractId, amount, refId);
-
-export const checkInitialBalance = io.checkInitialBalance;
+export const useLoadMyBookmarks = () => {};

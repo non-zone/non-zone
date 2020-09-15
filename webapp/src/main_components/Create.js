@@ -9,8 +9,8 @@ import {
     isPrepublishSupported,
     getPublishPrice,
     getCurrency,
-} from '../api';
-import { useAuth, useUserWallet } from '../Auth';
+} from 'nonzone-lib';
+import { useAuth, useUserWallet } from 'nonzone-lib';
 import { Spinner } from '../components/spinner/Spinner';
 
 const MIN_DESCR_LENGTH = 150;

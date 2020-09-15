@@ -5,8 +5,7 @@ import { Input, Button, Image, Text } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import { useAuth } from '../services/auth';
-import { saveObject } from '../services/db';
+import { saveObject, publishObject, useAuth } from 'nonzone-lib';
 
 import ProfileScreen from './ProfileScreen';
 
@@ -104,7 +103,7 @@ export default function CreateStoryScreen({ route, navigation }) {
             );
             console.log(uploadedImage);
 
-            const result = await saveObject({
+            const data = {
                 id: null,
                 kind: 'story',
                 type: 'story',
@@ -113,9 +112,13 @@ export default function CreateStoryScreen({ route, navigation }) {
                 title,
                 description,
                 image: uploadedImage.secure_url,
-            });
-            console.log(result);
-            if (result) {
+            };
+            const id = await saveObject(data);
+            console.log('save object result', id);
+            data.id = id;
+            await publishObject(data);
+
+            if (id) {
                 alert('Story saved!');
                 navigation.navigate('Root');
             } else {

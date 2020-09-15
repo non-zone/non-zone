@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useAuth, useUserPublicProfile, useUserWallet } from '../Auth';
+import { useAuth, useUserPublicProfile, useUserWallet } from 'nonzone-lib';
 import {
     Interface,
     svg,
@@ -9,7 +9,11 @@ import {
     // Image,
 } from '../components';
 import './myprofile.css';
-import { updateUserProfile, useLoadUserStories, getCurrency } from '../api';
+import {
+    updateUserProfile,
+    useLoadUserStories,
+    getCurrency,
+} from 'nonzone-lib';
 
 const CURRENCY = getCurrency();
 
@@ -22,9 +26,7 @@ export const MyProfile = ({ onClose, onSignOut }) => {
     } = svg;
 
     const { user, loading } = useAuth();
-    const { profile, loading: profileLoading } = useUserPublicProfile(
-        user?.uid
-    );
+    const { profile, loading: profileLoading } = useUserPublicProfile();
     const { balance, loading: walletLoading } = useUserWallet(user?.uid);
 
     const [showCongrats, setShowCongrats] = useState(false);

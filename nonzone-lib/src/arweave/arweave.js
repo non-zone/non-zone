@@ -225,7 +225,7 @@ export const loadObjectByTxId = async (txId) => {
     }
 };
 
-export const loadObjectById = async (id) => {
+const loadObjectById = async (id) => {
     console.log('loadObjectById', id);
     const query = and(equals('App-Name', appName), equals('Nonzone-Id', id));
 
@@ -236,6 +236,10 @@ export const loadObjectById = async (id) => {
     const objects = await Promise.all(txids.map((id) => loadObjectByTxId(id)));
     console.log('objects', objects);
     return objects[0];
+};
+export const subscribeToObjectById = (id, onData, onError) => {
+    loadObjectById(id).then(onData).catch(onError);
+    return () => {}; // dummy unsub
 };
 
 const generateHashes = (bounds, precision) => {
@@ -257,7 +261,7 @@ const detectPrecisionAndHashes = async (bounds) => {
     }
 };
 
-export const loadObjectsByRegion = async (bounds) => {
+const loadObjectsByRegion = async (bounds) => {
     console.log('Load data by region', bounds);
     const { hashes, precision } = await detectPrecisionAndHashes(bounds);
 
@@ -275,6 +279,11 @@ export const loadObjectsByRegion = async (bounds) => {
     console.log('objects', objects);
     return objects.filter((o) => !!o);
 };
+export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
+    loadObjectsByRegion(bounds).then(onData).catch(onError);
+    return () => {}; // dummy unsub
+};
+
 export const loadObjectsByUser = async (uid, publishedOnly = true) => {
     // TODO
     return [];

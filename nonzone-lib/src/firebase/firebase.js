@@ -1,10 +1,10 @@
 import * as firebase from 'firebase/app';
-import 'firebase/analytics';
+// import 'firebase/analytics';
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/functions';
-import firebaseConfig from '../../firebaseConfig';
-import firebaseConfigDev from '../../firebaseConfigDev';
+import firebaseConfig from '../firebaseConfig';
+import firebaseConfigDev from '../firebaseConfigDev';
 import { useEffect } from 'react';
 import React from 'react';
 
@@ -14,7 +14,7 @@ const fbConf =
 
 console.log('Init with', fbConf);
 firebase.initializeApp(fbConf);
-firebase.analytics();
+// firebase.analytics();
 
 export const Login = ({ onCancel, onSignedIn }) => {
     const ref = React.useRef();
@@ -81,14 +81,20 @@ export const publishObject = async (data) => {
     });
 };
 
-export const loadObjectById = async (id) => {
-    const snap = await firebase
+export const subscribeToObjectById = (id, onData, onError) => {
+    return firebase
         .database()
         .ref(`/objects/`)
         .child(id)
-        .once('value');
-
-    return snap && snap.val() ? { ...snap.val(), id: snap.key } : null;
+        .on(
+            'value',
+            (snap) => {
+                onData(
+                    snap && snap.val() ? { ...snap.val(), id: snap.key } : null
+                );
+            },
+            onError
+        );
 };
 
 export const loadObjectsByUser = async (uid, publishedOnly = true) => {
@@ -113,26 +119,32 @@ export const loadObjectsByUser = async (uid, publishedOnly = true) => {
     return arr;
 };
 
-export const loadObjectsByRegion = async (bounds) => {
-    const snap = await firebase
-        .database()
-        .ref(`/objects/`)
-        // .orderByChild('loc')
-        // .equalTo(uid)
-        .once('value');
+export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
+    return (
+        firebase
+            .database()
+            .ref(`/objects/`)
+            // .orderByChild('loc')
+            // .equalTo(uid)
+            .on(
+                'value',
+                (snap) => {
+                    if (!snap?.val()) return onData([]);
 
-    if (!snap?.val()) return [];
-
-    const obj = snap.val();
-    console.debug('Loaded user stories', obj);
-    const arr = Object.entries(obj)
-        .map(([id, data]) => ({
-            id,
-            ...data,
-        }))
-        .filter((story) => !!story.published);
-    console.debug('Loaded user stories arr', arr);
-    return arr;
+                    const obj = snap.val();
+                    // console.debug('Loaded user stories', obj);
+                    const arr = Object.entries(obj)
+                        .map(([id, data]) => ({
+                            id,
+                            ...data,
+                        }))
+                        .filter((story) => !!story.published);
+                    console.debug('Loaded', arr.length, 'user stories arr');
+                    onData(arr);
+                },
+                onError
+            )
+    );
 };
 
 export const saveProfile = async (uid, data) => {

@@ -1,0 +1,16 @@
+import io from './io';
+
+export * from './auth';
+export * from './object';
+
+export const Login = io.Login;
+
+
+
+export const getCurrency = io.getCurrency;
+export const getPublishPrice = async (data) => io.getPublishPrice(data);
+export const isPrepublishSupported = () => io.isPrepublishSupported();
+
+export const sendTip = (contractId, amount, refId) =>
+    io.sendTip(contractId, amount, refId);
+

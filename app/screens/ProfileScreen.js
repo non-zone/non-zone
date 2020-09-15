@@ -11,7 +11,8 @@ import {
 import firebase from 'firebase';
 import { Platform, View, StyleSheet } from 'react-native';
 import { Button, Avatar, Card, Text, Input } from 'react-native-elements';
-import { googleSignIn, signout, useAuth } from '../services/auth';
+import { signOut, useAuth } from 'nonzone-lib';
+import { googleSignIn } from '../services/auth';
 
 import colors from '../constants/Colors';
 import Layout from '../constants/Layout';
@@ -119,7 +120,7 @@ export default function ProfileScreen() {
                     <Button
                         title="Logout"
                         onPress={() => {
-                            signout();
+                            signOut();
                         }}
                     />
                 </View>

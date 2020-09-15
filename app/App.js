@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import './services/firebase_init';
+// import './services/firebase_init';
 
 import useCachedResources from './hooks/useCachedResources';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -10,7 +10,7 @@ import LinkingConfiguration from './navigation/LinkingConfiguration';
 import ShowStoryScreen from './screens/ShowStoryScreen';
 import CreateStoryScreen from './screens/CreateStoryScreen';
 
-import { AuthProvider } from './services/auth';
+import { AuthProvider } from 'nonzone-lib';
 
 import { YellowBox } from 'react-native';
 
