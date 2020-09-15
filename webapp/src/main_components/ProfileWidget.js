@@ -11,7 +11,9 @@ export const ProfileWidget = ({ onShowProfile, onSignIn }) => {
         <Profile
             signed={!!user}
             avatarUrl={user?.photoURL}
-            onClick={() => (user ? onShowProfile() : onSignIn())}
+            // onClick={() => (user ? onShowProfile() : onSignIn())}
+            onClick={() => (user ? undefined : onSignIn())}
+            choices={[{ text: 'Profile', onClick: () => onShowProfile() }]}
         />
     );
 };

@@ -1,8 +1,16 @@
-.profile {
-    position: fixed;
+.top-right {
+    position: fixed !important;
     top: 0px;
     right: 0px;
-    margin: 12px;
+}
+.profile-dropdown {
+    margin: 12px !important;
+}
+.profile-dropdown .menu {
+    margin: 6px 0 !important;
+}
+
+.profile {
     height: 62px;
     width: 62px;
     border-radius: 50%;
@@ -35,4 +43,12 @@
     border: 3px solid white;
     background-size: cover;
     box-sizing: border-box;
+}
+
+.profile-submenu {
+    position: absolute;
+    top: 110%;
+    padding: 1em;
+    background: #fff;
+    border-radius: 5px;
 }
