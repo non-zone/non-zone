@@ -26,8 +26,8 @@ const loc2bounds = (loc) => {
 
 export const MapScreen = (props) => {
     let [location, setLocation] = useState({
-        latitude: 0,
-        longitude: 0,
+        latitude: undefined,
+        longitude: undefined,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
     });
@@ -44,7 +44,7 @@ export const MapScreen = (props) => {
             }
 
             let position = await Location.getCurrentPositionAsync({});
-            console.log(position);
+            console.log('Detected current position:', position);
             setLocation({
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
@@ -59,7 +59,7 @@ export const MapScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            {!!location && (
+            {location.latitude !== undefined && (
                 <MapView
                     style={styles.mapStyle}
                     initialRegion={location}
