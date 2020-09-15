@@ -132,14 +132,14 @@ export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
                     if (!snap?.val()) return onData([]);
 
                     const obj = snap.val();
-                    console.debug('Loaded user stories', obj);
+                    // console.debug('Loaded user stories', obj);
                     const arr = Object.entries(obj)
                         .map(([id, data]) => ({
                             id,
                             ...data,
                         }))
                         .filter((story) => !!story.published);
-                    console.debug('Loaded user stories arr', arr);
+                    console.debug('Loaded', arr.length, 'user stories arr');
                     onData(arr);
                 },
                 onError

@@ -71,7 +71,7 @@ export const useLoadStoriesByRegion = (bounds) => {
         return io.subscribeToObjectsByRegion(
             bounds,
             (arr) => {
-                console.log('Loaded stories', arr);
+                // console.log('Loaded stories', arr);
                 setData(arr);
             },
             (err) => {
