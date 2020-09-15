@@ -82,7 +82,7 @@ export const MapScreen = (props) => {
                 >
                     {data.map((marker) => (
                         <Marker
-                            key={marker.title}
+                            key={marker.id}
                             coordinate={marker.loc}
                             title={marker.title}
                             description={marker.description}
