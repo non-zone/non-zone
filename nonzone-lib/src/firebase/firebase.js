@@ -276,7 +276,7 @@ export const setBookmarkObject = async (uid, objectId, title) =>
 export const clearBookmarkObject = async (uid, objectId) =>
     __setBookmark(uid, objectId, null);
 
-export const subcribeToUserBookmarks = (uid, cb) => {
+export const subcribeToUserBookmarks = (uid, onData, onError) => {
     return firebase
         .database()
         .ref('users-bookmarks')
@@ -285,8 +285,8 @@ export const subcribeToUserBookmarks = (uid, cb) => {
             'value',
             (snap) => {
                 // console.log('Snap:', snap);
-                cb(Object.values(snap?.val() || {}));
+                onData(Object.values(snap?.val() || {}));
             },
-            (err) => console.log('Error loading bookmarks:', err)
+            onError
         );
 };

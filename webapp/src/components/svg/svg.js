@@ -59,6 +59,20 @@ export const svg = {
                 />
             </svg>
         ),
+        starGold: (
+            <svg
+                width="26"
+                height="26"
+                viewBox="0 0 26 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    d="M13 18.7092L19.695 22.75L17.9183 15.1342L23.8333 10.01L16.0441 9.34916L13 2.16666L9.95579 9.34916L2.16663 10.01L8.08163 15.1342L6.30496 22.75L13 18.7092Z"
+                    fill="gold"
+                />
+            </svg>
+        ),
         flag: (
             <svg
                 width="38"
