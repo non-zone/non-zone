@@ -129,8 +129,8 @@ export const Nonzone = ({ onClose }) => {
                                   <>
                                       {Array(tipsCount)
                                           .fill(0)
-                                          .map(() => (
-                                              <TipBadgeIcon />
+                                          .map((_, i) => (
+                                              <TipBadgeIcon key={i} />
                                           ))}
                                   </>
                               ) : undefined,
