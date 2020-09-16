@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import {
     useLoadStory,
     sendTip,
+    useLoadMyTips,
     getCurrency,
     Login,
     setBookmarkObject,
@@ -16,6 +17,15 @@ import { useAuth, useUserWallet } from 'nonzone-lib';
 const TIP_AMOUNT = getCurrency() === 'SPACE' ? 1 : 0.01;
 const MIN_FUNDS_FOR_TIP = TIP_AMOUNT + 0.00000001;
 
+const tipBadgeStyle = {
+    backgroundColor: 'gold',
+    borderRadius: '50%',
+    display: 'inline-block',
+    height: 7,
+    width: 7,
+};
+const TipBadgeIcon = () => <div style={tipBadgeStyle} />;
+
 export const Nonzone = ({ onClose }) => {
     const { objectId } = useParams();
     console.log('Nonzoneid:', objectId);
@@ -25,6 +35,12 @@ export const Nonzone = ({ onClose }) => {
 
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === objectId);
+
+    const { data: myTips } = useLoadMyTips();
+    const storyTips = myTips?.[objectId];
+    const hasTipped = !!storyTips;
+    const tipsCount = hasTipped ? Object.keys(storyTips).length : 0;
+    console.log({ myTips, storyTips, hasTipped });
 
     const [tipState, setTipState] = useState('');
     const enoughFundsForTip = !!balance && balance >= MIN_FUNDS_FOR_TIP;
@@ -109,6 +125,15 @@ export const Nonzone = ({ onClose }) => {
                               onClick: () => setTipState('ask'),
                               svg: tip,
                               title: 'Send a tip',
+                              badge: hasTipped ? (
+                                  <>
+                                      {Array(tipsCount)
+                                          .fill(0)
+                                          .map(() => (
+                                              <TipBadgeIcon />
+                                          ))}
+                                  </>
+                              ) : undefined,
                           }
                         : null
                 }
