@@ -120,7 +120,8 @@ export const Nonzone = ({ onClose }) => {
                         : null
                 }
                 rightButton={
-                    object?.contractId || object?.uid
+                    (object?.contractId || object?.uid) &&
+                    object?.uid !== user?.uid
                         ? {
                               onClick: () => setTipState('ask'),
                               svg: tip,
@@ -135,7 +136,7 @@ export const Nonzone = ({ onClose }) => {
                                   </>
                               ) : undefined,
                           }
-                        : null
+                        : {}
                 }
             />
             {!!object && (
