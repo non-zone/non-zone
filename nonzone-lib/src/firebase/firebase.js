@@ -264,7 +264,23 @@ export const sendTip = async (recipient, amount, refId) => {
         console.log('sendTip', res);
     } catch (err) {
         console.log('Error sending tip', err);
+        throw err;
     }
+};
+
+export const subscribeToMyTips = (uid, onData, onError) => {
+    return firebase
+        .database()
+        .ref('users-private-readonly')
+        .child(uid)
+        .child('sent_tips')
+        .on(
+            'value',
+            (snap) => {
+                onData(snap?.val() || {});
+            },
+            onError
+        );
 };
 
 const __setBookmark = async (uid, objectId, data) => {

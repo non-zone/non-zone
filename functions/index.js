@@ -168,7 +168,7 @@ exports.tipUser = functions.https.onCall(async (data, context) => {
             'The function must be called ' + 'while authenticated.'
         );
     }
-    const { amount, recipient } = data;
+    const { amount, recipient, refId: objectId } = data;
     if (!amount || !recipient) {
         throw new functions.https.HttpsError(
             'failed-precondition',
@@ -184,13 +184,17 @@ exports.tipUser = functions.https.onCall(async (data, context) => {
         );
     }
 
+    functions.logger.info('Send tip', { data, uid });
+
     const senderWalletRef = firebase.database().ref('users-wallets').child(uid);
     const recipientWalletRef = firebase
         .database()
         .ref('users-wallets')
         .child(uid);
 
-    const timestamp = new Date().toISOString();
+    const date = new Date();
+    const timestamp = date.toISOString();
+    const tsUnix = date.getTime();
 
     const senderWallet = await senderWalletRef.once('value');
     if (!senderWallet || senderWallet.balance < amount) {
@@ -207,6 +211,22 @@ exports.tipUser = functions.https.onCall(async (data, context) => {
             'Recipient not found'
         );
     }
+
+    const tipId = firebase
+        .database()
+        .ref(`/objects-private/${objectId}/tips/`)
+        .push().key;
+    const multipathData = {
+        [`/users-private-readonly/${uid}/sent_tips/${objectId}/${tsUnix}`]: amount,
+        [`/objects-private/${objectId}/tips/${tipId}`]: {
+            uid,
+            amount,
+            ts: tsUnix,
+        },
+    };
+    functions.logger.info('Send tip multipathData', { multipathData });
+
+    await firebase.database().ref('/').update(multipathData);
 
     const activitySender = {
         type: types.SEND_TIP,

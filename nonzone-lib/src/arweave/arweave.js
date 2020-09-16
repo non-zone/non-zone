@@ -414,6 +414,10 @@ export const sendTip = async (contractId, amountAR, refId) => {
     throw new Error(response.statusText);
 };
 
+export const subscribeToMyTips = async (uid, onData, onError) => {
+    throw new Error('Not implemented');
+};
+
 export const bookmarkObject = async () => {
     throw new Error('Not implemented');
 };

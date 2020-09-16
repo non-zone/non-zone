@@ -7,6 +7,12 @@
                 ".write": "auth != null && ((!data.exists() || (data.child('uid').val() == auth.uid) && (!newData.child('uid').exists() || newData.child('uid').val() == auth.uid)))"
             }
         },
+        "objects-readonly": {
+            "$object_id": {
+                ".read": true,
+                ".write": false
+            }
+        },
         "users-activity": {
             "$uid": {
                 ".read": "$uid === auth.uid",
@@ -23,6 +29,12 @@
             "$uid": {
                 ".read": true,
                 ".write": "$uid === auth.uid"
+            }
+        },
+        "users-private-readonly": {
+            "$uid": {
+                ".read": "$uid === auth.uid",
+                ".write": false
             }
         },
         "users-wallets": {

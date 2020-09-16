@@ -106,3 +106,25 @@ export const useLoadMyBookmarks = () => {
     }, [user]);
     return { data, error, loading: data === undefined };
 };
+
+export const useLoadMyTips = () => {
+    const { user } = useAuth();
+
+    const [data, setData] = useState();
+    const [error, setError] = useState();
+    useEffect(() => {
+        if (!user) return;
+
+        return io.subscribeToMyTips(
+            user.uid,
+            (data) => {
+                setData(data);
+            },
+            (err) => {
+                console.log(err);
+                setError(err.message);
+            }
+        );
+    }, [user]);
+    return { data, error, loading: data === undefined };
+};
