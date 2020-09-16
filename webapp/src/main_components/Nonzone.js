@@ -13,7 +13,7 @@ import {
 } from 'nonzone-lib';
 import { useAuth, useUserWallet } from 'nonzone-lib';
 
-const TIP_AMOUNT = 0.01;
+const TIP_AMOUNT = getCurrency() === 'SPACE' ? 1 : 0.01;
 const MIN_FUNDS_FOR_TIP = TIP_AMOUNT + 0.00000001;
 
 export const Nonzone = ({ onClose }) => {
