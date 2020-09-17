@@ -214,11 +214,11 @@ exports.tipUser = functions.https.onCall(async (data, context) => {
 
     const tipId = firebase
         .database()
-        .ref(`/objects-private/${objectId}/tips/`)
+        .ref(`/objects-readonly/${objectId}/tips/`)
         .push().key;
     const multipathData = {
         [`/users-private-readonly/${uid}/sent_tips/${objectId}/${tsUnix}`]: amount,
-        [`/objects-private/${objectId}/tips/${tipId}`]: {
+        [`/objects-readonly/${objectId}/tips/${tipId}`]: {
             uid,
             amount,
             ts: tsUnix,
