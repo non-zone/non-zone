@@ -120,31 +120,40 @@ export const loadObjectsByUser = async (uid, publishedOnly = true) => {
 };
 
 export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
-    return (
-        firebase
-            .database()
-            .ref(`/objects/`)
-            // .orderByChild('loc')
-            // .equalTo(uid)
-            .on(
-                'value',
-                (snap) => {
-                    if (!snap?.val()) return onData([]);
+    return firebase
+        .database()
+        .ref(`/objects/`)
+        .orderByChild('loc/latitude')
+        .startAt(bounds.minLat)
+        .endAt(bounds.maxLat)
+        .on(
+            'value',
+            (snap) => {
+                const obj = snap?.val() || {};
+                // console.debug('Loaded user stories for', bounds, obj);
+                const arr = [];
+                for (const [id, data] of Object.entries(obj)) {
+                    if (
+                        !data.published ||
+                        data.loc.longitude < bounds.minLng ||
+                        data.loc.longitude > bounds.maxLng
+                    )
+                        continue;
+                    arr.push({
+                        id,
+                        ...data,
+                    });
+                }
 
-                    const obj = snap.val();
-                    // console.debug('Loaded user stories', obj);
-                    const arr = Object.entries(obj)
-                        .map(([id, data]) => ({
-                            id,
-                            ...data,
-                        }))
-                        .filter((story) => !!story.published);
-                    console.debug('Loaded', arr.length, 'user stories arr');
-                    onData(arr);
-                },
-                onError
-            )
-    );
+                console.debug(
+                    'Loaded',
+                    arr.length,
+                    'user stories arr after filter'
+                );
+                onData(arr);
+            },
+            onError
+        );
 };
 
 export const subscribeToObjectAdditionalData = (objectId, onData, onError) => {
