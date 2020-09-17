@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import {
     useLoadStory,
     sendTip,
-    useLoadMyTips,
+    useLoadAdditionalInfoForObjects,
     getCurrency,
     Login,
     setBookmarkObject,
@@ -36,11 +36,10 @@ export const Nonzone = ({ onClose }) => {
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === objectId);
 
-    const { data: myTips } = useLoadMyTips();
-    const storyTips = myTips?.[objectId];
-    const hasTipped = !!storyTips;
-    const tipsCount = hasTipped ? Object.keys(storyTips).length : 0;
-    console.log({ myTips, storyTips, hasTipped });
+    const { data: additonalData } = useLoadAdditionalInfoForObjects([objectId]);
+    const storyTips = Object.values(additonalData?.[objectId]?.tips || {});
+    const myTipsCount = storyTips.filter((t) => t.uid === user?.uid).length;
+    // console.log({ myTips, storyTips });
 
     const [tipState, setTipState] = useState('');
     const enoughFundsForTip = !!balance && balance >= MIN_FUNDS_FOR_TIP;
@@ -126,9 +125,9 @@ export const Nonzone = ({ onClose }) => {
                               onClick: () => setTipState('ask'),
                               svg: tip,
                               title: 'Send a tip',
-                              badge: hasTipped ? (
+                              badge: myTipsCount ? (
                                   <>
-                                      {Array(tipsCount)
+                                      {Array(myTipsCount)
                                           .fill(0)
                                           .map((_, i) => (
                                               <TipBadgeIcon key={i} />
@@ -165,7 +164,14 @@ export const Nonzone = ({ onClose }) => {
                             onChange={(a) => console.log(a)}
                             elements={[['#' + object?.kind]]}
                         />
-                        <div className="nonzone__bottom"></div>
+                        <div className="nonzone__bottom">
+                            {!!storyTips.length && (
+                                <div className="likes-info">
+                                    {storyTips.length}{' '}
+                                    {storyTips.length === 1 ? 'tip' : 'tips'}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
