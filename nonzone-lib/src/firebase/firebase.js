@@ -147,6 +147,20 @@ export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
     );
 };
 
+export const subscribeToObjectAdditionalData = (objectId, onData, onError) => {
+    return firebase
+        .database()
+        .ref('objects-readonly')
+        .child(objectId)
+        .on(
+            'value',
+            (snap) => {
+                onData(snap?.val() || null);
+            },
+            onError
+        );
+};
+
 export const saveProfile = async (uid, data) => {
     if (!uid) throw new Error('uid empty');
     return firebase.database().ref(`/users-public/${uid}`).update(data);
