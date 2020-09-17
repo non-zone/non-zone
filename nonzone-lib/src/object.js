@@ -64,6 +64,18 @@ export const useLoadUserStories = (uid, publishedOnly = true) => {
     return { data, error, loading: data === undefined };
 };
 
+const expandRegion = (bounds) => {
+    const { minLat, minLng, maxLat, maxLng } = bounds;
+    const diffLat = maxLat - minLat;
+    const diffLng = maxLng - minLng;
+    return {
+        minLat: minLat - diffLat,
+        minLng: minLng - diffLng,
+        maxLat: maxLat + diffLat,
+        maxLng: maxLng + diffLng,
+    };
+};
+
 export const useLoadStoriesByRegion = (bounds) => {
     console.debug('useLoadStoriesByRegion', bounds);
     const [data, setData] = useState();
@@ -71,8 +83,10 @@ export const useLoadStoriesByRegion = (bounds) => {
     useEffect(() => {
         if (!bounds || !bounds.maxLat) return;
 
+        const expRegion = expandRegion(bounds);
+
         return io.subscribeToObjectsByRegion(
-            bounds,
+            expRegion,
             (arr) => {
                 // console.log('Loaded stories', arr);
                 setData(arr);
