@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { svg } from '../components';
+import cx from 'classnames';
 import './object.css';
 
 const MapObject = (props) => {
-    const { title, description, type, onClick } = props;
+    const { title, description, type, hotness, onClick } = props;
     const [state, setState] = useState(false);
     return (
-        <div className="mapobject" onClick={() => setState(!state)}>
+        <div
+            className={cx('mapobject', { [`hot-${hotness}`]: !!hotness })}
+            onClick={() => setState(!state)}
+        >
             {type !== 'place' ? svg.MapObject.vortex : svg.MapObject.vortex2}
             {state ? (
                 <>
@@ -30,16 +34,12 @@ const MapObject = (props) => {
     );
 };
 
-export const getRenderObject = (cbOnClick, showMerchants) => ({
+export const getRenderObject = (cbOnClick, showMerchants, cbGetLikes) => ({
     item: { id, title, description = '', type, external_data },
 }) => {
-    // console.log('getRenderObject', {
-    //     showMerchants,
-    //     title,
-    //     id,
-    //     type,
-    //     external_data,
-    // });
+    const likesObj = cbGetLikes?.(id);
+    // console.log('LIKES', likesObj);
+
     if (
         !showMerchants &&
         type === 'place'
@@ -51,6 +51,7 @@ export const getRenderObject = (cbOnClick, showMerchants) => ({
     }
     return (
         <MapObject
+            hotness={likesObj ? 1 : null}
             title={title}
             description={
                 description.length > 200

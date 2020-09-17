@@ -284,6 +284,10 @@ export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
     return () => {}; // dummy unsub
 };
 
+export const subscribeToObjectAdditionalData = (objectId, onData, onError) => {
+    throw new Error('Not implemented');
+};
+
 export const loadObjectsByUser = async (uid, publishedOnly = true) => {
     // TODO
     return [];
@@ -412,6 +416,10 @@ export const sendTip = async (contractId, amountAR, refId) => {
         return transaction.id;
     }
     throw new Error(response.statusText);
+};
+
+export const subscribeToMyTips = async (uid, onData, onError) => {
+    throw new Error('Not implemented');
 };
 
 export const bookmarkObject = async () => {

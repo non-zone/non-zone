@@ -29,6 +29,7 @@ import {
     signOut,
     checkInitialBalance,
     Login,
+    useLoadAdditionalInfoForObjects,
 } from 'nonzone-lib';
 import { restoreLastLocation, storeLastLocation } from './utils';
 
@@ -52,6 +53,11 @@ const Map = () => {
         bounds
     );
     console.log('LoadStoriesHook', { error, loadingStories, data });
+
+    const { data: additionalData } = useLoadAdditionalInfoForObjects(
+        data?.map((d) => d.id) || []
+    );
+    // console.log('Additional data', additionalData);
 
     useEffect(() => {
         detectLocation()
@@ -110,7 +116,8 @@ const Map = () => {
                     profileWidget={<span />}
                     renderObject={getRenderObject(
                         (objectId) => router.push(`/nonzone/${objectId}`),
-                        showMerchants
+                        showMerchants,
+                        (objectId) => additionalData?.[objectId]?.tips || null
                     )}
                     navigationWidget={
                         <NavigationWidget

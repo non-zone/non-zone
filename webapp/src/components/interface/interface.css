@@ -5,7 +5,7 @@
     bottom: 0px;
 
     display: grid;
-	grid-template-columns: min-content 1fr min-content;
+    grid-template-columns: min-content 1fr min-content;
 	
 }
 
@@ -32,6 +32,8 @@
     justify-content: center;
     align-items: center;
     z-index: 4;
+
+    position: relative;
 
     transition-property: background-color;
     transition-duration: 0.2s;
@@ -91,6 +93,12 @@
     grid-row: 1 / -1;
     background-color: #43ad9f;
     z-index: 3;
+}
+
+.navigation_badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 
 @keyframes button-appearance {

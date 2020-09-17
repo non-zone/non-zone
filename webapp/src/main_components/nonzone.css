@@ -67,3 +67,8 @@
 .nonzone__bottom {
     padding-bottom: 5px;
 }
+
+.likes-info {
+    color: #43ad9f;
+    padding: 10px;
+}

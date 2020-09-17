@@ -23,6 +23,9 @@ export const Interface = (props) => {
                 title={leftButton.title}
             >
                 {leftButton.svg}
+                {!!leftButton.badge && (
+                    <div className="navigation_badge">{leftButton.badge}</div>
+                )}
             </button>
 
             {!!centralButton && (
@@ -33,6 +36,11 @@ export const Interface = (props) => {
                 >
                     {centralButton.svg}
                     {centralButton.name}
+                    {!!centralButton.badge && (
+                        <div className="navigation_badge">
+                            {centralButton.badge}
+                        </div>
+                    )}
                 </button>
             )}
 
@@ -43,6 +51,11 @@ export const Interface = (props) => {
                     title={rightButton.title}
                 >
                     {rightButton.svg}
+                    {!!rightButton.badge && (
+                        <div className="navigation_badge">
+                            {rightButton.badge}
+                        </div>
+                    )}
                 </button>
             )}
         </div>

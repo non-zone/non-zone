@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import {
     useLoadStory,
     sendTip,
+    useLoadAdditionalInfoForObjects,
     getCurrency,
     Login,
     setBookmarkObject,
@@ -13,8 +14,17 @@ import {
 } from 'nonzone-lib';
 import { useAuth, useUserWallet } from 'nonzone-lib';
 
-const TIP_AMOUNT = 0.01;
+const TIP_AMOUNT = getCurrency() === 'SPACE' ? 1 : 0.01;
 const MIN_FUNDS_FOR_TIP = TIP_AMOUNT + 0.00000001;
+
+const tipBadgeStyle = {
+    backgroundColor: 'gold',
+    borderRadius: '50%',
+    display: 'inline-block',
+    height: 7,
+    width: 7,
+};
+const TipBadgeIcon = () => <div style={tipBadgeStyle} />;
 
 export const Nonzone = ({ onClose }) => {
     const { objectId } = useParams();
@@ -26,13 +36,22 @@ export const Nonzone = ({ onClose }) => {
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === objectId);
 
+    const { data: additonalData } = useLoadAdditionalInfoForObjects([objectId]);
+    const storyTips = Object.values(additonalData?.[objectId]?.tips || {});
+    const myTipsCount = storyTips.filter((t) => t.uid === user?.uid).length;
+    // console.log({ myTips, storyTips });
+
     const [tipState, setTipState] = useState('');
     const enoughFundsForTip = !!balance && balance >= MIN_FUNDS_FOR_TIP;
 
     const onConfirmSendTip = async () => {
         try {
             setTipState('pending');
-            await sendTip(object.contractId, TIP_AMOUNT, object.id);
+            await sendTip(
+                object.contractId || object?.uid,
+                TIP_AMOUNT,
+                object.id
+            );
             setTipState('success');
         } catch (err) {
             alert(err.toString());
@@ -100,13 +119,23 @@ export const Nonzone = ({ onClose }) => {
                         : null
                 }
                 rightButton={
-                    object?.contractId
+                    (object?.contractId || object?.uid) &&
+                    object?.uid !== user?.uid
                         ? {
                               onClick: () => setTipState('ask'),
                               svg: tip,
                               title: 'Send a tip',
+                              badge: myTipsCount ? (
+                                  <>
+                                      {Array(myTipsCount)
+                                          .fill(0)
+                                          .map((_, i) => (
+                                              <TipBadgeIcon key={i} />
+                                          ))}
+                                  </>
+                              ) : undefined,
                           }
-                        : null
+                        : {}
                 }
             />
             {!!object && (
@@ -135,7 +164,14 @@ export const Nonzone = ({ onClose }) => {
                             onChange={(a) => console.log(a)}
                             elements={[['#' + object?.kind]]}
                         />
-                        <div className="nonzone__bottom"></div>
+                        <div className="nonzone__bottom">
+                            {!!storyTips.length && (
+                                <div className="likes-info">
+                                    {storyTips.length}{' '}
+                                    {storyTips.length === 1 ? 'tip' : 'tips'}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
