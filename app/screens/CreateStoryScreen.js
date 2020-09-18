@@ -9,7 +9,7 @@ import { saveObject, publishObject, useAuth } from 'nonzone-lib';
 
 import ProfileScreen from './ProfileScreen';
 
-const REACT_APP_CLOUDINARY_CLOUD_NAME = 'ocm-cloud';
+const REACT_APP_CLOUDINARY_CLOUD_NAME = 'non-zone';
 
 const { width } = Dimensions.get('window');
 
