@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth, useUserPublicProfile, useUserWallet } from 'nonzone-lib';
 import {
     Interface,
     svg,
-    Profile,
+    // Profile,
     Slider,
     DialogWindow,
     // Image,
@@ -14,20 +14,41 @@ import {
     useLoadUserStories,
     getCurrency,
 } from 'nonzone-lib';
+import { TakePicture } from './TakePicture';
 
 const CURRENCY = getCurrency();
 
-export const MyProfile = ({ onClose, onSignOut }) => {
-    const [input, setInput] = useState();
-    const [type, setType] = useState('Zoner');
-    const {
-        Profile: { close, save, logout },
-        Slider: { zoner, explorer, merchant },
-    } = svg;
+const {
+    Profile: { close, save, logout },
+    Slider: {
+        zoner,
+        explorer,
+        // merchant
+    },
+} = svg;
 
+const Avatar = ({ url, onChange }) => {
+    return (
+        <div className="myprofile_avatar">
+            <TakePicture preset="avatar" onChange={onChange}>
+                <img src={url} alt="avatar" />
+            </TakePicture>
+        </div>
+    );
+};
+
+export const MyProfile = ({ onClose, onSignOut }) => {
     const { user, loading } = useAuth();
     const { profile, loading: profileLoading } = useUserPublicProfile();
     const { balance, loading: walletLoading } = useUserWallet(user?.uid);
+
+    const [state, setState] = useState({});
+    const isStateDirty = !profileLoading && state !== profile;
+
+    useEffect(() => {
+        // when stored in DB, set it to state
+        if (profile) setState(profile);
+    }, [profile]);
 
     const [showCongrats, setShowCongrats] = useState(false);
     const isNewUser = useRef();
@@ -39,28 +60,15 @@ export const MyProfile = ({ onClose, onSignOut }) => {
     if (user && !profileLoading && !profile?.nickname) {
         isNewUser.current = true;
     }
-    // const isShowDummyImage =
-    //     !!user && !!profile?.nickname && !isNewUser.current;
 
     if (!user && !loading) {
         onClose();
         return <span />;
     }
 
-    const inputValue = input === undefined ? profile?.nickname : input;
-    console.log(
-        'input value',
-        typeof input,
-        typeof inputValue,
-        input,
-        inputValue,
-        profile,
-        user
-    );
-
     const onSave = () => {
-        if (!input || !user) return;
-        updateUserProfile(user.uid, { nickname: inputValue })
+        if (!state.nickname || !user) return;
+        updateUserProfile(user.uid, state)
             .then(() => {
                 if (isNewUser.current) {
                     // when new users fills details, congratulate him!
@@ -75,11 +83,6 @@ export const MyProfile = ({ onClose, onSignOut }) => {
 
     return (
         <>
-            {/* {isShowDummyImage && (
-                <Image
-                // onClose={onClose}
-                />
-            )} */}
             {showCongrats ? (
                 <DialogWindow
                     amount={10}
@@ -97,11 +100,11 @@ export const MyProfile = ({ onClose, onSignOut }) => {
             ) : (
                 ''
             )}
-            <Profile
+            {/* <Profile
                 signed={!!user}
                 avatarUrl={user?.photoURL}
                 onClick={() => {}}
-            />
+            /> */}
             <Interface
                 leftButton={{ onClick: onClose, svg: close }}
                 centralButton={
@@ -109,6 +112,7 @@ export const MyProfile = ({ onClose, onSignOut }) => {
                         ? {
                               svg: save,
                               name: 'Update profile',
+                              disabled: !isStateDirty,
                               onClick: onSave,
                           }
                         : null
@@ -120,6 +124,11 @@ export const MyProfile = ({ onClose, onSignOut }) => {
             />
             <div className="myprofile__page">
                 <h1 className="myprofile__title">Profile</h1>
+                <Avatar
+                    url={state.photoURL || 'user.jpg'}
+                    onChange={(photoURL) => setState({ ...state, photoURL })}
+                />
+
                 {isNewUser.current && (
                     <p className="myprofile__welcome">
                         Welcome to <strong>Non-zone</strong>
@@ -130,7 +139,7 @@ export const MyProfile = ({ onClose, onSignOut }) => {
                 )}
                 {!walletLoading && !isNewUser.current && (
                     <p className="myprofile__welcome">
-                        Your balance is <strong>{balance}</strong> {CURRENCY}
+                        <strong>{balance}</strong> {CURRENCY}
                     </p>
                 )}
 
@@ -138,19 +147,20 @@ export const MyProfile = ({ onClose, onSignOut }) => {
                     disabled={!updateUserProfile}
                     className="myprofile__nickname"
                     type="text"
-                    value={inputValue || ''}
+                    value={state.nickname || ''}
                     placeholder="Your nickname"
                     onChange={(e) => {
                         console.log('Input nickname', e, e.target.value);
-                        setInput(e.target.value);
+                        // setNicknameInput(e.target.value);
+                        setState({ ...state, nickname: e.target.value });
                     }}
                 ></input>
                 <p className="myprofile__welcome">
                     How do you see yourself the most?
                 </p>
                 <Slider
-                    onChange={setType}
-                    activeElement={type}
+                    onChange={(type) => setState({ ...state, type })}
+                    activeElement={state.type || 'Zoner'}
                     elements={[
                         [
                             'Zoner',
@@ -158,12 +168,12 @@ export const MyProfile = ({ onClose, onSignOut }) => {
                             'Zoner',
                             zoner,
                         ],
-                        [
-                            'Merchant',
-                            'Provide unique experiences to explorers',
-                            'Merchant',
-                            merchant,
-                        ],
+                        // [
+                        //     'Merchant',
+                        //     'Provide unique experiences to explorers',
+                        //     'Merchant',
+                        //     merchant,
+                        // ],
                         [
                             'Explorer',
                             'Interact and discover exciting Stories',

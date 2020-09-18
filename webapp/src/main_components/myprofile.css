@@ -3,6 +3,7 @@
     width: 100%;
     overflow-y: scroll;
     background-color: rgb(0, 0, 0);
+    text-align: center;
 }
 
 .myprofile__title {
@@ -34,12 +35,25 @@
 
     font-size: 30px;
     color: #dbdbdb;
-	outline: none;
-	
-	transition-property: border-bottom;
-	transition-duration: 0.2s;
+    outline: none;
+
+    transition-property: border-bottom;
+    transition-duration: 0.2s;
 }
 
 .myprofile__nickname:hover {
-	border-bottom: 4px solid #55d4c3;
+    border-bottom: 4px solid #55d4c3;
+}
+
+.myprofile_avatar {
+    display: inline-block;
+    position: relative;
+}
+.myprofile_avatar img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 50%;
+}
+.myprofile_avatar input {
+    cursor: pointer;
 }
