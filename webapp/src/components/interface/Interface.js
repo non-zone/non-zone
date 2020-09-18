@@ -20,6 +20,7 @@ export const Interface = (props) => {
             <button
                 className="navigation__filter navigation__button"
                 onClick={leftButton.onClick}
+                disabled={leftButton.disabled}
                 title={leftButton.title}
             >
                 {leftButton.svg}
@@ -32,6 +33,7 @@ export const Interface = (props) => {
                 <button
                     className="navigation__create navigation__button"
                     onClick={centralButton.onClick}
+                    disabled={centralButton.disabled}
                     title={centralButton.title}
                 >
                     {centralButton.svg}
@@ -48,6 +50,7 @@ export const Interface = (props) => {
                 <button
                     className="navigation__current navigation__button"
                     onClick={rightButton.onClick}
+                    disabled={rightButton.disabled}
                     title={rightButton.title}
                 >
                     {rightButton.svg}
