@@ -1,11 +1,10 @@
 import io from './io';
 
 export * from './auth';
+export * from './media';
 export * from './object';
 
 export const Login = io.Login;
-
-
 
 export const getCurrency = io.getCurrency;
 export const getPublishPrice = async (data) => io.getPublishPrice(data);

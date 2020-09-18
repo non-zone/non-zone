@@ -5,11 +5,14 @@ import { Input, Button, Image, Text } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import { saveObject, publishObject, useAuth } from 'nonzone-lib';
+import {
+    saveObject,
+    publishObject,
+    useAuth,
+    uploadToCloudinary,
+} from 'nonzone-lib';
 
 import ProfileScreen from './ProfileScreen';
-
-const REACT_APP_CLOUDINARY_CLOUD_NAME = 'non-zone';
 
 const { width } = Dimensions.get('window');
 
@@ -83,24 +86,9 @@ export default function CreateStoryScreen({ route, navigation }) {
         }
     };
 
-    const uploadToCloudinary = (cloudName, image) => {
-        const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-        let data = new FormData();
-        data.append('file', image);
-        data.append('upload_preset', 'gallery_preset');
-        data.append('cloud_name', cloudName);
-        return fetch(url, {
-            method: 'POST',
-            body: data,
-        }).then((res) => res.json());
-    };
-
     const _saveStory = async () => {
         if (image) {
-            const uploadedImage = await uploadToCloudinary(
-                REACT_APP_CLOUDINARY_CLOUD_NAME,
-                image
-            );
+            const uploadedImage = await uploadToCloudinary(image);
             console.log(uploadedImage);
 
             const data = {
