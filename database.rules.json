@@ -2,7 +2,7 @@
     "rules": {
         "objects": {
             ".read": true,
-            ".indexOn": "uid",
+            ".indexOn": ["uid", "loc/latitude"],
             "$object_id": {
                 ".write": "auth != null && ((!data.exists() || (data.child('uid').val() == auth.uid) && (!newData.child('uid').exists() || newData.child('uid').val() == auth.uid)))"
             }
