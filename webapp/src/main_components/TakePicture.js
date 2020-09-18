@@ -2,7 +2,7 @@ import React from 'react';
 import './TakePicture.css';
 import { uploadToCloudinary } from 'nonzone-lib';
 
-export const TakePicture = ({ children, onChange, onStartUpload }) => {
+export const TakePicture = ({ children, preset, onChange, onStartUpload }) => {
     return (
         <>
             <input
@@ -11,7 +11,10 @@ export const TakePicture = ({ children, onChange, onStartUpload }) => {
                 className="takepicture__input"
                 onChange={async (e) => {
                     onStartUpload && onStartUpload();
-                    const info = await uploadToCloudinary(e.target.files[0]);
+                    const info = await uploadToCloudinary(
+                        e.target.files[0],
+                        preset
+                    );
                     onChange(info.secure_url);
                 }}
             ></input>
