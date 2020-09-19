@@ -85,8 +85,16 @@ const expandRegion = (bounds) => {
     };
 };
 
+const rnd = (digit) => digit.toFixed(3);
 export const useLoadStoriesByRegion = (bounds) => {
-    console.debug('useLoadStoriesByRegion', bounds);
+    console.debug(
+        'useLoadStoriesByRegion',
+        bounds
+            ? `lat:${rnd(bounds.minLat)}-${rnd(bounds.maxLat)},lng:${rnd(
+                  bounds.minLng
+              )}-${rnd(bounds.maxLng)}`
+            : bounds
+    );
     const [data, setData] = useState();
     const [error, setError] = useState();
     useEffect(() => {
