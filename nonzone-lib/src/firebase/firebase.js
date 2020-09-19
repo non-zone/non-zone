@@ -207,7 +207,7 @@ export const subscribeToUserService = (cb) => {
                 return;
             }
 
-            unsubProfile = subcribeToProfile(
+            unsubProfile = subscribeToProfile(
                 user.uid,
                 (profile) => {
                     data.profile = profile || { nickname: '' };
@@ -227,7 +227,7 @@ export const subscribeToUserService = (cb) => {
     );
 };
 
-export const subcribeToProfile = (uid, onData, onError) => {
+export const subscribeToProfile = (uid, onData, onError) => {
     return firebase
         .database()
         .ref(`/users-public/${uid}`)
