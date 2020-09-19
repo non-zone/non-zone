@@ -129,7 +129,9 @@ export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
         .on(
             'value',
             (snap) => {
-                const obj = snap?.val() || {};
+                if (!snap) return; // unsubscribing
+
+                const obj = snap.val() || {};
                 // console.debug('Loaded user stories for', bounds, obj);
                 const arr = [];
                 for (const [id, data] of Object.entries(obj)) {
