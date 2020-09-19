@@ -1,5 +1,5 @@
 body {
-    margin: 0;   
+    margin: 0;
 }
 
 h1,
@@ -10,9 +10,11 @@ h5,
 h6,
 p,
 a {
-	margin: 0px !important;
-	font-family: 'Roboto', sans-serif !important;
-	color: rgb(41, 41, 41) !important;
+    margin: 0px !important;
+    font-family: 'Roboto', sans-serif !important;
+    /* color: rgb(41, 41, 41) !important; */
+    color: white;
+    font-weight: 400 !important;
 }
 
 html,
@@ -20,4 +22,5 @@ body,
 #root {
     height: 100%;
     width: 100%;
+    background-color: rgb(0, 0, 0);
 }

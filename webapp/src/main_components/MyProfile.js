@@ -1,5 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuth, useMyPublicProfile, useMyWallet } from 'nonzone-lib';
+import cx from 'classnames';
+import {
+    useAuth,
+    useMyPublicProfile,
+    useMyWallet,
+    useLoadUserPublicProfile,
+    useLoadMyBookmarks,
+    useLoadStory,
+} from 'nonzone-lib';
 import {
     Interface,
     svg,
@@ -7,6 +15,7 @@ import {
     Slider,
     DialogWindow,
     // Image,
+    CloseButton,
 } from '../components';
 import './myprofile.css';
 import {
@@ -15,6 +24,7 @@ import {
     getCurrency,
 } from 'nonzone-lib';
 import { TakePicture } from './TakePicture';
+import { Link } from 'react-router-dom';
 
 const CURRENCY = getCurrency();
 
@@ -38,6 +48,25 @@ const Avatar = ({ url, onChange }) => {
 };
 
 export const MyProfile = ({ onClose, onSignOut }) => {
+    const { user, loading: authLoading } = useAuth();
+    const { profile, loading: profileLoading } = useMyPublicProfile();
+    const loading = authLoading || profileLoading;
+    const profileNotCreated = !loading && !profile?.nickname;
+
+    const [editMode, setEditMode] = useState(false);
+
+    if (profileNotCreated || editMode)
+        return (
+            <EditProfile
+                onClose={() => setEditMode(false)}
+                onSignOut={onSignOut}
+            />
+        );
+
+    return <ZoneWallet onClose={onClose} onEdit={() => setEditMode(true)} />;
+};
+
+const EditProfile = ({ onClose, onSignOut }) => {
     const { user, loading } = useAuth();
     const { profile, loading: profileLoading } = useMyPublicProfile();
     const { balance, loading: walletLoading } = useMyWallet();
@@ -184,5 +213,158 @@ export const MyProfile = ({ onClose, onSignOut }) => {
                 />
             </div>
         </>
+    );
+};
+
+const StoryPreview = ({
+    className,
+    story: storyArg,
+    storyId,
+    showAuthor = false,
+}) => {
+    const { data: storyData } = useLoadStory(storyId);
+    const story = storyArg || storyData;
+
+    const { data: author } = useLoadUserPublicProfile(
+        showAuthor ? story?.uid : null
+    );
+
+    if (!story) {
+        return (
+            <div className={cx('storypreview', className)}>
+                <div className="storypreview__placeholder" />
+            </div>
+        );
+    }
+    return (
+        <Link to={`/nonzone/${story.id}`}>
+            <div className={cx('storypreview', className)}>
+                <img
+                    src={story.image_thumbnail || story.image}
+                    alt="snapshot"
+                />
+                <div className="storypreview__title">{story.title}</div>
+                <div className="storypreview__subtitle">
+                    {showAuthor && author?.nickname}
+                </div>
+            </div>
+        </Link>
+    );
+};
+
+const Collection = ({ children }) => {
+    return <div className="collection">{children}</div>;
+};
+
+const MyBookmarks = () => {
+    const { data: bookmarks } = useLoadMyBookmarks();
+    console.log('bookmarks', bookmarks);
+
+    return (
+        <div>
+            {!!bookmarks?.length && (
+                <>
+                    <h2>My Bookmarks</h2>
+                    <Collection>
+                        {bookmarks.map((bm) => (
+                            <StoryPreview
+                                className="dark-back"
+                                storyId={bm.objectId}
+                                key={bm.objectId}
+                                showAuthor
+                            />
+                        ))}
+                    </Collection>
+                </>
+            )}
+        </div>
+    );
+};
+
+const MyStories = () => {
+    const { user } = useAuth();
+    const { data: stories } = useLoadUserStories(user?.uid);
+    console.log('my stories', stories);
+
+    return (
+        <div>
+            {!!stories?.length && (
+                <>
+                    <h2>My Stories</h2>
+                    <Collection>
+                        {stories.map((st) => (
+                            <StoryPreview
+                                className="teal-back"
+                                story={st}
+                                key={st.id}
+                                // showAuthor
+                            />
+                        ))}
+                    </Collection>
+                </>
+            )}
+        </div>
+    );
+};
+
+const type2icon = (type) => {
+    switch (type) {
+        case 'Explorer':
+            return svg.Slider.explorer;
+        case 'Zoner':
+        default:
+            return svg.Slider.zoner;
+    }
+};
+const UserTypeWidget = ({ type }) => {
+    return (
+        <div className="usertype__widget">
+            {type2icon(type)} {type}
+        </div>
+    );
+};
+
+const UserProfileDetails = ({ onEdit }) => {
+    const { profile } = useMyPublicProfile();
+
+    if (!profile) return <div className="userprofile_details" />;
+
+    return (
+        <div className="userprofile_details">
+            <Avatar url={profile.photoURL || 'user.jpg'} onChange={() => {}} />
+            <div>
+                <div className="userprofile__name">{profile.nickname}</div>
+                <UserTypeWidget type={profile.type} />
+            </div>
+            <div className="link" onClick={onEdit}>
+                Edit profile
+            </div>
+        </div>
+    );
+};
+
+const BalanceInfo = () => {
+    const { balance } = useMyWallet();
+
+    return (
+        <div className="balance-info">
+            Your balance is {balance} {CURRENCY}
+        </div>
+    );
+};
+export const ZoneWallet = ({ onClose, onEdit }) => {
+    return (
+        <div className="zonewallet__page">
+            <CloseButton onClick={onClose} />
+            <h1>Zone Wallet</h1>
+            <div className="centered">
+                <UserProfileDetails onEdit={onEdit} />
+            </div>
+            <div className="centered">
+                <BalanceInfo />
+            </div>
+            <MyBookmarks />
+            <MyStories />
+        </div>
     );
 };

@@ -50,10 +50,128 @@
     position: relative;
 }
 .myprofile_avatar img {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 60px;
+    max-height: 60px;
     border-radius: 50%;
 }
 .myprofile_avatar input {
     cursor: pointer;
+}
+
+.zonewallet__page h1 {
+    text-align: center;
+}
+.zonewallet__page h1,
+.zonewallet__page h2 {
+    padding: 0.5em;
+}
+/* .zonewallet__page {
+    background-color: rgb(0, 0, 0);
+    color: white;
+} */
+
+.collection {
+    display: flex;
+    flex-wrap: wrap;
+}
+.collection > * {
+    margin: 1.5em !important;
+    display: inline-block;
+}
+
+.storypreview {
+    height: 200px;
+    width: 200px;
+    border-radius: 10px;
+}
+.storypreview img {
+    object-fit: cover;
+    /* object-position: 0 0; */
+    border-radius: 10px 10px 0 0;
+    height: 75%;
+    width: 100%;
+}
+.storypreview__title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 5px;
+}
+.storypreview__subtitle {
+    margin: 5px;
+    font-size: 0.9rem;
+    font-weight: 300;
+}
+.storypreview__title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 5px;
+}
+.storypreview__subtitle {
+    margin: 5px;
+    font-size: 0.9rem;
+    font-weight: 300;
+}
+
+.dark-back {
+    background: #3d3d3d;
+    color: rgba(0, 0, 0, 0.13);
+}
+.dark-back .storypreview__title {
+    color: #349f92;
+}
+.dark-back .storypreview__subtitle {
+    color: #f2f6fc;
+}
+
+.teal-back {
+    background-color: #349f92;
+}
+.teal-back .storypreview__title {
+    color: #f2f6fc;
+}
+.teal-back .storypreview__subtitle {
+    color: #eee;
+}
+
+.userprofile_details {
+    height: 90px;
+    width: 300px;
+    padding: 1em;
+    border: #f2f6fc solid 1px;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #f2f6fc;
+}
+.userprofile__name {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+.usertype__widget {
+    display: flex;
+    align-items: center;
+    color: #bebebe;
+}
+.usertype__widget svg {
+    margin-right: 5px;
+}
+
+.userprofile_details .link {
+    color: #999;
+    cursor: pointer;
+}
+
+.balance-info {
+    color: #f2f6fc;
+    font-family: Roboto;
+    margin: 1em;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
