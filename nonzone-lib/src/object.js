@@ -44,6 +44,15 @@ export const useLoadStory = (id) => {
     return { data, error, loading: data === undefined };
 };
 
+export const useLoadUserPublicProfile = (uid) => {
+    const [data, setData] = useState();
+    const [error, setError] = useState();
+    useEffect(() => {
+        if (!uid) return;
+        return io.subscribeToProfile(uid, setData, setError);
+    }, [uid]);
+    return { data, error, loading: data === undefined };
+};
 export const useLoadUserStories = (uid, publishedOnly = true) => {
     console.debug('useLoadUserStories', uid);
     const [data, setData] = useState();

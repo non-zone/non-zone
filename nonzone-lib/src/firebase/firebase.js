@@ -207,10 +207,14 @@ export const subscribeToUserService = (cb) => {
                 return;
             }
 
-            unsubProfile = subcribeToProfile(user.uid, (profile) => {
-                data.profile = profile;
-                ready() && cb(data);
-            });
+            unsubProfile = subcribeToProfile(
+                user.uid,
+                (profile) => {
+                    data.profile = profile || { nickname: '' };
+                    ready() && cb(data);
+                },
+                (err) => console.log('Error loading my public profile', err)
+            );
             unsubBalance = subscribeToBalance(user.uid, (balance) => {
                 data.balance = balance;
                 ready() && cb(data);
@@ -223,7 +227,7 @@ export const subscribeToUserService = (cb) => {
     );
 };
 
-export const subcribeToProfile = (uid, cb) => {
+export const subcribeToProfile = (uid, onData, onError) => {
     return firebase
         .database()
         .ref(`/users-public/${uid}`)
@@ -231,9 +235,9 @@ export const subcribeToProfile = (uid, cb) => {
             'value',
             (snap) => {
                 // console.log('Snap:', snap);
-                cb(snap?.val() || { nickname: '' });
+                onData(snap?.val() || null);
             },
-            (err) => console.log('Error loading public user profile')
+            onError
         );
 };
 export const subscribeToBalance = (uid, cb) => {
