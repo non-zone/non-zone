@@ -12,9 +12,10 @@ const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
 const fbConf =
     REACT_APP_NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
 
-console.log('Init with', fbConf);
-firebase.initializeApp(fbConf);
-// firebase.analytics();
+if (!firebase.apps.length) {
+    console.log('Init with', fbConf);
+    firebase.initializeApp(fbConf);
+}
 
 export const Login = ({ onCancel, onSignedIn }) => {
     const ref = React.useRef();
