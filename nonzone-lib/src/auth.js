@@ -37,7 +37,7 @@ export const useAuth = () => {
     );
 };
 
-export const useUserPublicProfile = () => {
+export const useMyPublicProfile = () => {
     const state = useContext(AuthContext);
     return useMemo(
         () => ({
@@ -49,7 +49,7 @@ export const useUserPublicProfile = () => {
     );
 };
 
-export const useUserWallet = (uid) => {
+export const useMyWallet = () => {
     const state = useContext(AuthContext);
     return useMemo(
         () => ({

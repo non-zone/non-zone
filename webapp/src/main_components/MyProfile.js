@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuth, useUserPublicProfile, useUserWallet } from 'nonzone-lib';
+import { useAuth, useMyPublicProfile, useMyWallet } from 'nonzone-lib';
 import {
     Interface,
     svg,
@@ -39,8 +39,8 @@ const Avatar = ({ url, onChange }) => {
 
 export const MyProfile = ({ onClose, onSignOut }) => {
     const { user, loading } = useAuth();
-    const { profile, loading: profileLoading } = useUserPublicProfile();
-    const { balance, loading: walletLoading } = useUserWallet(user?.uid);
+    const { profile, loading: profileLoading } = useMyPublicProfile();
+    const { balance, loading: walletLoading } = useMyWallet();
 
     const [state, setState] = useState({});
     const isStateDirty = !profileLoading && state !== profile;

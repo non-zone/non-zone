@@ -10,7 +10,7 @@ import {
     getPublishPrice,
     getCurrency,
 } from 'nonzone-lib';
-import { useAuth, useUserWallet } from 'nonzone-lib';
+import { useMyWallet } from 'nonzone-lib';
 import { Spinner } from '../components/spinner/Spinner';
 
 const MIN_DESCR_LENGTH = 150;
@@ -63,8 +63,7 @@ export const CreateSaveStory = ({
         if (existingData) setState(existingData);
     }, [existingData]);
 
-    const { user } = useAuth();
-    const { balance } = useUserWallet(user?.uid);
+    const { balance } = useMyWallet();
 
     const descrLength = state.description?.length || 0;
 

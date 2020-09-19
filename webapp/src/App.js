@@ -22,7 +22,7 @@ import {
 import {
     AuthProvider,
     useAuth,
-    useUserPublicProfile,
+    useMyPublicProfile,
     saveObject,
     publishObject,
     useLoadStoriesByRegion,
@@ -69,7 +69,7 @@ const Map = () => {
     }, []);
 
     const { user } = useAuth();
-    const { profile, loading } = useUserPublicProfile();
+    const { profile, loading } = useMyPublicProfile();
 
     if (user && !loading && !profile?.nickname) {
         router.replace('/profile');

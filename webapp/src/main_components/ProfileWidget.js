@@ -1,12 +1,10 @@
 import React from 'react';
-import { useAuth, useUserPublicProfile } from 'nonzone-lib';
+import { useAuth, useMyPublicProfile } from 'nonzone-lib';
 import { Profile } from '../components';
 
 export const ProfileWidget = ({ onShowProfile, onSignIn }) => {
     const { user, loading } = useAuth();
-    const { profile, loading: profileLoading } = useUserPublicProfile(
-        user?.uid
-    );
+    const { profile, loading: profileLoading } = useMyPublicProfile();
 
     if (loading || profileLoading) return <span />;
 

@@ -12,7 +12,7 @@ import {
     clearBookmarkObject,
     useLoadMyBookmarks,
 } from 'nonzone-lib';
-import { useAuth, useUserWallet } from 'nonzone-lib';
+import { useAuth, useMyWallet } from 'nonzone-lib';
 
 const TIP_AMOUNT = getCurrency() === 'SPACE' ? 1 : 0.01;
 const MIN_FUNDS_FOR_TIP = TIP_AMOUNT + 0.00000001;
@@ -31,7 +31,7 @@ export const Nonzone = ({ onClose }) => {
     console.log('Nonzoneid:', objectId);
     const { error, loading, data: object } = useLoadStory(objectId);
     const { user } = useAuth();
-    const { balance } = useUserWallet(user?.uid);
+    const { balance } = useMyWallet();
 
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === objectId);
