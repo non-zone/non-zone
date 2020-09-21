@@ -18,8 +18,8 @@ import {
     useAuth,
     useLoadMyBookmarks,
     useLoadUserStories,
-    useUserWallet,
-    useUserPublicProfile,
+    useMyWallet,
+    useMyPublicProfile,
 } from 'nonzone-lib';
 import { googleSignIn } from '../services/auth';
 
@@ -42,16 +42,12 @@ function useNonce() {
 
 export default function WalletScreen() {
     const { user } = useAuth();
-    let bookmarks, stories, balance, profile;
-    if (user) {
-        bookmarks = useLoadMyBookmarks();
-        stories = useLoadUserStories(user.uid, false);
-        let wallet = useUserWallet(user.uid);
-        balance = wallet.balance;
-        let publicProfile = useUserPublicProfile();
-        profile = publicProfile.profile;
-        console.log(profile);
-    }
+    let bookmarks = useLoadMyBookmarks();
+    let stories = useLoadUserStories(user?.uid, false);
+    let wallet = useMyWallet(user?.uid);
+    let balance = wallet.balance;
+    let publicProfile = useMyPublicProfile();
+    let profile = publicProfile.profile;
 
     const nonce = useNonce();
     // Endpoint
