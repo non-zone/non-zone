@@ -44,10 +44,8 @@ export default function WalletScreen() {
     const { user } = useAuth();
     let bookmarks = useLoadMyBookmarks();
     let stories = useLoadUserStories(user?.uid, false);
-    let wallet = useMyWallet(user?.uid);
-    let balance = wallet.balance;
-    let publicProfile = useMyPublicProfile();
-    let profile = publicProfile.profile;
+    let { balance } = useMyWallet(user?.uid);
+    let { profile } = useMyPublicProfile();
 
     const nonce = useNonce();
     // Endpoint
