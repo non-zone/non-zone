@@ -7,7 +7,7 @@ export default {
             path: 'root',
             screens: {
                 Home: 'home',
-                Profile: 'profile',
+                Wallet: 'wallet',
                 CreateStory: 'createStory',
                 ShowStory: 'showStory',
                 Map: 'map',
