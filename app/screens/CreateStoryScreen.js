@@ -12,7 +12,7 @@ import {
     uploadToCloudinary,
 } from 'nonzone-lib';
 
-import ProfileScreen from './ProfileScreen';
+import WalletScreen from './WalletScreen';
 
 const { width } = Dimensions.get('window');
 
@@ -158,7 +158,7 @@ export default function CreateStoryScreen({ route, navigation }) {
             <Button title="Create story" onPress={_saveStory} />
         </ScrollView>
     ) : (
-        <ProfileScreen />
+        <WalletScreen />
     );
 }
 

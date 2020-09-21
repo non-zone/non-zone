@@ -40,7 +40,7 @@ function useNonce() {
     return nonce;
 }
 
-export default function ProfileScreen() {
+export default function WalletScreen() {
     const { user } = useAuth();
     let bookmarks, stories, balance, profile;
     if (user) {

@@ -141,7 +141,7 @@ export const MapScreen = (props) => {
                                 uri: user.photoURL,
                             }}
                             onPress={() =>
-                                props.navigation.navigate('ProfileScreen')
+                                props.navigation.navigate('WalletScreen')
                             }
                             containerStyle={{
                                 position: 'absolute', //use absolute position to show button on top of the map

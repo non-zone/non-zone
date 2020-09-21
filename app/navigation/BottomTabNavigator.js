@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
-import ProfileScreen from '../screens/ProfileScreen';
+import WalletScreen from '../screens/WalletScreen';
 import MapScreen from '../screens/MapScreen';
 
 const BottomTab = createBottomTabNavigator();
@@ -31,7 +31,7 @@ export default function BottomTabNavigator({ navigation, route }) {
             />
             <BottomTab.Screen
                 name="Profile"
-                component={ProfileScreen}
+                component={WalletScreen}
                 options={{
                     title: 'Profile',
                     tabBarIcon: ({ focused }) => (

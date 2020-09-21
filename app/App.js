@@ -8,7 +8,7 @@ import LinkingConfiguration from './navigation/LinkingConfiguration';
 import ShowStoryScreen from './screens/ShowStoryScreen';
 import CreateStoryScreen from './screens/CreateStoryScreen';
 import MapScreen from './screens/MapScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import WalletScreen from './screens/WalletScreen';
 
 import { AuthProvider } from 'nonzone-lib';
 
@@ -60,8 +60,8 @@ export default function App() {
                                     })}
                                 />
                                 <Stack.Screen
-                                    name="ProfileScreen"
-                                    component={ProfileScreen}
+                                    name="WalletScreen"
+                                    component={WalletScreen}
                                     options={{
                                         title: 'Zone Wallet',
                                     }}
