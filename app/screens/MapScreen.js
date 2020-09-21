@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Dimensions, Text } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Avatar, Button } from 'react-native-elements';
 import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import mapStyle from '../constants/mapStyle';
-import { useLoadStoriesByRegion } from 'nonzone-lib';
+import { useAuth, useLoadStoriesByRegion } from 'nonzone-lib';
 import * as Location from 'expo-location';
 import Colors from '../constants/Colors';
 
@@ -31,6 +31,7 @@ export const MapScreen = (props) => {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
     });
+    const { user } = useAuth();
     const bounds = useMemo(
         () => (location.latitude ? loc2bounds(location) : null),
         [location]
@@ -60,71 +61,99 @@ export const MapScreen = (props) => {
     return (
         <View style={styles.container}>
             {location.latitude !== undefined && (
-                <MapView
-                    style={styles.mapStyle}
-                    initialRegion={location}
-                    minZoomLevel={2}
-                    maxZoomLevel={18}
-                    customMapStyle={mapStyle}
-                    provider={PROVIDER_GOOGLE}
-                    onLongPress={(mapEvent) => {
-                        const { coordinate } = mapEvent.nativeEvent;
-                        console.log(coordinate);
-                        props.navigation.navigate('CreateStory', coordinate);
-                    }}
-                    onRegionChangeComplete={(region) => {
-                        if (
-                            location.latitude !== region.latitude ||
-                            location.longitude !== region.longitude
-                        )
-                            setLocation(region);
-                    }}
-                >
-                    {data.map((marker) => (
-                        <Marker
-                            key={marker.id}
-                            coordinate={marker.loc}
-                            title={marker.title}
-                            description={marker.description}
-                            image={require('../assets/images/marker.png')}
-                        >
-                            <Callout
-                                style={styles.calloutStyle}
-                                tooltip={true}
-                                onPress={() =>
-                                    props.navigation.navigate(
-                                        'ShowStory',
-                                        marker
-                                    )
-                                }
+                <View>
+                    <MapView
+                        style={styles.mapStyle}
+                        initialRegion={location}
+                        minZoomLevel={2}
+                        maxZoomLevel={18}
+                        customMapStyle={mapStyle}
+                        provider={PROVIDER_GOOGLE}
+                        onLongPress={(mapEvent) => {
+                            const { coordinate } = mapEvent.nativeEvent;
+                            console.log(coordinate);
+                            props.navigation.navigate(
+                                'CreateStory',
+                                coordinate
+                            );
+                        }}
+                        onRegionChangeComplete={(region) => {
+                            if (
+                                location.latitude !== region.latitude ||
+                                location.longitude !== region.longitude
+                            )
+                                setLocation(region);
+                        }}
+                    >
+                        {data.map((marker) => (
+                            <Marker
+                                key={marker.id}
+                                coordinate={marker.loc}
+                                title={marker.title}
+                                description={marker.description}
+                                image={require('../assets/images/marker.png')}
                             >
-                                <View style={styles.boxStyle}>
-                                    <Text
-                                        style={{
-                                            color: 'white',
-                                            fontSize: 14,
-                                            fontWeight: 'bold',
-                                            marginBottom: 8,
-                                        }}
-                                    >
-                                        {marker.title}
-                                    </Text>
-                                    <Text
-                                        numberOfLines={7}
-                                        ellipsizeMode="tail"
-                                        style={{ color: 'white', fontSize: 12 }}
-                                    >
-                                        {marker.description.replace(
-                                            /[\r\n]+/gm,
-                                            ' '
-                                        )}
-                                    </Text>
-                                </View>
-                                <Button title="Open this Story" />
-                            </Callout>
-                        </Marker>
-                    ))}
-                </MapView>
+                                <Callout
+                                    style={styles.calloutStyle}
+                                    tooltip={true}
+                                    onPress={() =>
+                                        props.navigation.navigate(
+                                            'ShowStory',
+                                            marker
+                                        )
+                                    }
+                                >
+                                    <View style={styles.boxStyle}>
+                                        <Text
+                                            style={{
+                                                color: 'white',
+                                                fontSize: 14,
+                                                fontWeight: 'bold',
+                                                marginBottom: 8,
+                                            }}
+                                        >
+                                            {marker.title}
+                                        </Text>
+                                        <Text
+                                            numberOfLines={7}
+                                            ellipsizeMode="tail"
+                                            style={{
+                                                color: 'white',
+                                                fontSize: 12,
+                                            }}
+                                        >
+                                            {marker.description.replace(
+                                                /[\r\n]+/gm,
+                                                ' '
+                                            )}
+                                        </Text>
+                                    </View>
+                                    <Button title="Open this Story" />
+                                </Callout>
+                            </Marker>
+                        ))}
+                    </MapView>
+                    {user && (
+                        <Avatar
+                            size={63}
+                            rounded
+                            source={{
+                                uri: user.photoURL,
+                            }}
+                            onPress={() =>
+                                props.navigation.navigate('ProfileScreen')
+                            }
+                            containerStyle={{
+                                position: 'absolute', //use absolute position to show button on top of the map
+                                top: '5%', //for center align
+                                right: '5%',
+                                alignSelf: 'flex-end', //for align to right
+                                borderColor: 'white',
+                                borderWidth: 3,
+                            }}
+                        />
+                    )}
+                </View>
             )}
         </View>
     );

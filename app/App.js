@@ -1,14 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-// import './services/firebase_init';
+import { StatusBar, StyleSheet, View } from 'react-native';
 
 import useCachedResources from './hooks/useCachedResources';
-import BottomTabNavigator from './navigation/BottomTabNavigator';
 import LinkingConfiguration from './navigation/LinkingConfiguration';
 import ShowStoryScreen from './screens/ShowStoryScreen';
 import CreateStoryScreen from './screens/CreateStoryScreen';
+import MapScreen from './screens/MapScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 import { AuthProvider } from 'nonzone-lib';
 
@@ -38,8 +38,12 @@ export default function App() {
                         >
                             <Stack.Navigator>
                                 <Stack.Screen
-                                    name="Root"
-                                    component={BottomTabNavigator}
+                                    name="MapScreen"
+                                    component={MapScreen}
+                                    options={{
+                                        headerShown: false,
+                                        title: 'Map',
+                                    }}
                                 />
                                 <Stack.Screen
                                     name="ShowStory"
@@ -54,6 +58,13 @@ export default function App() {
                                     options={({ route }) => ({
                                         title: 'Create story',
                                     })}
+                                />
+                                <Stack.Screen
+                                    name="ProfileScreen"
+                                    component={ProfileScreen}
+                                    options={{
+                                        title: 'Zone Wallet',
+                                    }}
                                 />
                             </Stack.Navigator>
                         </NavigationContainer>

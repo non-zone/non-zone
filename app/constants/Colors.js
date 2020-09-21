@@ -1,6 +1,6 @@
-const tintColor = '#55d4c3';
-const background = '#1b1d1f';
-const textColor = '#bebebe';
+const tintColor = '#349F92';
+const background = '#000000';
+const textColor = '#F9F9F9';
 
 export default {
     tintColor,
@@ -15,4 +15,5 @@ export default {
     warningText: textColor,
     noticeBackground: tintColor,
     noticeText: textColor,
+    disabledText: '#8D8D8F',
 };
