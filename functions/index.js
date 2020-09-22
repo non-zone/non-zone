@@ -20,6 +20,7 @@ const types = {
     LIKE_OBJECT: 'LIKE_OBJECT',
     SEND_TIP: 'SEND_TIP',
     RECEIVE_TIP: 'RECEIVE_TIP',
+    LEAVE_COMMENT: 'LEAVE_COMMENT',
 };
 
 const getActionValue = (type, optionalAmount) => {
@@ -30,6 +31,8 @@ const getActionValue = (type, optionalAmount) => {
             return 10;
         case types.REDEEM_SPACE:
             return 10;
+        case types.LEAVE_COMMENT:
+            return -1;
         case types.SEND_TIP:
             return -optionalAmount;
         case types.RECEIVE_TIP:
@@ -276,6 +279,12 @@ exports.likeObject = functions.https.onCall(async (data, context) => {
         );
     }
     const { objectId } = data;
+    if (!objectId) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'objectId argument is expected'
+        );
+    }
 
     const uid = context.auth.uid;
 
@@ -304,6 +313,58 @@ exports.likeObject = functions.https.onCall(async (data, context) => {
         type: types.LIKE_OBJECT,
         timestamp,
         objectId,
+    };
+    await applyNewActivity(uid, activitySender);
+
+    return 'ok';
+});
+
+exports.leaveComment = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'The function must be called ' + 'while authenticated.'
+        );
+    }
+    const { objectId, comment } = data;
+    if (!objectId || !comment) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'objectId and comment arguments are expected'
+        );
+    }
+
+    const uid = context.auth.uid;
+
+    functions.logger.info('Leave comment', { data, uid });
+
+    const senderWalletRef = firebase.database().ref('users-wallets').child(uid);
+    const senderWallet = await senderWalletRef.once('value');
+    if (
+        !senderWallet ||
+        senderWallet.balance < Math.abs(getActionValue(types.LEAVE_COMMENT))
+    ) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'Insufficient funds'
+        );
+    }
+
+    const date = new Date();
+    const timestamp = date.toISOString();
+    const tsUnix = date.getTime();
+
+    await firebase
+        .database()
+        .ref(`/objects-readonly/${objectId}/comments/`)
+        .push({ ts: tsUnix, uid, comment });
+
+    const activitySender = {
+        type: types.LEAVE_COMMENT,
+        timestamp,
+        objectId,
+        comment,
     };
     await applyNewActivity(uid, activitySender);
 

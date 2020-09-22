@@ -340,6 +340,19 @@ export const subscribeToMyLikes = (uid, onData, onError) => {
         );
 };
 
+export const leaveComment = async (objectId, comment) => {
+    try {
+        const res = await firebase.functions().httpsCallable('leaveComment')({
+            objectId,
+            comment,
+        });
+        console.log('leaveComment', res);
+    } catch (err) {
+        console.log('Error in leaveComment', err);
+        throw err;
+    }
+};
+
 const __setBookmark = async (uid, objectId, data) => {
     if (!uid) throw new Error('uid empty');
     return firebase

@@ -12,6 +12,7 @@ export const isPrepublishSupported = () => io.isPrepublishSupported();
 
 export const sendTip = io.sendTip;
 export const likeObject = io.likeObject;
+export const leaveComment = io.leaveComment;
 
 export const setBookmarkObject = io.setBookmarkObject;
 export const clearBookmarkObject = io.clearBookmarkObject;
