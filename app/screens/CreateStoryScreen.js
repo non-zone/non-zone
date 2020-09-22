@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Input, Button, Image, Text } from 'react-native-elements';
+import { Input, Button, Image } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
@@ -108,7 +108,7 @@ export default function CreateStoryScreen({ route, navigation }) {
 
             if (id) {
                 alert('Story saved!');
-                navigation.navigate('Root');
+                navigation.navigate('MapScreen');
             } else {
                 alert('something went wrong!');
             }

@@ -6,6 +6,8 @@ import mapStyle from '../constants/mapStyle';
 import { useAuth, useLoadStoriesByRegion } from 'nonzone-lib';
 import * as Location from 'expo-location';
 
+import Colors from '../constants/Colors';
+
 const { width, height } = Dimensions.get('window');
 const SCREEN_HEIGHT = height;
 const SCREEN_WIDTH = width;
@@ -30,6 +32,7 @@ export const MapScreen = (props) => {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
     });
+    let [initialLocation, setInitialLocation] = useState(null);
     const { user } = useAuth();
     const bounds = useMemo(
         () => (location.latitude ? loc2bounds(location) : null),
@@ -45,12 +48,16 @@ export const MapScreen = (props) => {
 
             let position = await Location.getCurrentPositionAsync({});
             console.log('Detected current position:', position);
-            setLocation({
+            let newLocation = {
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
-            });
+            };
+            setLocation(newLocation);
+            if (!initialLocation) {
+                setInitialLocation(newLocation);
+            }
         })();
     }, []);
 
@@ -63,7 +70,7 @@ export const MapScreen = (props) => {
                 <View>
                     <MapView
                         style={styles.mapStyle}
-                        initialRegion={location}
+                        region={location}
                         minZoomLevel={2}
                         maxZoomLevel={18}
                         customMapStyle={mapStyle}
@@ -156,6 +163,38 @@ export const MapScreen = (props) => {
                             }}
                         />
                     )}
+
+                    <Avatar
+                        size={40}
+                        rounded
+                        icon={{ name: 'add-location' }}
+                        containerStyle={{
+                            position: 'absolute', //use absolute position to show button on top of the map
+                            bottom: 80, //for center align
+                            right: '5%',
+                            alignSelf: 'flex-end', //for align to right
+                            backgroundColor: Colors.tintColor,
+                        }}
+                        onPress={() => {
+                            props.navigation.navigate('CreateStory', location);
+                        }}
+                    />
+
+                    <Avatar
+                        size={40}
+                        rounded
+                        icon={{ name: 'explore' }}
+                        containerStyle={{
+                            position: 'absolute', //use absolute position to show button on top of the map
+                            bottom: 30, //for center align
+                            right: '5%',
+                            alignSelf: 'flex-end', //for align to right
+                            backgroundColor: Colors.tintColor,
+                        }}
+                        onPress={() => {
+                            setLocation(initialLocation);
+                        }}
+                    />
                 </View>
             )}
         </View>
