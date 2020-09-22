@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-elements';
 import Colors from '../constants/Colors';
 import { useLoadStory } from 'nonzone-lib';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useNavigation } from '@react-navigation/native';
 
 dayjs.extend(relativeTime);
 const size = 128;
@@ -12,17 +13,26 @@ const size = 128;
 export default function BookmarkCard(props) {
     const { bookmark } = props;
     const { data: story } = useLoadStory(bookmark.objectId);
-    console.log(story);
+    const navigation = useNavigation();
+
     return story ? (
-        <View style={styles.container}>
-            <Image style={styles.image} source={{ uri: story.image }} />
-            <Text numberOfLines={1} style={styles.title}>
-                {bookmark.title}
-            </Text>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
-                {dayjs(bookmark.date).fromNow()}
-            </Text>
-        </View>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('ShowStory', story)}
+        >
+            <View style={styles.container}>
+                <Image style={styles.image} source={{ uri: story.image }} />
+                <Text numberOfLines={1} style={styles.title}>
+                    {bookmark.title}
+                </Text>
+                <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={styles.text}
+                >
+                    {dayjs(bookmark.date).fromNow()}
+                </Text>
+            </View>
+        </TouchableOpacity>
     ) : null;
 }
 

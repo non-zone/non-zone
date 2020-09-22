@@ -1,22 +1,33 @@
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-elements';
 import Colors from '../constants/Colors';
+import { useNavigation } from '@react-navigation/native';
 
 const size = 128;
 
 export default function StoryCard(props) {
     const { story } = props;
+    const navigation = useNavigation();
+
     return (
-        <View style={styles.container}>
-            <Image style={styles.image} source={{ uri: story.image }} />
-            <Text numberOfLines={1} style={styles.title}>
-                {story.title}
-            </Text>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
-                {story.description}
-            </Text>
-        </View>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('ShowStory', story)}
+        >
+            <View style={styles.container}>
+                <Image style={styles.image} source={{ uri: story.image }} />
+                <Text numberOfLines={1} style={styles.title}>
+                    {story.title}
+                </Text>
+                <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={styles.text}
+                >
+                    {story.description}
+                </Text>
+            </View>
+        </TouchableOpacity>
     );
 }
 
