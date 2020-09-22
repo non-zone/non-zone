@@ -48,9 +48,7 @@ const Avatar = ({ url, onChange }) => {
 };
 
 export const MyProfile = ({ onClose, onSignOut }) => {
-    const { user, loading: authLoading } = useAuth();
-    const { profile, loading: profileLoading } = useMyPublicProfile();
-    const loading = authLoading || profileLoading;
+    const { profile, loading } = useMyPublicProfile();
     const profileNotCreated = !loading && !profile?.nickname;
 
     const [editMode, setEditMode] = useState(false);
