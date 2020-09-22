@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import {
     useLoadStory,
     sendTip,
+    likeObject,
     useLoadAdditionalInfoForObjects,
     getCurrency,
     Login,
@@ -39,7 +40,20 @@ export const Nonzone = ({ onClose }) => {
     const { data: additonalData } = useLoadAdditionalInfoForObjects([objectId]);
     const storyTips = Object.values(additonalData?.[objectId]?.tips || {});
     const myTipsCount = storyTips.filter((t) => t.uid === user?.uid).length;
-    // console.log({ myTips, storyTips });
+
+    const storyLikes = Object.values(additonalData?.[objectId]?.likes || {});
+    const _isLikedDB = storyLikes.some((t) => t.uid === user?.uid);
+    const [_isLikedState, setIsLiked] = useState(false);
+    const isLikedByMe = _isLikedDB || _isLikedState;
+
+    console.log({
+        myTipsCount,
+        storyTips,
+        storyLikes,
+        isLikedByMe,
+        _isLikedDB,
+        _isLikedState,
+    });
 
     const [tipState, setTipState] = useState('');
     const enoughFundsForTip = !!balance && balance >= MIN_FUNDS_FOR_TIP;
@@ -56,6 +70,14 @@ export const Nonzone = ({ onClose }) => {
         } catch (err) {
             alert(err.toString());
             setTipState('ask');
+        }
+    };
+    const onLike = async () => {
+        setIsLiked(true);
+        try {
+            await likeObject(object.id);
+        } catch (err) {
+            console.log(err.toString());
         }
     };
 
@@ -170,6 +192,11 @@ export const Nonzone = ({ onClose }) => {
                                     {storyTips.length}{' '}
                                     {storyTips.length === 1 ? 'tip' : 'tips'}
                                 </div>
+                            )}
+                            {isLikedByMe ? (
+                                <div className="likes-info">Liked</div>
+                            ) : (
+                                <button onClick={onLike}>Like</button>
                             )}
                         </div>
                     </div>
