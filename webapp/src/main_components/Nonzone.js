@@ -6,12 +6,14 @@ import {
     useLoadStory,
     sendTip,
     likeObject,
+    leaveComment,
     useLoadAdditionalInfoForObjects,
     getCurrency,
     Login,
     setBookmarkObject,
     clearBookmarkObject,
     useLoadMyBookmarks,
+    useLoadUserPublicProfile,
 } from 'nonzone-lib';
 import { useAuth, useMyWallet } from 'nonzone-lib';
 
@@ -27,6 +29,47 @@ const tipBadgeStyle = {
 };
 const TipBadgeIcon = () => <div style={tipBadgeStyle} />;
 
+const Comment = ({ value }) => {
+    const { ts, uid, comment } = value;
+    const { data: profile } = useLoadUserPublicProfile(uid);
+    return (
+        <div>
+            {new Date(ts).toLocaleString()} - {profile?.nickname || ''}
+            <div>{comment}</div>
+        </div>
+    );
+};
+
+const CommentForm = ({ onSubmit }) => {
+    const [state, setState] = useState('');
+    const [submitPending, setSubmitPending] = useState(false);
+    const submit = async (e) => {
+        e.preventDefault();
+        const comment = state.trim();
+        if (!comment) return;
+        setSubmitPending(true);
+        try {
+            await onSubmit(comment);
+            setState('');
+        } finally {
+            setSubmitPending(false);
+        }
+    };
+    return (
+        <form onSubmit={submit}>
+            {submitPending && <Spinner />}
+            <textarea
+                required
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                placeholder={`This costs ${TIP_AMOUNT} ${getCurrency()}`}
+            />
+            <br />
+            <button>Post</button>
+        </form>
+    );
+};
+
 export const Nonzone = ({ onClose }) => {
     const { objectId } = useParams();
     console.log('Nonzoneid:', objectId);
@@ -37,14 +80,19 @@ export const Nonzone = ({ onClose }) => {
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === objectId);
 
-    const { data: additonalData } = useLoadAdditionalInfoForObjects([objectId]);
-    const storyTips = Object.values(additonalData?.[objectId]?.tips || {});
+    const { data: additonalDataArr } = useLoadAdditionalInfoForObjects([
+        objectId,
+    ]);
+    const additonalData = additonalDataArr?.[objectId];
+    const storyTips = Object.values(additonalData?.tips || {});
     const myTipsCount = storyTips.filter((t) => t.uid === user?.uid).length;
 
-    const storyLikes = Object.values(additonalData?.[objectId]?.likes || {});
+    const storyLikes = Object.values(additonalData?.likes || {});
     const _isLikedDB = storyLikes.some((t) => t.uid === user?.uid);
     const [_isLikedState, setIsLiked] = useState(false);
     const isLikedByMe = _isLikedDB || _isLikedState;
+
+    const comments = Object.values(additonalData?.comments || []);
 
     console.log({
         myTipsCount,
@@ -78,6 +126,14 @@ export const Nonzone = ({ onClose }) => {
             await likeObject(object.id);
         } catch (err) {
             console.log(err.toString());
+        }
+    };
+
+    const onLeaveComment = async (comment) => {
+        try {
+            await leaveComment(object.id, comment);
+        } catch (err) {
+            alert(err.toString());
         }
     };
 
@@ -198,6 +254,15 @@ export const Nonzone = ({ onClose }) => {
                             ) : (
                                 <button onClick={onLike}>Like</button>
                             )}
+                            {comments.length > 0 && (
+                                <div className="likes-info">
+                                    <h3>Comments</h3>
+                                    {comments.map((c, idx) => (
+                                        <Comment key={idx} value={c} />
+                                    ))}
+                                </div>
+                            )}
+                            <CommentForm onSubmit={onLeaveComment} />
                         </div>
                     </div>
                 </div>
