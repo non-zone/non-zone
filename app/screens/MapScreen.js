@@ -206,7 +206,7 @@ export default MapScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -220,12 +220,12 @@ const styles = StyleSheet.create({
     boxStyle: {
         paddingHorizontal: 12,
         paddingVertical: 10,
-        backgroundColor: 'rgba(0,106,127,0.75)',
-        borderColor: '#00FFE0',
+        backgroundColor: Colors.tintBackground,
+        borderColor: Colors.border,
         borderWidth: 1,
         borderRadius: 10,
     },
     button: {
-        backgroundColor: '#349F92',
+        backgroundColor: Colors.buttonBackground,
     },
 });

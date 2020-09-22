@@ -48,14 +48,14 @@ export default function App() {
                                 <Stack.Screen
                                     name="ShowStory"
                                     component={ShowStoryScreen}
-                                    options={({ route }) => ({
-                                        title: 'Story',
+                                    options={() => ({
+                                        headerShown: false,
                                     })}
                                 />
                                 <Stack.Screen
                                     name="CreateStory"
                                     component={CreateStoryScreen}
-                                    options={({ route }) => ({
+                                    options={() => ({
                                         title: 'Create story',
                                     })}
                                 />

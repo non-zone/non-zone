@@ -13,6 +13,7 @@ import { Platform, View, StyleSheet, FlatList, ScrollView } from 'react-native';
 import { Button, Avatar, Text, Icon } from 'react-native-elements';
 import StoryCard from '../components/StoryCard';
 import BookmarkCard from '../components/BookmarkCard';
+import Line from '../components/Line';
 import {
     signOut,
     useAuth,
@@ -151,14 +152,8 @@ export default function WalletScreen() {
                             you.
                         </Text>
                     </View>
-                    <View
-                        style={{
-                            borderBottomColor: 'white',
-                            borderBottomWidth: 3,
-                            marginVertical: 20,
-                            marginHorizontal: 20,
-                        }}
-                    />
+
+                    <Line />
 
                     <Text style={styles.balanceText}>
                         Your balance is {balance} SPACE
@@ -169,7 +164,7 @@ export default function WalletScreen() {
                         style={styles.list}
                         horizontal={true}
                         data={bookmarks.data}
-                        renderItem={({ item, index, separators }) => (
+                        renderItem={({ item, index }) => (
                             <BookmarkCard key={index} bookmark={item} />
                         )}
                         keyExtractor={(item) => item.objectId}
@@ -185,7 +180,7 @@ export default function WalletScreen() {
                         style={styles.list}
                         horizontal={true}
                         data={stories.data}
-                        renderItem={({ item, index, separators }) => (
+                        renderItem={({ item, index }) => (
                             <StoryCard key={index} story={item} />
                         )}
                         keyExtractor={(item) => item.id}

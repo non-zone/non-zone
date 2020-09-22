@@ -16,4 +16,7 @@ export default {
     noticeBackground: tintColor,
     noticeText: textColor,
     disabledText: '#8D8D8F',
+    tintBackground: 'rgba(0,106,127,0.75)',
+    border: '#00FFE0',
+    buttonBackground: '#349F92',
 };
