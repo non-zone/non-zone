@@ -422,6 +422,8 @@ export const subscribeToMyTips = async (uid, onData, onError) => {
     throw new Error('Not implemented');
 };
 
+export const likeObject = null; // currently not supported
+
 export const bookmarkObject = async () => {
     throw new Error('Not implemented');
 };

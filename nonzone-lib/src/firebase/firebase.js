@@ -313,6 +313,33 @@ export const subscribeToMyTips = (uid, onData, onError) => {
         );
 };
 
+export const likeObject = async (objectId) => {
+    try {
+        const res = await firebase.functions().httpsCallable('likeObject')({
+            objectId,
+        });
+        console.log('likeObject', res);
+    } catch (err) {
+        console.log('Error in likeObject', err);
+        throw err;
+    }
+};
+
+export const subscribeToMyLikes = (uid, onData, onError) => {
+    return firebase
+        .database()
+        .ref('users-private-readonly')
+        .child(uid)
+        .child('likes')
+        .on(
+            'value',
+            (snap) => {
+                onData(snap?.val() || {});
+            },
+            onError
+        );
+};
+
 const __setBookmark = async (uid, objectId, data) => {
     if (!uid) throw new Error('uid empty');
     return firebase

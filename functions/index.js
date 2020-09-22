@@ -17,6 +17,7 @@ const types = {
     OBJECT_PUBLISH: 'OBJECT_PUBLISH',
     PROFILE_CREATE: 'PROFILE_CREATE',
     REDEEM_SPACE: 'REDEEM_SPACE',
+    LIKE_OBJECT: 'LIKE_OBJECT',
     SEND_TIP: 'SEND_TIP',
     RECEIVE_TIP: 'RECEIVE_TIP',
 };
@@ -33,6 +34,7 @@ const getActionValue = (type, optionalAmount) => {
             return -optionalAmount;
         case types.RECEIVE_TIP:
             return optionalAmount;
+        case types.LIKE_OBJECT:
         default:
             return 0;
     }
@@ -263,4 +265,47 @@ exports.tipUser = functions.https.onCall(async (data, context) => {
     //     wallet.balance += amount;
     //     return wallet
     // })
+});
+
+exports.likeObject = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'The function must be called ' + 'while authenticated.'
+        );
+    }
+    const { objectId } = data;
+
+    const uid = context.auth.uid;
+
+    functions.logger.info('Send tip', { data, uid });
+
+    const date = new Date();
+    const timestamp = date.toISOString();
+    const tsUnix = date.getTime();
+
+    const likeId = firebase
+        .database()
+        .ref(`/objects-readonly/${objectId}/likes/`)
+        .push().key;
+    const multipathData = {
+        [`/users-private-readonly/${uid}/likes/${objectId}/${tsUnix}`]: true,
+        [`/objects-readonly/${objectId}/likes/${likeId}`]: {
+            uid,
+            ts: tsUnix,
+        },
+    };
+    functions.logger.info('likeObject multipathData', { multipathData });
+
+    await firebase.database().ref('/').update(multipathData);
+
+    const activitySender = {
+        type: types.LIKE_OBJECT,
+        timestamp,
+        objectId,
+    };
+    await applyNewActivity(uid, activitySender);
+
+    return 'ok';
 });

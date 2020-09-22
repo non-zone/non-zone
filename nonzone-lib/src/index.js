@@ -10,8 +10,8 @@ export const getCurrency = io.getCurrency;
 export const getPublishPrice = async (data) => io.getPublishPrice(data);
 export const isPrepublishSupported = () => io.isPrepublishSupported();
 
-export const sendTip = (contractId, amount, refId) =>
-    io.sendTip(contractId, amount, refId);
+export const sendTip = io.sendTip;
+export const likeObject = io.likeObject;
 
 export const setBookmarkObject = io.setBookmarkObject;
 export const clearBookmarkObject = io.clearBookmarkObject;
