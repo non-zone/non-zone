@@ -5,7 +5,6 @@ import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import mapStyle from '../constants/mapStyle';
 import { useAuth, useLoadStoriesByRegion } from 'nonzone-lib';
 import * as Location from 'expo-location';
-import Colors from '../constants/Colors';
 
 const { width, height } = Dimensions.get('window');
 const SCREEN_HEIGHT = height;
@@ -55,7 +54,7 @@ export const MapScreen = (props) => {
         })();
     }, []);
 
-    const { error, loading, data = [] } = useLoadStoriesByRegion(bounds);
+    const { data = [] } = useLoadStoriesByRegion(bounds);
     // console.log({ error, loading, data });
 
     return (
@@ -107,7 +106,7 @@ export const MapScreen = (props) => {
                                         <Text
                                             style={{
                                                 color: 'white',
-                                                fontSize: 14,
+                                                fontSize: 16,
                                                 fontWeight: 'bold',
                                                 marginBottom: 8,
                                             }}
@@ -120,6 +119,7 @@ export const MapScreen = (props) => {
                                             style={{
                                                 color: 'white',
                                                 fontSize: 12,
+                                                fontWeight: '100',
                                             }}
                                         >
                                             {marker.description.replace(
@@ -128,7 +128,10 @@ export const MapScreen = (props) => {
                                             )}
                                         </Text>
                                     </View>
-                                    <Button title="Open this Story" />
+                                    <Button
+                                        style={styles.button}
+                                        title="Open"
+                                    />
                                 </Callout>
                             </Marker>
                         ))}
@@ -173,14 +176,17 @@ const styles = StyleSheet.create({
         height: SCREEN_HEIGHT,
     },
     calloutStyle: {
-        width: 200,
+        width: 255,
     },
     boxStyle: {
         paddingHorizontal: 12,
-        paddingVertical: 20,
-        backgroundColor: Colors.background,
-        borderColor: Colors.tintColor,
-        borderWidth: 2,
+        paddingVertical: 10,
+        backgroundColor: 'rgba(0,106,127,0.75)',
+        borderColor: '#00FFE0',
+        borderWidth: 1,
         borderRadius: 10,
+    },
+    button: {
+        backgroundColor: '#349F92',
     },
 });
