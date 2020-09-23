@@ -56,7 +56,7 @@ export default function App() {
                                     name="CreateStory"
                                     component={CreateStoryScreen}
                                     options={() => ({
-                                        title: 'Create story',
+                                        headerShown: false,
                                     })}
                                 />
                                 <Stack.Screen
