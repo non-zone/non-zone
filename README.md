@@ -23,31 +23,51 @@ The project has 3 main modules:
 
 -   _app_ - react-native app
 -   _webapp_ - create-react-app based webapp
+-   _nonzone-lib_ - create-react-library based library with common functions for app/webapp
 -   _functions_ - Firebase Cloud functions used for API and DB triggers
 
-Run `yarn install` initially in one the modules your're working on, e.g.:
+The project is a monorepo with _app_, _webapp_ and _nonzone-lib_ modules. _functions_ are separate for the moment.
+
+Run `yarn install` initially in project root or one of the monorepo modules. Run it also in _functions_.
+
+```
+yarn install
+
+```
+
+Start building _nonzone-lib_ module:
+
+```
+cd nonzone-lib/
+
+yarn start
+```
+
+In separate console run in development mode _app_ and/or _webapp_.
 
 ```
 cd webapp/
 
-yarn install
-```
-
-Then start the module in development mode
-
-```
 yarn start
 ```
+
+```
+cd app/
+
+yarn start
+```
+
+In case of _app_ issues, try running it with _expo start --clear_.
 
 See the instructions printed in console for more information.
 
 ### Deployment of webapp and functions
 
-#### Deploy firebase + OCM integration
+#### Deploy firebase
 
-Create _.env.dev_ and _.env.prod_ files with _REACT_APP_OCM_TOKEN_ variable.
+In project root execute either `yarn deploy:dev` or `yarn deploy:prod` command - it will set the appropriate environment variable, build the _nonzone-lib_ and _webapp_ module and deploy _webapp_, _functions_ along with _database.rules_.
 
-In project root execute either `yarn deploy:dev` or `yarn deploy:prod` command - it will set the appropriate environment variable, build the webapp module and deploy _webapp_, _functions_ along with _database.rules_.
+Just in case stop _yarn build_ in _nonzone-lib_ if you have it running.
 
 #### Deploy Arweave
 

@@ -9,13 +9,14 @@
         "webapp"
     ],
     "scripts": {
-        "deploy:dev": "source .env.dev && REACT_APP_NONZONE_ENV='development' yarn --cwd webapp build && firebase deploy -P default",
-        "deploy:prod": "source .env.prod && REACT_APP_NONZONE_ENV='production' yarn --cwd webapp build && firebase deploy -P production",
-        "set-io-arweave": "echo 'export { default } from \"./arweave\";' > webapp/src/integrations/index.js",
-        "reset-io": "git checkout webapp/src/integrations/index.js",
-        "aw:build:dev": "yarn set-io-arweave && REACT_APP_NONZONE_ENV='development' GENERATE_SOURCEMAP=false yarn --cwd webapp build && yarn reset-io",
-        "aw:build:prod": "yarn set-io-arweave && REACT_APP_NONZONE_ENV='production' GENERATE_SOURCEMAP=false yarn --cwd webapp build && yarn reset-io",
+        "deploy:dev": "REACT_APP_NONZONE_ENV='development' && yarn build-for-web && firebase deploy -P default",
+        "deploy:prod": "REACT_APP_NONZONE_ENV='production' && yarn build-for-web && firebase deploy -P production",
+        "set-io-arweave": "echo 'export { default } from \"./arweave\";' > nonzone-lib/src/io.js",
+        "reset-io": "git checkout nonzone-lib/src/io.js",
+        "aw:build:dev": "yarn set-io-arweave && REACT_APP_NONZONE_ENV='development' GENERATE_SOURCEMAP=false yarn build-for-web && yarn reset-io",
+        "aw:build:prod": "yarn set-io-arweave && REACT_APP_NONZONE_ENV='production' GENERATE_SOURCEMAP=false yarn build-for-web && yarn reset-io",
         "aw:deploy": "yarn --cwd webapp exec arweave deploy-dir ./build",
+        "build-for-web": "yarn --cwd nonzone-lib build && yarn --cwd webapp build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
