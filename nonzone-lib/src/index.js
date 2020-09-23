@@ -1,5 +1,6 @@
 import io from './io';
 
+export * from './config';
 export * from './auth';
 export * from './media';
 export * from './object';

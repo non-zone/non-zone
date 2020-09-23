@@ -3,18 +3,13 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/functions';
-import firebaseConfig from '../firebaseConfig';
-import firebaseConfigDev from '../firebaseConfigDev';
 import { useEffect } from 'react';
 import React from 'react';
-
-const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
-const fbConf =
-    REACT_APP_NONZONE_ENV === 'production' ? firebaseConfig : firebaseConfigDev;
+import { googleConfig } from '../config';
 
 if (!firebase.apps.length) {
-    console.log('Init with', fbConf);
-    firebase.initializeApp(fbConf);
+    console.log('Init with', googleConfig);
+    firebase.initializeApp(googleConfig);
 }
 
 export const Login = ({ onCancel, onSignedIn }) => {

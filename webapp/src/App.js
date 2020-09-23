@@ -29,11 +29,12 @@ import {
     signOut,
     checkInitialBalance,
     Login,
+    googleConfig,
     useLoadAdditionalInfoForObjects,
 } from 'nonzone-lib';
 import { restoreLastLocation, storeLastLocation } from './utils';
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY || '';
+const GOOGLE_API_KEY = googleConfig.apiKey;
 
 const defaultCenter = restoreLastLocation() || {
     latitude: 42.69,
