@@ -1,30 +1,9 @@
-# lib
+# nonzone-lib
 
-> Common code
+This library contains some common code for _app_ and _webapp_ modules.
 
-[![NPM](https://img.shields.io/npm/v/lib.svg)](https://www.npmjs.com/package/lib) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+It has 2 implementations of saving/loading data - using _arweave_ and _firebase_.
 
-## Install
+The common logic is in _index.js_ and files included in it. It's mostly different hooks and saving functions.
 
-```bash
-npm install --save lib
-```
-
-## Usage
-
-```jsx
-import React, { Component } from 'react'
-
-import MyComponent from 'lib'
-import 'lib/dist/index.css'
-
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
-```
-
-## License
-
-Apache-2.0 © [dmitry-yudakov](https://github.com/dmitry-yudakov)
+_io.js_ points to the right integration - it's set in root _package.json_ scripts for different types of build and it can be switched manually by editing the file for development.
