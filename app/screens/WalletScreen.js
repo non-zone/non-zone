@@ -9,24 +9,21 @@ import {
 import { Button, Avatar, Text, Icon } from 'react-native-elements';
 import StoryCard from '../components/StoryCard';
 import BookmarkCard from '../components/BookmarkCard';
-import Line from '../components/Line';
+import WelcomeBlock from '../components/WelcomeBlock';
 import {
     signOut,
     useAuth,
     useLoadMyBookmarks,
     useLoadUserStories,
-    useMyWallet,
     useMyPublicProfile,
 } from 'nonzone-lib';
 
 import Colors from '../constants/Colors';
-import Layout from '../constants/Layout';
 
 export default function WalletScreen(props) {
     const { user } = useAuth();
     let bookmarks = useLoadMyBookmarks();
     let stories = useLoadUserStories(user?.uid, false);
-    let { balance } = useMyWallet(user?.uid);
     let { profile } = useMyPublicProfile();
     const { navigation } = props;
 
@@ -59,10 +56,14 @@ export default function WalletScreen(props) {
                                 style={{ marginRight: 10 }}
                                 size={18}
                                 type="material"
-                                name="camera-alt"
+                                name={
+                                    profile.type === 'explorer'
+                                        ? 'explore'
+                                        : 'camera-alt'
+                                }
                                 color={Colors.tintColor}
                             />
-                            <Text>{user.type ? user.type : 'Zoner'}</Text>
+                            <Text>{profile.type ? profile.type : 'zoner'}</Text>
                         </View>
                     </View>
                     <TouchableOpacity
@@ -71,32 +72,8 @@ export default function WalletScreen(props) {
                         <Icon name="edit" color={Colors.tintColor} />
                     </TouchableOpacity>
                 </View>
-                <View
-                    style={{
-                        width: Layout.window.width - 50,
-                        marginTop: 20,
-                        marginHorizontal: 25,
-                    }}
-                >
-                    <Text style={styles.text}>
-                        Welcome to <Text style={styles.bold}>Non-zone</Text>
-                    </Text>
-                    <Text style={styles.text}>
-                        This is your{' '}
-                        <Text style={styles.bold}>secret place</Text>, let us
-                        {'\n'}
-                        make it <Text style={styles.bold}>
-                            more personal
-                        </Text>{' '}
-                        for you.
-                    </Text>
-                </View>
 
-                <Line />
-
-                <Text style={styles.balanceText}>
-                    Your balance is {balance} SPACE
-                </Text>
+                <WelcomeBlock />
 
                 <Text style={styles.title}>My Bookmarks</Text>
                 <FlatList
@@ -162,27 +139,13 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
     },
-    text: {
-        fontSize: 18,
-        color: Colors.textColor,
-    },
     disabledText: {
         color: Colors.disabledText,
-    },
-    bold: {
-        fontWeight: 'bold',
-        fontSize: 18,
-        color: Colors.textColor,
     },
     title: {
         fontSize: 20,
         marginLeft: 10,
         marginVertical: 10,
-        color: Colors.textColor,
-    },
-    balanceText: {
-        fontSize: 18,
-        textAlign: 'center',
         color: Colors.textColor,
     },
     list: {

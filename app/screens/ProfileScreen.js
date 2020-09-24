@@ -1,7 +1,20 @@
-import React from 'react';
-import { Button, Text } from 'react-native-elements';
+import React, { useState } from 'react';
+import {
+    Avatar,
+    Button,
+    Icon,
+    Text,
+    Input,
+    ButtonGroup,
+} from 'react-native-elements';
 import Colors from '../constants/Colors';
-import { Platform, View } from 'react-native';
+import {
+    Platform,
+    TouchableOpacity,
+    View,
+    StyleSheet,
+    ScrollView,
+} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import {
     generateHexStringAsync,
@@ -13,7 +26,9 @@ import {
 } from 'expo-auth-session';
 import firebase from 'firebase';
 import { googleSignIn } from '../services/auth';
-import { useAuth, useMyPublicProfile } from 'nonzone-lib';
+import { useAuth, useMyPublicProfile, updateUserProfile } from 'nonzone-lib';
+import WelcomeBlock from '../components/WelcomeBlock';
+import Line from '../components/Line';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -29,12 +44,53 @@ function useNonce() {
     return nonce;
 }
 
+const TypeButton = (props) => (
+    <View
+        style={{
+            backgroundColor: Colors.background,
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 20,
+        }}
+    >
+        <Icon name={props.icon} color={Colors.tintColor} />
+        <Text style={{ color: '#8D8D8F', fontSize: 16 }}>{props.name}</Text>
+        <Text style={{ color: 'white', fontSize: 11 }}>
+            {props.description}
+        </Text>
+    </View>
+);
+
+const zonerButton = () => (
+    <TypeButton
+        name="Zoner"
+        description="Create, pin and own new stories."
+        icon="camera-alt"
+    />
+);
+const explorerButton = () => (
+    <TypeButton
+        name="Explorer"
+        description="Discover & interact with exciting stories."
+        icon="explore"
+    />
+);
+const buttons = [{ element: zonerButton }, { element: explorerButton }];
+
 function ProfileScreen(props) {
     const { navigation } = props;
     const { user } = useAuth();
     let { profile } = useMyPublicProfile();
+    const [nickname, setNickname] = useState(
+        profile?.nickname ? profile.nickname : ''
+    );
+    const [typeIndex, setTypeIndex] = useState(
+        profile?.type === 'explorer' ? 1 : 0
+    );
+    const [updating, setUpdating] = useState(false);
+
     navigation.setOptions({
-        title: profile.nickname ? 'Profile settings' : 'Registration',
+        title: profile?.nickname ? 'Profile settings' : 'Registration',
     });
     const nonce = useNonce();
     // Endpoint
@@ -69,6 +125,22 @@ function ProfileScreen(props) {
             navigation.replace('WalletScreen');
         }
     }, [response]);
+
+    const updateUser = async () => {
+        setUpdating(true);
+        try {
+            await updateUserProfile(user.uid, {
+                nickname,
+                type: typeIndex == 1 ? 'explorer' : 'zoner',
+            });
+            navigation.navigate('WalletScreen');
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setUpdating(false);
+        }
+    };
+
     return !user ? (
         <View>
             <Button
@@ -81,10 +153,114 @@ function ProfileScreen(props) {
             />
         </View>
     ) : (
-        <View>
-            <Text>Logged in</Text>
-        </View>
+        <ScrollView style={styles.container}>
+            <View style={styles.avatarContainer}>
+                <Avatar
+                    size={63}
+                    rounded
+                    source={{
+                        uri: user.photoURL,
+                    }}
+                    containerStyle={{
+                        alignSelf: 'center',
+                        borderColor: 'white',
+                        borderWidth: 1,
+                        marginRight: 20,
+                    }}
+                />
+                <View>
+                    {profile.nickname ? <Text>{profile.nickname}</Text> : null}
+                    {!profile.nickname ? <Text>{user.email}</Text> : null}
+                    {profile.nickname ? (
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('ProfileScreen')}
+                        >
+                            <Text
+                                style={{
+                                    color: Colors.tintColor,
+                                    textDecorationLine: 'underline',
+                                }}
+                            >
+                                Change avatar
+                            </Text>
+                        </TouchableOpacity>
+                    ) : null}
+                </View>
+            </View>
+
+            {profile.nickname ? <Line /> : <WelcomeBlock />}
+
+            <Input
+                label="Your public name"
+                labelStyle={{
+                    color: Colors.textColor,
+                    fontSize: 16,
+                    fontWeight: 'normal',
+                }}
+                value={nickname}
+                onChangeText={(value) => setNickname(value)}
+            />
+
+            {profile.nickname ? (
+                <Text style={styles.labelText}>Feeling different today?</Text>
+            ) : (
+                <Text style={styles.labelText}>
+                    How do you see yourself the most?
+                </Text>
+            )}
+
+            <ButtonGroup
+                buttons={buttons}
+                vertical={true}
+                containerStyle={{
+                    marginTop: 20,
+                    backgroundColor: 'transparent',
+                    borderColor: 'transparent',
+                    height: 200,
+                    width: '100%',
+                    alignSelf: 'center',
+                }}
+                selectedButtonStyle={{
+                    backgroundColor: 'transparent',
+                    borderRadius: 5,
+                    borderWidth: 3,
+                    borderColor: Colors.tintColor,
+                }}
+                innerBorderStyle={{ color: 'transparent' }}
+                selectedIndex={typeIndex}
+                onPress={(selectedIndex) => setTypeIndex(selectedIndex)}
+            />
+
+            <Button
+                buttonStyle={{ width: 200, alignSelf: 'center' }}
+                title={profile.nickname ? 'Update' : 'Start'}
+                onPress={updateUser}
+                loading={updating}
+            />
+        </ScrollView>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginHorizontal: 10,
+    },
+    labelText: {
+        marginLeft: 10,
+        color: Colors.textColor,
+        fontSize: 16,
+        fontWeight: 'normal',
+    },
+    avatarContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 10,
+        margin: 10,
+        padding: 10,
+    },
+});
 
 export default ProfileScreen;
