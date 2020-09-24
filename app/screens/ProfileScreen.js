@@ -232,7 +232,11 @@ function ProfileScreen(props) {
             />
 
             <Button
-                buttonStyle={{ width: 200, alignSelf: 'center' }}
+                buttonStyle={{
+                    width: 200,
+                    alignSelf: 'center',
+                    marginBottom: 20,
+                }}
                 title={profile.nickname ? 'Update' : 'Start'}
                 onPress={updateUser}
                 loading={updating}
