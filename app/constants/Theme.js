@@ -1,12 +1,12 @@
 import colors from './Colors';
 
 export const navigationTheme = {
-    dark: false,
+    dark: true,
     colors: {
         primary: colors.tintColor,
         background: colors.background,
         card: colors.background,
-        text: colors.tintColor,
+        text: colors.textColor,
         border: colors.background,
         notification: colors.tintColor,
     },

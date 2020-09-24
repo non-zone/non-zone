@@ -11,6 +11,7 @@ export default {
                 CreateStory: 'createStory',
                 ShowStory: 'showStory',
                 Map: 'map',
+                Profile: 'profile',
             },
         },
     },

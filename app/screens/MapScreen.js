@@ -38,6 +38,7 @@ export const MapScreen = (props) => {
         () => (location.latitude ? loc2bounds(location) : null),
         [location]
     );
+    const { navigation } = props;
 
     useEffect(() => {
         (async () => {
@@ -62,7 +63,6 @@ export const MapScreen = (props) => {
     }, []);
 
     const { data = [] } = useLoadStoriesByRegion(bounds);
-    // console.log({ error, loading, data });
 
     return (
         <View style={styles.container}>
@@ -76,12 +76,13 @@ export const MapScreen = (props) => {
                         customMapStyle={mapStyle}
                         provider={PROVIDER_GOOGLE}
                         onLongPress={(mapEvent) => {
-                            const { coordinate } = mapEvent.nativeEvent;
-                            console.log(coordinate);
-                            props.navigation.navigate(
-                                'CreateStory',
-                                coordinate
-                            );
+                            if (user) {
+                                const { coordinate } = mapEvent.nativeEvent;
+                                console.log(coordinate);
+                                navigation.navigate('CreateStory', coordinate);
+                            } else {
+                                navigation.navigate('ProfileScreen');
+                            }
                         }}
                         onRegionChangeComplete={(region) => {
                             if (
@@ -103,10 +104,7 @@ export const MapScreen = (props) => {
                                     style={styles.calloutStyle}
                                     tooltip={true}
                                     onPress={() =>
-                                        props.navigation.navigate(
-                                            'ShowStory',
-                                            marker
-                                        )
+                                        navigation.navigate('ShowStory', marker)
                                     }
                                 >
                                     <View style={styles.boxStyle}>
@@ -143,26 +141,26 @@ export const MapScreen = (props) => {
                             </Marker>
                         ))}
                     </MapView>
-                    {user && (
-                        <Avatar
-                            size={63}
-                            rounded
-                            source={{
-                                uri: user.photoURL,
-                            }}
-                            onPress={() =>
-                                props.navigation.navigate('WalletScreen')
-                            }
-                            containerStyle={{
-                                position: 'absolute', //use absolute position to show button on top of the map
-                                top: '5%', //for center align
-                                right: '5%',
-                                alignSelf: 'flex-end', //for align to right
-                                borderColor: 'white',
-                                borderWidth: 3,
-                            }}
-                        />
-                    )}
+                    <Avatar
+                        size={63}
+                        rounded
+                        source={{
+                            uri: user ? user.photoURL : null,
+                        }}
+                        onPress={() => {
+                            user
+                                ? navigation.navigate('WalletScreen')
+                                : navigation.navigate('ProfileScreen');
+                        }}
+                        containerStyle={{
+                            position: 'absolute', //use absolute position to show button on top of the map
+                            top: '5%', //for center align
+                            right: '5%',
+                            alignSelf: 'flex-end', //for align to right
+                            borderColor: 'white',
+                            borderWidth: 3,
+                        }}
+                    />
 
                     <Avatar
                         size={40}
@@ -176,7 +174,11 @@ export const MapScreen = (props) => {
                             backgroundColor: Colors.tintColor,
                         }}
                         onPress={() => {
-                            props.navigation.navigate('CreateStory', location);
+                            if (user) {
+                                navigation.navigate('CreateStory', location);
+                            } else {
+                                navigation.navigate('ProfileScreen');
+                            }
                         }}
                     />
 
