@@ -20,17 +20,32 @@ function WelcomeBlock() {
             <Text style={styles.text}>
                 Welcome to <Text style={styles.bold}>Non-zone</Text>
             </Text>
-            <Text style={styles.text}>
-                This is your <Text style={styles.bold}>secret place</Text>, let
-                us
-                {'\n'}
-                make it <Text style={styles.bold}>more personal</Text> for you.
-            </Text>
-            <Line />
+            {user ? (
+                <View>
+                    <Text style={styles.text}>
+                        This is your{' '}
+                        <Text style={styles.bold}>secret place</Text>, let us
+                        {'\n'}
+                        make it <Text style={styles.bold}>
+                            more personal
+                        </Text>{' '}
+                        for you.
+                    </Text>
+                    <Line />
 
-            <Text style={styles.balanceText}>
-                Your balance is {balance} SPACE
-            </Text>
+                    <Text style={styles.balanceText}>
+                        Your balance is {balance} SPACE
+                    </Text>
+                </View>
+            ) : (
+                <View>
+                    <Text style={styles.text}>
+                        Sign up to enter your{' '}
+                        <Text style={styles.bold}>secret place</Text>
+                    </Text>
+                    <Line />
+                </View>
+            )}
         </View>
     );
 }

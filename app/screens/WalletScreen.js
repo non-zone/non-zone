@@ -6,7 +6,7 @@ import {
     ScrollView,
     TouchableOpacity,
 } from 'react-native';
-import { Button, Avatar, Text, Icon } from 'react-native-elements';
+import { Button, Avatar, Text, Icon, Image } from 'react-native-elements';
 import StoryCard from '../components/StoryCard';
 import BookmarkCard from '../components/BookmarkCard';
 import WelcomeBlock from '../components/WelcomeBlock';
@@ -34,14 +34,24 @@ export default function WalletScreen(props) {
                     <Avatar
                         size={63}
                         rounded
-                        source={{
-                            uri: user.photoURL,
-                        }}
                         containerStyle={{
                             alignSelf: 'center',
                             borderColor: 'white',
                             borderWidth: 1,
                         }}
+                        renderPlaceholderContent={
+                            user ? (
+                                <Image
+                                    source={{
+                                        uri: user && user.photoURL,
+                                    }}
+                                    style={{ height: 63, width: 63 }}
+                                    resizeMode="contain"
+                                />
+                            ) : (
+                                <Icon name="person" color="white" size={50} />
+                            )
+                        }
                     />
                     <View>
                         <Text>{profile.nickname}</Text>

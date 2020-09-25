@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Dimensions, Text } from 'react-native';
-import { Avatar, Button } from 'react-native-elements';
+import { Avatar, Button, Icon, Image } from 'react-native-elements';
 import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import mapStyle from '../constants/mapStyle';
 import { useAuth, useLoadStoriesByRegion } from 'nonzone-lib';
@@ -144,9 +144,6 @@ export const MapScreen = (props) => {
                     <Avatar
                         size={63}
                         rounded
-                        source={{
-                            uri: user ? user.photoURL : null,
-                        }}
                         onPress={() => {
                             user
                                 ? navigation.navigate('WalletScreen')
@@ -160,6 +157,19 @@ export const MapScreen = (props) => {
                             borderColor: 'white',
                             borderWidth: 3,
                         }}
+                        renderPlaceholderContent={
+                            user ? (
+                                <Image
+                                    source={{
+                                        uri: user && user.photoURL,
+                                    }}
+                                    style={{ height: 63, width: 63 }}
+                                    resizeMode="contain"
+                                />
+                            ) : (
+                                <Icon name="person" color="white" size={50} />
+                            )
+                        }
                     />
 
                     <Avatar

@@ -6,6 +6,7 @@ import {
     Text,
     Input,
     ButtonGroup,
+    Image,
 } from 'react-native-elements';
 import Colors from '../constants/Colors';
 import {
@@ -143,13 +144,38 @@ function ProfileScreen(props) {
 
     return !user ? (
         <View>
+            <View style={styles.avatarContainer}>
+                <Avatar
+                    size={63}
+                    rounded
+                    containerStyle={{
+                        alignSelf: 'center',
+                        borderColor: 'white',
+                        borderWidth: 1,
+                        marginRight: 20,
+                    }}
+                    renderPlaceholderContent={
+                        <Icon name="person" color="white" size={50} />
+                    }
+                />
+                <View>
+                    <Text>This is your Space.</Text>
+                </View>
+            </View>
+            <WelcomeBlock />
             <Button
                 disabled={!request || !nonce}
                 color={Colors.tintColor}
-                title="Login"
-                onPress={() => {
-                    promptAsync({ useProxy, redirectUri });
+                icon={{
+                    name: 'google',
+                    color: 'white',
+                    type: 'font-awesome',
                 }}
+                title="Sign in"
+                onPress={async () => {
+                    await promptAsync({ useProxy, redirectUri });
+                }}
+                buttonStyle={{ alignSelf: 'center' }}
             />
         </View>
     ) : (
@@ -158,15 +184,25 @@ function ProfileScreen(props) {
                 <Avatar
                     size={63}
                     rounded
-                    source={{
-                        uri: user.photoURL,
-                    }}
                     containerStyle={{
                         alignSelf: 'center',
                         borderColor: 'white',
                         borderWidth: 1,
                         marginRight: 20,
                     }}
+                    renderPlaceholderContent={
+                        user ? (
+                            <Image
+                                source={{
+                                    uri: user && user.photoURL,
+                                }}
+                                style={{ height: 63, width: 63 }}
+                                resizeMode="contain"
+                            />
+                        ) : (
+                            <Icon name="person" color="white" size={50} />
+                        )
+                    }
                 />
                 <View>
                     {profile.nickname ? <Text>{profile.nickname}</Text> : null}
