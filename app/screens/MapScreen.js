@@ -145,9 +145,7 @@ export const MapScreen = (props) => {
                         size={63}
                         rounded
                         onPress={() => {
-                            user
-                                ? navigation.navigate('WalletScreen')
-                                : navigation.navigate('ProfileScreen');
+                            navigation.toggleDrawer();
                         }}
                         containerStyle={{
                             position: 'absolute', //use absolute position to show button on top of the map

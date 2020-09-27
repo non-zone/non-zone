@@ -6,12 +6,11 @@ import {
     ScrollView,
     TouchableOpacity,
 } from 'react-native';
-import { Button, Avatar, Text, Icon, Image } from 'react-native-elements';
+import { Avatar, Text, Icon, Image } from 'react-native-elements';
 import StoryCard from '../components/StoryCard';
 import BookmarkCard from '../components/BookmarkCard';
 import WelcomeBlock from '../components/WelcomeBlock';
 import {
-    signOut,
     useAuth,
     useLoadMyBookmarks,
     useLoadUserStories,
@@ -115,19 +114,6 @@ export default function WalletScreen(props) {
                             You haven't created any stories yet
                         </Text>
                     )}
-                />
-                <Button
-                    title="Logout"
-                    onPress={() => {
-                        signOut();
-                        navigation.replace('MapScreen');
-                    }}
-                    buttonStyle={{
-                        width: 200,
-                        alignSelf: 'center',
-                        marginTop: 30,
-                        marginBottom: 20,
-                    }}
                 />
             </View>
         </ScrollView>
