@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
+import { Icon } from 'react-native-elements';
 
 import WalletScreen from '../screens/WalletScreen';
 import MapScreen from '../screens/MapScreen';
@@ -12,7 +13,12 @@ const INITIAL_ROUTE_NAME = 'Map';
 
 export default function MapStackNavigator() {
     return (
-        <Stack.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+        <Stack.Navigator
+            initialRouteName={INITIAL_ROUTE_NAME}
+            screenOptions={{
+                headerBackImage: () => <Icon name="arrow-back" color="white" />,
+            }}
+        >
             <Stack.Screen
                 name="MapScreen"
                 component={MapScreen}
