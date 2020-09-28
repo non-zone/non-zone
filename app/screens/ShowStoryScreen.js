@@ -32,7 +32,6 @@ export default function ShowStoryScreen({ route, navigation }) {
     const { data: additionalDataArr } = useLoadAdditionalInfoForObjects([id]);
     const additionalData = additionalDataArr?.[id];
     const storyTips = Object.values(additionalData?.tips || {});
-    console.log(storyTips.length);
 
     const storyLikes = Object.values(additionalData?.likes || {});
     const _isLikedDB = storyLikes.some((t) => t.uid === user?.uid);
@@ -102,9 +101,20 @@ export default function ShowStoryScreen({ route, navigation }) {
                 />
                 <Text style={styles.description}>{description}</Text>
 
-                <Text style={{ color: Colors.border, paddingBottom: 0 }}>
-                    #{kind}
-                </Text>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Text style={{ color: Colors.border }}>#{kind}</Text>
+                    <Text style={{ color: Colors.border }}>
+                        {storyTips.length +
+                            ' ' +
+                            (storyTips.length == 1 ? 'tip' : 'tips')}
+                    </Text>
+                </View>
 
                 <Line
                     thickness={1}
