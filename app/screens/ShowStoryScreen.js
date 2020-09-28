@@ -19,6 +19,8 @@ import {
     clearBookmarkObject,
 } from 'nonzone-lib';
 
+import Comment from '../components/Comment';
+
 const { width } = Dimensions.get('window');
 
 export default function ShowStoryScreen({ route, navigation }) {
@@ -27,12 +29,16 @@ export default function ShowStoryScreen({ route, navigation }) {
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === id);
 
-    const { data: additionalData } = useLoadAdditionalInfoForObjects([id]);
+    const { data: additionalDataArr } = useLoadAdditionalInfoForObjects([id]);
+    const additionalData = additionalDataArr?.[id];
+    const storyTips = Object.values(additionalData?.tips || {});
+    console.log(storyTips.length);
 
-    const storyLikes = Object.values(additionalData?.[id]?.likes || {});
+    const storyLikes = Object.values(additionalData?.likes || {});
     const _isLikedDB = storyLikes.some((t) => t.uid === user?.uid);
     const [_isLikedState, setIsLiked] = useState(false);
     const isLikedByMe = _isLikedDB || _isLikedState;
+    const comments = Object.values(additionalData?.comments || []);
 
     const _like = async () => {
         setIsLiked(true);
@@ -103,17 +109,27 @@ export default function ShowStoryScreen({ route, navigation }) {
                 <Line
                     thickness={1}
                     marginTop={2}
-                    marginBottom={10}
+                    marginBottom={0}
                     marginLeft={0}
                     marginRight={0}
                 />
 
-                <Text style={{ textAlign: 'center' }}>
-                    Did you enjoy the story?{' '}
-                    <Text style={{ textDecorationLine: 'underline' }}>
-                        Leave a note!
+                {comments.length == 0 ? (
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            marginBottom: 20,
+                            marginTop: 20,
+                        }}
+                    >
+                        Did you enjoy the story?{' '}
+                        <Text style={{ textDecorationLine: 'underline' }}>
+                            Leave a note!
+                        </Text>
                     </Text>
-                </Text>
+                ) : (
+                    comments.map((item) => <Comment comment={item} />)
+                )}
             </ScrollView>
         </View>
     );
@@ -123,6 +139,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.tintBackground,
         flex: 1,
+        paddingBottom: 10,
     },
     contentContainer: {
         paddingHorizontal: 10,
