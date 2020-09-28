@@ -6,7 +6,14 @@ import {
     View,
     TouchableOpacity,
 } from 'react-native';
-import { Text, Icon } from 'react-native-elements';
+import {
+    Text,
+    Icon,
+    Input,
+    Button,
+    Overlay,
+    Avatar,
+} from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import Line from '../components/Line';
@@ -17,6 +24,8 @@ import {
     likeObject,
     setBookmarkObject,
     clearBookmarkObject,
+    leaveComment,
+    sendTip,
 } from 'nonzone-lib';
 
 import Comment from '../components/Comment';
@@ -24,20 +33,23 @@ import Comment from '../components/Comment';
 const { width } = Dimensions.get('window');
 
 export default function ShowStoryScreen({ route, navigation }) {
-    const { id, kind, title, image, description } = route.params;
+    const { uid, id, kind, title, image, description } = route.params;
     const { user } = useAuth();
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === id);
 
     const { data: additionalDataArr } = useLoadAdditionalInfoForObjects([id]);
     const additionalData = additionalDataArr?.[id];
-    const storyTips = Object.values(additionalData?.tips || {});
 
     const storyLikes = Object.values(additionalData?.likes || {});
     const _isLikedDB = storyLikes.some((t) => t.uid === user?.uid);
     const [_isLikedState, setIsLiked] = useState(false);
     const isLikedByMe = _isLikedDB || _isLikedState;
     const comments = Object.values(additionalData?.comments || []);
+
+    let [savingComment, setSavingComment] = useState(false);
+    const [comment, setComment] = useState('');
+    let [tippingModalVisible, setTippingModalVisible] = useState(false);
 
     const _like = async () => {
         setIsLiked(true);
@@ -53,6 +65,33 @@ export default function ShowStoryScreen({ route, navigation }) {
             setBookmarkObject(user.uid, id, title);
         } else {
             clearBookmarkObject(user.uid, id);
+        }
+    };
+
+    const saveComment = async () => {
+        setSavingComment(true);
+        console.log('save');
+
+        try {
+            await leaveComment(id, comment);
+        } catch (err) {
+            console.log(err.message);
+        } finally {
+            setComment('');
+            setSavingComment(false);
+            setTippingModalVisible(true);
+        }
+    };
+
+    const tipStory = async (amount) => {
+        console.log(amount, 'tipped');
+        try {
+            await sendTip(uid, amount, id);
+            console.log('tip successful');
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setTippingModalVisible(false);
         }
     };
 
@@ -101,20 +140,7 @@ export default function ShowStoryScreen({ route, navigation }) {
                 />
                 <Text style={styles.description}>{description}</Text>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                    }}
-                >
-                    <Text style={{ color: Colors.border }}>#{kind}</Text>
-                    <Text style={{ color: Colors.border }}>
-                        {storyTips.length +
-                            ' ' +
-                            (storyTips.length == 1 ? 'tip' : 'tips')}
-                    </Text>
-                </View>
+                <Text style={{ color: Colors.border }}>#{kind}</Text>
 
                 <Line
                     thickness={1}
@@ -138,9 +164,97 @@ export default function ShowStoryScreen({ route, navigation }) {
                         </Text>
                     </Text>
                 ) : (
-                    comments.map((item) => <Comment comment={item} />)
+                    comments.map((item, index) => (
+                        <Comment key={index} comment={item} />
+                    ))
                 )}
             </ScrollView>
+            {user ? (
+                <View>
+                    <Input
+                        placeholder="Comment"
+                        disabled={savingComment}
+                        value={comment}
+                        onChangeText={(value) => setComment(value)}
+                        style={{ bottom: 0 }}
+                        rightIcon={
+                            <TouchableOpacity onPress={saveComment}>
+                                <Icon name="send" color="white" />
+                            </TouchableOpacity>
+                        }
+                    />
+                </View>
+            ) : (
+                <View style={{ paddingHorizontal: 10 }}>
+                    <Text>
+                        In order to comment on a story you need to log into your
+                        account
+                    </Text>
+                    <Button
+                        title="Login"
+                        onPress={() => navigation.navigate('ProfileScreen')}
+                        buttonStyle={{ width: 200, alignSelf: 'center' }}
+                    />
+                </View>
+            )}
+            <Overlay
+                isVisible={tippingModalVisible}
+                onBackdropPress={() => setTippingModalVisible(false)}
+                overlayStyle={{
+                    backgroundColor: Colors.background,
+                    marginHorizontal: 20,
+                }}
+            >
+                <Text>
+                    Thanks! Now, traveling may be tiring, would you like to
+                    offer a coffee to the author?
+                </Text>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        margin: 20,
+                    }}
+                >
+                    <Avatar
+                        rounded
+                        size={50}
+                        title="1"
+                        activeOpacity={0.5}
+                        onPress={() => {
+                            tipStory(3);
+                        }}
+                        overlayContainerStyle={{
+                            backgroundColor: Colors.tintColor,
+                        }}
+                    />
+                    <Avatar
+                        rounded
+                        size={50}
+                        title="3"
+                        activeOpacity={0.5}
+                        onPress={() => {
+                            tipStory(1);
+                        }}
+                        overlayContainerStyle={{
+                            backgroundColor: Colors.tintColor,
+                        }}
+                    />
+                    <Avatar
+                        rounded
+                        size={50}
+                        title="5"
+                        activeOpacity={0.5}
+                        onPress={() => {
+                            tipStory(5);
+                        }}
+                        overlayContainerStyle={{
+                            backgroundColor: Colors.tintColor,
+                        }}
+                    />
+                </View>
+            </Overlay>
         </View>
     );
 }

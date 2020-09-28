@@ -145,7 +145,11 @@ export const MapScreen = (props) => {
                         size={63}
                         rounded
                         onPress={() => {
-                            navigation.toggleDrawer();
+                            if (user) {
+                                navigation.toggleDrawer();
+                            } else {
+                                navigation.navigate('ProfileScreen');
+                            }
                         }}
                         containerStyle={{
                             position: 'absolute', //use absolute position to show button on top of the map

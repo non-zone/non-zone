@@ -15,7 +15,7 @@ function Comment(props) {
         <View
             style={{
                 paddingVertical: 10,
-                borderColor: '#F2F6FC',
+                borderColor: '#8D8D8F',
                 borderBottomWidth: 1,
             }}
         >
@@ -38,7 +38,7 @@ function Comment(props) {
                             marginVertical: 5,
                         }}
                         renderPlaceholderContent={
-                            profile ? (
+                            profile?.photoURL ? (
                                 <Image
                                     source={{
                                         uri: profile.photoURL,
@@ -50,11 +50,7 @@ function Comment(props) {
                                     resizeMode="contain"
                                 />
                             ) : (
-                                <Icon
-                                    name="person"
-                                    color="white"
-                                    size={avatarSize}
-                                />
+                                <Icon name="person" color="white" size={20} />
                             )
                         }
                     />
