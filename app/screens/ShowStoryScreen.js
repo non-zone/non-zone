@@ -176,12 +176,23 @@ export default function ShowStoryScreen({ route, navigation }) {
             </ScrollView>
             {user ? (
                 <View>
+                    <Text
+                        style={{
+                            color: Colors.tintColor,
+                            textAlign: 'right',
+                            marginRight: 10,
+                            fontSize: 11,
+                        }}
+                    >
+                        {255 - comment.length + ' characters left'}
+                    </Text>
                     <Input
                         placeholder="Comment"
                         disabled={savingComment}
                         value={comment}
                         onChangeText={(value) => setComment(value)}
                         style={{ bottom: 0 }}
+                        maxLength={255}
                         rightIcon={
                             <TouchableOpacity onPress={saveComment}>
                                 <Icon name="send" color="white" />
