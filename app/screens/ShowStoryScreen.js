@@ -43,6 +43,7 @@ export default function ShowStoryScreen({ route, navigation }) {
     let [savingComment, setSavingComment] = useState(false);
     const [comment, setComment] = useState('');
     let [tippingModalVisible, setTippingModalVisible] = useState(false);
+    let [commentsModalVisible, setCommentsModalVisible] = useState(false);
 
     const _like = async () => {
         if (user) {
@@ -141,7 +142,29 @@ export default function ShowStoryScreen({ route, navigation }) {
                 />
                 <Text style={styles.description}>{description}</Text>
 
-                <Text style={{ color: Colors.border }}>#{kind}</Text>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Text style={{ color: Colors.border }}>#{kind}</Text>
+                    <TouchableOpacity
+                        onPress={() => setCommentsModalVisible(true)}
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Icon name="comment" size={18} color={Colors.border} />
+                        <Text style={{ color: Colors.border }}>
+                            {' '}
+                            {comments.length}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
 
                 <Line
                     thickness={1}
@@ -150,23 +173,6 @@ export default function ShowStoryScreen({ route, navigation }) {
                     marginLeft={0}
                     marginRight={0}
                 />
-
-                {comments.length == 0 ? (
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            marginBottom: 20,
-                            marginTop: 20,
-                            color: Colors.disabledText,
-                        }}
-                    >
-                        No one commented on this story yet
-                    </Text>
-                ) : (
-                    comments.map((item, index) => (
-                        <Comment key={index} comment={item} />
-                    ))
-                )}
             </ScrollView>
             {user ? (
                 <View>
@@ -262,6 +268,62 @@ export default function ShowStoryScreen({ route, navigation }) {
                     </View>
                 </View>
             </Overlay>
+            <Overlay
+                fullScreen={true}
+                isVisible={commentsModalVisible}
+                overlayStyle={{
+                    backgroundColor: Colors.background,
+                }}
+            >
+                <View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={() => setCommentsModalVisible(false)}
+                        >
+                            <Icon
+                                size={24}
+                                name="close"
+                                color="white"
+                                style={{ marginRight: 10 }}
+                            />
+                        </TouchableOpacity>
+                        <Text
+                            numberOfLines={1}
+                            style={{
+                                flex: 1,
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Notes
+                        </Text>
+                    </View>
+                    <ScrollView contentContainerStyle={styles.contentContainer}>
+                        {comments.length == 0 ? (
+                            <Text
+                                style={{
+                                    textAlign: 'center',
+                                    marginBottom: 20,
+                                    marginTop: 20,
+                                    color: Colors.disabledText,
+                                }}
+                            >
+                                No one left a note yet
+                            </Text>
+                        ) : (
+                            comments.map((item, index) => (
+                                <Comment key={index} comment={item} />
+                            ))
+                        )}
+                    </ScrollView>
+                </View>
+            </Overlay>
         </View>
     );
 }
@@ -274,6 +336,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         paddingHorizontal: 10,
+        paddingBottom: 20,
     },
     headerContainer: {
         flexDirection: 'row',
