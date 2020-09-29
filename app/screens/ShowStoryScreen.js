@@ -6,14 +6,7 @@ import {
     View,
     TouchableOpacity,
 } from 'react-native';
-import {
-    Text,
-    Icon,
-    Input,
-    Button,
-    Overlay,
-    Avatar,
-} from 'react-native-elements';
+import { Text, Icon, Input, Overlay, Avatar } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import Line from '../components/Line';
@@ -52,19 +45,27 @@ export default function ShowStoryScreen({ route, navigation }) {
     let [tippingModalVisible, setTippingModalVisible] = useState(false);
 
     const _like = async () => {
-        setIsLiked(true);
-        try {
-            await likeObject(id);
-        } catch (err) {
-            console.log(err.message);
+        if (user) {
+            setIsLiked(true);
+            try {
+                await likeObject(id);
+            } catch (err) {
+                console.log(err.message);
+            }
+        } else {
+            navigation.navigate('ProfileScreen');
         }
     };
 
     const _toggleBookmark = () => {
-        if (!isBookmarked) {
-            setBookmarkObject(user.uid, id, title);
+        if (user) {
+            if (!isBookmarked) {
+                setBookmarkObject(user.uid, id, title);
+            } else {
+                clearBookmarkObject(user.uid, id);
+            }
         } else {
-            clearBookmarkObject(user.uid, id);
+            navigation.navigate('ProfileScreen');
         }
     };
 
@@ -156,12 +157,10 @@ export default function ShowStoryScreen({ route, navigation }) {
                             textAlign: 'center',
                             marginBottom: 20,
                             marginTop: 20,
+                            color: Colors.disabledText,
                         }}
                     >
-                        Did you enjoy the story?{' '}
-                        <Text style={{ textDecorationLine: 'underline' }}>
-                            Leave a note!
-                        </Text>
+                        No one commented on this story yet
                     </Text>
                 ) : (
                     comments.map((item, index) => (
@@ -185,16 +184,22 @@ export default function ShowStoryScreen({ route, navigation }) {
                     />
                 </View>
             ) : (
-                <View style={{ paddingHorizontal: 10 }}>
-                    <Text>
-                        In order to comment on a story you need to log into your
-                        account
-                    </Text>
-                    <Button
-                        title="Login"
+                <View
+                    style={{
+                        paddingHorizontal: 10,
+                        flexDirection: 'row',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text>Did you like the Story? </Text>
+                    <TouchableOpacity
                         onPress={() => navigation.navigate('ProfileScreen')}
-                        buttonStyle={{ width: 200, alignSelf: 'center' }}
-                    />
+                    >
+                        <Text style={{ textDecorationLine: 'underline' }}>
+                            Leave a note
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             )}
             <Overlay
@@ -205,54 +210,56 @@ export default function ShowStoryScreen({ route, navigation }) {
                     marginHorizontal: 20,
                 }}
             >
-                <Text>
-                    Thanks! Now, traveling may be tiring, would you like to
-                    offer a coffee to the author?
-                </Text>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        margin: 20,
-                    }}
-                >
-                    <Avatar
-                        rounded
-                        size={50}
-                        title="1"
-                        activeOpacity={0.5}
-                        onPress={() => {
-                            tipStory(3);
+                <View>
+                    <Text>
+                        Thanks! Now, traveling may be tiring, would you like to
+                        offer a coffee to the author?
+                    </Text>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            margin: 20,
                         }}
-                        overlayContainerStyle={{
-                            backgroundColor: Colors.tintColor,
-                        }}
-                    />
-                    <Avatar
-                        rounded
-                        size={50}
-                        title="3"
-                        activeOpacity={0.5}
-                        onPress={() => {
-                            tipStory(1);
-                        }}
-                        overlayContainerStyle={{
-                            backgroundColor: Colors.tintColor,
-                        }}
-                    />
-                    <Avatar
-                        rounded
-                        size={50}
-                        title="5"
-                        activeOpacity={0.5}
-                        onPress={() => {
-                            tipStory(5);
-                        }}
-                        overlayContainerStyle={{
-                            backgroundColor: Colors.tintColor,
-                        }}
-                    />
+                    >
+                        <Avatar
+                            rounded
+                            size={50}
+                            title="1"
+                            activeOpacity={0.5}
+                            onPress={() => {
+                                tipStory(3);
+                            }}
+                            overlayContainerStyle={{
+                                backgroundColor: Colors.tintColor,
+                            }}
+                        />
+                        <Avatar
+                            rounded
+                            size={50}
+                            title="3"
+                            activeOpacity={0.5}
+                            onPress={() => {
+                                tipStory(1);
+                            }}
+                            overlayContainerStyle={{
+                                backgroundColor: Colors.tintColor,
+                            }}
+                        />
+                        <Avatar
+                            rounded
+                            size={50}
+                            title="5"
+                            activeOpacity={0.5}
+                            onPress={() => {
+                                tipStory(5);
+                            }}
+                            overlayContainerStyle={{
+                                backgroundColor: Colors.tintColor,
+                            }}
+                        />
+                    </View>
                 </View>
             </Overlay>
         </View>
