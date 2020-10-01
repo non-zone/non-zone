@@ -151,7 +151,11 @@ export default function ShowStoryScreen({ route, navigation }) {
                 >
                     <Text style={{ color: Colors.border }}>#{kind}</Text>
                     <TouchableOpacity
-                        onPress={() => setCommentsModalVisible(true)}
+                        onPress={() =>
+                            user
+                                ? setCommentsModalVisible(true)
+                                : navigation.navigate('ProfileScreen')
+                        }
                         style={{
                             flexDirection: 'row',
                             alignItems: 'center',
