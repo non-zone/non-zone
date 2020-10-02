@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import { Avatar, Button, Icon, Image } from 'react-native-elements';
 import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
@@ -39,6 +39,7 @@ export const MapScreen = (props) => {
         [location]
     );
     const { navigation } = props;
+    let mapView = useRef(null);
 
     useEffect(() => {
         (async () => {
@@ -69,8 +70,9 @@ export const MapScreen = (props) => {
             {location.latitude !== undefined && (
                 <View>
                     <MapView
+                        ref={mapView}
                         style={styles.mapStyle}
-                        region={location}
+                        initialRegion={location}
                         minZoomLevel={2}
                         maxZoomLevel={18}
                         customMapStyle={mapStyle}
@@ -206,7 +208,10 @@ export const MapScreen = (props) => {
                             backgroundColor: Colors.tintColor,
                         }}
                         onPress={() => {
-                            setLocation(initialLocation);
+                            mapView.current.animateToRegion(
+                                initialLocation,
+                                1000
+                            );
                         }}
                     />
                 </View>
