@@ -61,13 +61,31 @@ In case of _app_ issues, try running it with _expo start --clear_.
 
 See the instructions printed in console for more information.
 
+### Dev and Prod environment
+
+Use env variables _REACT_APP_NONZONE_ENV_ for webapp and _REACT_NATIVE_NONZONE_ENV_ for expo app to define _production_ environment or _development_ (default, used if unset).
+
+In _webapp/_
+
+```
+REACT_APP_NONZONE_ENV=production yarn start
+
+or
+
+REACT_APP_NONZONE_ENV=production yarn build
+```
+
+In _app/_
+
+```
+REACT_NATIVE_NONZONE_ENV='production' yarn start
+```
+
 ### Deployment of webapp and functions
 
 #### Deploy firebase
 
 In project root execute either `yarn deploy:dev` or `yarn deploy:prod` command - it will set the appropriate environment variable, build the _nonzone-lib_ and _webapp_ module and deploy _webapp_, _functions_ along with _database.rules_.
-
-Just in case stop _yarn build_ in _nonzone-lib_ if you have it running.
 
 #### Deploy Arweave
 

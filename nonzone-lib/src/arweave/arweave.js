@@ -9,10 +9,9 @@ import Geohash from '@geonet/geohash';
 import { and, or, equals } from 'arql-ops';
 import React from 'react';
 import { KeyfileLogin } from './KeyfileLogin';
+import { getNonzoneEnv } from '../config';
 
-const { REACT_APP_NONZONE_ENV = 'development' } = process.env;
-const appName =
-    REACT_APP_NONZONE_ENV === 'production' ? 'Non-Zone' : 'NonZone-Test';
+const appName = getNonzoneEnv() === 'production' ? 'Non-Zone' : 'NonZone-Test';
 
 const arweave = Arweave.init({
     host: 'arweave.net',
