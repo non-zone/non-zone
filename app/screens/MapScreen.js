@@ -65,6 +65,15 @@ export const MapScreen = (props) => {
 
     const { data = [] } = useLoadStoriesByRegion(bounds);
 
+    const createStory = async () => {
+        if (user) {
+            let position = await Location.getCurrentPositionAsync({});
+            navigation.navigate('CreateStory', position.coords);
+        } else {
+            navigation.navigate('ProfileScreen');
+        }
+    };
+
     return (
         <View style={styles.container}>
             {location.latitude !== undefined && (
@@ -77,15 +86,7 @@ export const MapScreen = (props) => {
                         maxZoomLevel={18}
                         customMapStyle={mapStyle}
                         provider={PROVIDER_GOOGLE}
-                        onLongPress={(mapEvent) => {
-                            if (user) {
-                                const { coordinate } = mapEvent.nativeEvent;
-                                console.log(coordinate);
-                                navigation.navigate('CreateStory', coordinate);
-                            } else {
-                                navigation.navigate('ProfileScreen');
-                            }
-                        }}
+                        onLongPress={createStory}
                         onRegionChangeComplete={(region) => {
                             if (
                                 location.latitude !== region.latitude ||
@@ -187,13 +188,7 @@ export const MapScreen = (props) => {
                             alignSelf: 'flex-end', //for align to right
                             backgroundColor: Colors.tintColor,
                         }}
-                        onPress={() => {
-                            if (user) {
-                                navigation.navigate('CreateStory', location);
-                            } else {
-                                navigation.navigate('ProfileScreen');
-                            }
-                        }}
+                        onPress={createStory}
                     />
 
                     <Avatar
