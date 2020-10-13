@@ -134,7 +134,7 @@ function ProfileScreen(props) {
                 nickname,
                 type: typeIndex == 1 ? 'explorer' : 'zoner',
             });
-            navigation.navigate('WalletScreen');
+            navigation.goBack();
         } catch (err) {
             console.log(err);
         } finally {

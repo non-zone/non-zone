@@ -3,7 +3,11 @@ import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import { Avatar, Button, Icon, Image } from 'react-native-elements';
 import MapView, { Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import mapStyle from '../constants/mapStyle';
-import { useAuth, useLoadStoriesByRegion } from 'nonzone-lib';
+import {
+    useAuth,
+    useLoadStoriesByRegion,
+    useMyPublicProfile,
+} from 'nonzone-lib';
 import * as Location from 'expo-location';
 
 import Colors from '../constants/Colors';
@@ -12,8 +16,6 @@ const { width, height } = Dimensions.get('window');
 const SCREEN_HEIGHT = height;
 const SCREEN_WIDTH = width;
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 10;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const loc2bounds = (loc) => {
     const { latitude, longitude, latitudeDelta, longitudeDelta } = loc;
@@ -26,18 +28,19 @@ const loc2bounds = (loc) => {
 };
 
 export const MapScreen = (props) => {
-    let [location, setLocation] = useState({
-        latitude: undefined,
-        longitude: undefined,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-    });
-    let [initialLocation, setInitialLocation] = useState(null);
     const { user } = useAuth();
-    const bounds = useMemo(
-        () => (location.latitude ? loc2bounds(location) : null),
-        [location]
+    let { profile } = useMyPublicProfile();
+    let [latitudeDelta, setLatitudeDelta] = useState(10);
+    let [longitudeDelta, setLongitudeDelta] = useState(
+        latitudeDelta * ASPECT_RATIO
     );
+
+    let [location, setLocation] = useState(null);
+
+    let [physicalLocation, setPhysicalLocation] = useState(null);
+    const bounds = useMemo(() => (location ? loc2bounds(location) : null), [
+        location,
+    ]);
     const { navigation } = props;
     let mapView = useRef(null);
 
@@ -50,18 +53,48 @@ export const MapScreen = (props) => {
 
             let position = await Location.getCurrentPositionAsync({});
             console.log('Detected current position:', position);
+
             let newLocation = {
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
+                latitudeDelta: latitudeDelta,
+                longitudeDelta: longitudeDelta,
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
             };
             setLocation(newLocation);
-            if (!initialLocation) {
-                setInitialLocation(newLocation);
+            if (!physicalLocation) {
+                setPhysicalLocation(newLocation);
             }
         })();
     }, []);
+
+    useEffect(() => {
+        async function adjustZoom() {
+            let latitudeDeltaTemp = 10;
+
+            if (profile && profile.type === 'zoner') {
+                latitudeDeltaTemp = 0.01;
+            }
+
+            setLatitudeDelta(latitudeDeltaTemp);
+            let longitudeDeltaTemp = latitudeDeltaTemp * ASPECT_RATIO;
+            setLongitudeDelta(longitudeDeltaTemp);
+
+            setPhysicalLocation({
+                ...physicalLocation,
+                latitudeDelta: latitudeDeltaTemp,
+                longitudeDelta: longitudeDeltaTemp,
+            });
+            setLocation(physicalLocation);
+        }
+
+        adjustZoom();
+    }, [profile]);
+
+    useEffect(() => {
+        if (mapView) {
+            goToPhysicalLocation();
+        }
+    }, [physicalLocation]);
 
     const { data = [] } = useLoadStoriesByRegion(bounds);
 
@@ -74,9 +107,17 @@ export const MapScreen = (props) => {
         }
     };
 
+    const goToPhysicalLocation = () => {
+        if (mapView && mapView.current) {
+            mapView.current.animateToRegion(physicalLocation, 0);
+        } else {
+            console.log('mapView does not exist yet');
+        }
+    };
+
     return (
         <View style={styles.container}>
-            {location.latitude !== undefined && (
+            {location !== null ? (
                 <View>
                     <MapView
                         ref={mapView}
@@ -202,14 +243,21 @@ export const MapScreen = (props) => {
                             alignSelf: 'flex-end', //for align to right
                             backgroundColor: Colors.tintColor,
                         }}
-                        onPress={() => {
-                            mapView.current.animateToRegion(
-                                initialLocation,
-                                1000
+                        onPress={async () => {
+                            let position = await Location.getCurrentPositionAsync(
+                                {}
                             );
+                            setPhysicalLocation({
+                                latitudeDelta: latitudeDelta,
+                                longitudeDelta: longitudeDelta,
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                            });
                         }}
                     />
                 </View>
+            ) : (
+                <View></View>
             )}
         </View>
     );
