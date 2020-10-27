@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Interface, svg, Sliderr, Spinner, DialogWindow } from '../components';
+import {
+    Interface,
+    svg,
+    Sliderr,
+    Spinner,
+    DialogWindow,
+    TippingDialog,
+} from '../components';
 import './nonzone.css';
 import { useParams } from 'react-router-dom';
 import {
@@ -62,7 +69,7 @@ const CommentForm = ({ onSubmit }) => {
                 required
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                placeholder={`This costs ${TIP_AMOUNT} ${getCurrency()}`}
+                placeholder="Leave a note..."
             />
             <br />
             <button>Post</button>
@@ -94,6 +101,8 @@ export const Nonzone = ({ onClose }) => {
 
     const comments = Object.values(additonalData?.comments || []);
 
+    let [tippingModalVisible, setTippingModalVisible] = useState(false);
+
     console.log({
         myTipsCount,
         storyTips,
@@ -106,14 +115,11 @@ export const Nonzone = ({ onClose }) => {
     const [tipState, setTipState] = useState('');
     const enoughFundsForTip = !!balance && balance >= MIN_FUNDS_FOR_TIP;
 
-    const onConfirmSendTip = async () => {
+    const onConfirmSendTip = async (amount = TIP_AMOUNT) => {
         try {
+            setTippingModalVisible(false);
             setTipState('pending');
-            await sendTip(
-                object.contractId || object?.uid,
-                TIP_AMOUNT,
-                object.id
-            );
+            await sendTip(object.contractId || object?.uid, amount, object.id);
             setTipState('success');
         } catch (err) {
             alert(err.toString());
@@ -132,6 +138,7 @@ export const Nonzone = ({ onClose }) => {
     const onLeaveComment = async (comment) => {
         try {
             await leaveComment(object.id, comment);
+            setTippingModalVisible(true);
         } catch (err) {
             alert(err.toString());
         }
@@ -176,6 +183,12 @@ export const Nonzone = ({ onClose }) => {
                     secondaryAction="Cancel"
                     onClick={onConfirmSendTip}
                     onClickSecondary={() => setTipState(null)}
+                />
+            )}
+            {tippingModalVisible && !!user && enoughFundsForTip && (
+                <TippingDialog
+                    onTip={(amount) => onConfirmSendTip(amount)}
+                    onCancel={() => setTippingModalVisible(false)}
                 />
             )}
             <Interface
