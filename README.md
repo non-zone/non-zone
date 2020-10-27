@@ -85,6 +85,8 @@ REACT_NATIVE_NONZONE_ENV='production' yarn start
 
 #### Deploy firebase
 
+Setup Firebase CLI if you haven't - more details [here](https://firebase.google.com/docs/cli#install_the_firebase_cli)
+
 In project root execute either `yarn deploy:dev` or `yarn deploy:prod` command - it will set the appropriate environment variable, build the _nonzone-lib_ and _webapp_ module and deploy _webapp_, _functions_ along with _database.rules_.
 
 #### Deploy Arweave
