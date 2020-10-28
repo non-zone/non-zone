@@ -138,7 +138,7 @@ export const Nonzone = ({ onClose }) => {
     const onLeaveComment = async (comment) => {
         try {
             await leaveComment(object.id, comment);
-            if (object.uid != user.uid) {
+            if (object.uid !== user.uid) {
                 setTippingModalVisible(true);
             }
         } catch (err) {
