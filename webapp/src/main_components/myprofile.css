@@ -149,6 +149,7 @@
     font-weight: bold;
     font-size: 1.2em;
     margin: 5px 0;
+    word-break: break-word;
 }
 .usertype__widget {
     display: flex;
