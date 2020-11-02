@@ -15,7 +15,7 @@
         "reset-io": "git checkout nonzone-lib/src/io.js",
         "aw:build:dev": "yarn set-io-arweave && REACT_APP_NONZONE_ENV='development' GENERATE_SOURCEMAP=false yarn build-for-web && yarn reset-io",
         "aw:build:prod": "yarn set-io-arweave && REACT_APP_NONZONE_ENV='production' GENERATE_SOURCEMAP=false yarn build-for-web && yarn reset-io",
-        "aw:deploy": "yarn --cwd webapp exec arweave deploy-dir ./build",
+        "aw:deploy": "arweave deploy-dir ./webapp/build",
         "build-for-web": "yarn --cwd nonzone-lib build && yarn --cwd webapp build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
