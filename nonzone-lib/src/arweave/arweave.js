@@ -11,7 +11,19 @@ import React from 'react';
 import { KeyfileLogin } from './KeyfileLogin';
 import { getNonzoneEnv } from '../config';
 
-const appName = getNonzoneEnv() === 'production' ? 'Non-Zone' : 'NonZone-Test';
+const isProduction = getNonzoneEnv() === 'production';
+const appName = isProduction ? 'Non-Zone' : 'NonZone-Test';
+
+const prodPST = 'HY90ZjK1tAxlm_Shau7hAJNH0jPmLCYqejERjVQ0MGw';
+const testPST = 'iIgf7-B9bRLGpP6ccQjJV0Kv2J2ogCBJL3mx1Sf0ns0';
+// used for tipping Nonzone app shareholders
+const nonzonePSTContractId = isProduction ? prodPST : testPST;
+
+const nonzonePublicWalletAddress =
+    '35a5He4pYjHIlgWMDVj23IQFnGvV5UMavjgL5FpdyTg';
+
+// used for creating Stories PST contracts
+const arweaveSourcePSTContract = 'ff8wOKWGIS6xKlhA8U6t70ydZOozixF5jQMp4yjoTc8';
 
 const arweave = Arweave.init({
     host: 'arweave.net',
@@ -39,16 +51,11 @@ export const Login = ({ onCancel, onSignedIn }) => (
 
 const getWallet = () => JSON.parse(window.sessionStorage.getItem('wallet'));
 
-const nonzonePSTContractId = 'HKpiK9oSWcDHTuU0_w5Fva4CUqfkvo2Kp22temOFACE';
-
-const referContractTxId = 'ff8wOKWGIS6xKlhA8U6t70ydZOozixF5jQMp4yjoTc8';
-const nonzoneWalletAddress = '35a5He4pYjHIlgWMDVj23IQFnGvV5UMavjgL5FpdyTg';
-
 const getContractInitialState = (userAddress, ticker) => ({
     ticker,
     balances: {
         [userAddress]: 9000000,
-        [nonzoneWalletAddress]: 1000000,
+        [nonzonePublicWalletAddress]: 1000000,
     },
 });
 
@@ -123,7 +130,7 @@ export const publishObject = async ({
         const contractId = await createContractFromTx(
             arweave,
             key,
-            referContractTxId,
+            arweaveSourcePSTContract,
             JSON.stringify(initState)
         );
         console.log('Created contract', contractId, initState);
@@ -373,7 +380,7 @@ export const sendTip = async (contractId, amountAR, refId) => {
     let target = selectWeightedPstHolder(contract.balances);
     console.log('selectWeightedPstHolder:', target);
 
-    if (target === nonzoneWalletAddress) {
+    if (target === nonzonePublicWalletAddress) {
         console.log('target is NonZone app, select one of its shareholders');
         // if the shareholder is nonzone app, pick one of nonzone app PST shareholders
         const nonzonePSTContract = await readContract(
