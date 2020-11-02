@@ -22,6 +22,7 @@ import {
     useLoadMyBookmarks,
     useLoadUserPublicProfile,
 } from 'nonzone-lib';
+import 'nonzone-lib/src/arweave/KeyfileLogin.css'; // temp
 import { useAuth, useMyWallet } from 'nonzone-lib';
 
 const TIP_AMOUNT = getCurrency() === 'SPACE' ? 1 : 0.01;
@@ -126,6 +127,7 @@ export const Nonzone = ({ onClose }) => {
             setTipState('ask');
         }
     };
+    const isLikeObjectSupported = !!likeObject;
     const onLike = async () => {
         setIsLiked(true);
         try {
@@ -135,6 +137,7 @@ export const Nonzone = ({ onClose }) => {
         }
     };
 
+    const isLeaveCommentSupported = !!leaveComment;
     const onLeaveComment = async (comment) => {
         try {
             await leaveComment(object.id, comment);
@@ -266,8 +269,10 @@ export const Nonzone = ({ onClose }) => {
                             )}
                             {isLikedByMe ? (
                                 <div className="likes-info">Liked</div>
-                            ) : (
+                            ) : isLikeObjectSupported ? (
                                 <button onClick={onLike}>Like</button>
+                            ) : (
+                                ''
                             )}
                             {comments.length > 0 && (
                                 <div className="likes-info">
@@ -277,7 +282,9 @@ export const Nonzone = ({ onClose }) => {
                                     ))}
                                 </div>
                             )}
-                            <CommentForm onSubmit={onLeaveComment} />
+                            {isLeaveCommentSupported && (
+                                <CommentForm onSubmit={onLeaveComment} />
+                            )}
                         </div>
                     </div>
                 </div>

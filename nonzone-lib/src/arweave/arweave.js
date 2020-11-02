@@ -65,6 +65,8 @@ const assertValidObject = (obj) => {
         throw new Error('Invalid object');
 };
 
+const filterEmpty = (arr) => arr.filter((it) => !!it);
+
 /** *
  * kind: memory|search|story
  * type: story|place
@@ -241,7 +243,7 @@ const loadObjectById = async (id) => {
 
     const objects = await Promise.all(txids.map((id) => loadObjectByTxId(id)));
     console.log('objects', objects);
-    return objects[0];
+    return filterEmpty(objects)[0];
 };
 export const subscribeToObjectById = (id, onData, onError) => {
     loadObjectById(id).then(onData).catch(onError);
@@ -283,20 +285,89 @@ const loadObjectsByRegion = async (bounds) => {
 
     const objects = await Promise.all(txids.map((id) => loadObjectByTxId(id)));
     console.log('objects', objects);
-    return objects.filter((o) => !!o);
+    return filterEmpty(objects);
 };
 export const subscribeToObjectsByRegion = (bounds, onData, onError) => {
     loadObjectsByRegion(bounds).then(onData).catch(onError);
     return () => {}; // dummy unsub
 };
 
+export const loadTipInfoByTxId = async (txId) => {
+    console.log('loadTipInfoByTxId', txId);
+    try {
+        const tx = await arweave.transactions.get(txId);
+        // console.log('tip tx:', tx);
+
+        if (!tx.target || !tx.quantity) throw new Error('Invalid object');
+
+        return tx;
+    } catch (err) {
+        console.log(
+            'Error loading',
+            txId,
+            err,
+            err.message,
+            JSON.stringify(err)
+        );
+        return null;
+    }
+};
+
+const loadObjectAdditionalData = async (objectId) => {
+    console.log(
+        'subscribeToObjectAdditionalData - load once tips for object',
+        objectId
+    );
+
+    const query = and(
+        equals('App-Name', appName),
+        equals('Nonzone-Ref-Id', objectId),
+        equals('Nonzone-Type', 'tip')
+    );
+
+    const txids = await arweave.arql(query);
+    console.log('subscribeToObjectAdditionalData tips txids', txids);
+    if (!txids?.length) return null;
+
+    const data = await Promise.all(txids.map((id) => loadTipInfoByTxId(id)));
+    console.log('Object', objectId, 'tip transactions:', data);
+    const validTipsArr = filterEmpty(data);
+    if (!validTipsArr.length) return null;
+    const ownerPublicAddresses = await Promise.all(
+        validTipsArr.map((tx) => arweave.wallets.ownerToAddress(tx.owner))
+    );
+    const tips = validTipsArr.reduce((obj, it, idx) => {
+        obj[it.id] = {
+            amount: arweave.ar.winstonToAr(it.quantity),
+            ts: '', // not sure if possible to extract some sort of timestamp
+            uid: ownerPublicAddresses[idx],
+        };
+        return obj;
+    }, {});
+    console.log('Object', objectId, 'additional tips data:', tips);
+    return { tips };
+};
 export const subscribeToObjectAdditionalData = (objectId, onData, onError) => {
-    throw new Error('Not implemented');
+    loadObjectAdditionalData(objectId).then(onData).catch(onError);
+    return () => {};
 };
 
 export const loadObjectsByUser = async (uid, publishedOnly = true) => {
-    // TODO
-    return [];
+    console.log('loadObjectsByUser', uid);
+
+    const query = and(
+        equals('App-Name', appName),
+        equals('Nonzone-Author', uid),
+        equals('Nonzone-Type', 'story')
+    );
+
+    const txids = await arweave.arql(query);
+    console.log('txids', txids);
+    if (!txids?.length) return null;
+
+    const objects = await Promise.all(txids.map((id) => loadObjectByTxId(id)));
+    console.log('user objects', objects);
+    return filterEmpty(objects);
 };
 
 export const saveProfile = null; // TODO
@@ -425,19 +496,26 @@ export const sendTip = async (contractId, amountAR, refId) => {
 };
 
 export const subscribeToMyTips = async (uid, onData, onError) => {
-    throw new Error('Not implemented');
+    console.log('subscribeToMyTips', uid);
+    const query = and(
+        equals('App-Name', appName),
+        equals('Nonzone-Type', 'tip'),
+        equals('Nonzone-Author', uid)
+    );
+
+    const txids = await arweave.arql(query);
+    console.log('txids', txids);
+    if (!txids?.length) return null;
+
+    const objects = await Promise.all(txids.map((id) => loadObjectByTxId(id)));
+    console.log('my tips', objects);
+    return filterEmpty(objects);
 };
 
 export const likeObject = null; // currently not supported
 
 export const leaveComment = null; // currently not supported
 
-export const bookmarkObject = async () => {
-    throw new Error('Not implemented');
-};
-export const clearBookmarkObject = async () => {
-    throw new Error('Not implemented');
-};
-export const subcribeToUserBookmarks = () => {
-    throw new Error('Not implemented');
-};
+export const bookmarkObject = null; // currently not supported
+export const clearBookmarkObject = null; // currently not supported
+export const subcribeToUserBookmarks = null; // currently not supported

@@ -123,7 +123,7 @@ export const useLoadMyBookmarks = () => {
     const [data, setData] = useState();
     const [error, setError] = useState();
     useEffect(() => {
-        if (!user) return;
+        if (!user || !io.subcribeToUserBookmarks) return;
 
         return io.subcribeToUserBookmarks(
             user.uid,
