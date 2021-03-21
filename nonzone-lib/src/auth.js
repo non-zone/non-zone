@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         io.subscribeToUserService((data, error) => {
-            console.log('On User Auth', { data, error });
             setState(
                 { ...data, error } || {
                     user: null,

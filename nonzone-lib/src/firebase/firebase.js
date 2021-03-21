@@ -42,6 +42,7 @@ export const saveObject = async ({
     title = '',
     description = '',
     image = null,
+    // tokenId
 }) => {
     if (!uid) throw new Error('uid empty');
     if (!loc || !(loc.latitude || loc.longitude))
@@ -61,6 +62,7 @@ export const saveObject = async ({
         description: description || '',
         image,
         updated: timestamp,
+        // tokenId
     };
     if (!id) {
         data.created = timestamp;
@@ -104,14 +106,14 @@ export const loadObjectsByUser = async (uid, publishedOnly = true) => {
     if (!snap?.val()) return [];
 
     const obj = snap.val();
-    console.debug('Loaded user stories', obj);
+    // console.debug('Loaded user stories', obj);
     const arr = Object.entries(obj)
         .map(([id, data]) => ({
             id,
             ...data,
         }))
         .filter((story) => !publishedOnly || !!story.published);
-    console.debug('Loaded user stories arr', arr);
+    // console.debug('Loaded user stories arr', arr);
     return arr;
 };
 
@@ -181,7 +183,7 @@ export const subscribeToUserService = (cb) => {
 
     firebase.auth().onIdTokenChanged(
         (user) => {
-            console.debug('Loaded user', user);
+            // console.debug('Loaded user', user);
             // cb(user, null);
 
             if (user?.uid && user.uid === data.user?.uid) return;

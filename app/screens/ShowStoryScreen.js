@@ -10,6 +10,9 @@ import { Text, Icon, Input, Overlay, Avatar } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import Line from '../components/Line';
+import { createInteraction } from '../contracts';
+import WalletConnectProvider, { useWalletConnect } from "react-native-walletconnect";
+
 import {
     useLoadMyBookmarks,
     useLoadAdditionalInfoForObjects,
@@ -19,6 +22,7 @@ import {
     clearBookmarkObject,
     leaveComment,
     sendTip,
+    uploadJSON,
 } from 'nonzone-lib';
 
 import Comment from '../components/Comment';
@@ -70,12 +74,19 @@ export default function ShowStoryScreen({ route, navigation }) {
         }
     };
 
-    const saveComment = async () => {
+
+    const saveComment = async (address) => {
         setSavingComment(true);
         console.log('save');
 
         try {
             await leaveComment(id, comment);
+            const result = await uploadJSON({
+                title: 'comment', 
+                description: comment, 
+                parentTokenId: id
+            })
+            await createInteraction(address, result.url, id);
         } catch (err) {
             console.log(err.message);
         } finally {
@@ -84,6 +95,14 @@ export default function ShowStoryScreen({ route, navigation }) {
             setTippingModalVisible(true);
         }
     };
+
+    const createInteractionNFT = async (address, props) => {
+        createInteraction(
+            address,
+            props,
+            1 // TODO get from DB
+        );
+    }
 
     const tipStory = async (amount) => {
         console.log(amount, 'tipped');
@@ -97,6 +116,10 @@ export default function ShowStoryScreen({ route, navigation }) {
         }
     };
 
+
+    const {
+        session,
+    } = useWalletConnect();
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -198,7 +221,7 @@ export default function ShowStoryScreen({ route, navigation }) {
                         style={{ bottom: 0 }}
                         maxLength={255}
                         rightIcon={
-                            <TouchableOpacity onPress={saveComment}>
+                            <TouchableOpacity onPress={() => saveComment(session[0].accounts[0])}>
                                 <Icon name="send" color="white" />
                             </TouchableOpacity>
                         }

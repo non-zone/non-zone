@@ -1,6 +1,6 @@
 import React from 'react';
 import './TakePicture.css';
-import { uploadToCloudinary } from 'nonzone-lib';
+import { uploadToTextile } from 'nonzone-lib';
 
 export const TakePicture = ({ children, preset, onChange, onStartUpload }) => {
     return (
@@ -11,11 +11,10 @@ export const TakePicture = ({ children, preset, onChange, onStartUpload }) => {
                 className="takepicture__input"
                 onChange={async (e) => {
                     onStartUpload && onStartUpload();
-                    const info = await uploadToCloudinary(
+                    const info = await uploadToTextile(
                         e.target.files[0],
-                        preset
                     );
-                    onChange(info.secure_url);
+                    onChange(info.link);
                 }}
             ></input>
             {children}

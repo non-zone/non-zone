@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import * as React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
+import WalletConnectProvider from "react-native-walletconnect";
 
 import useCachedResources from './hooks/useCachedResources';
 import LinkingConfiguration from './navigation/LinkingConfiguration';
@@ -27,30 +28,32 @@ export default function App() {
         return null;
     } else {
         return (
-            <AuthProvider>
-                <View style={styles.container}>
-                    <StatusBar barStyle="light-content" />
-                    <ThemeProvider theme={generalTheme}>
-                        <NavigationContainer
-                            theme={navigationTheme}
-                            linking={LinkingConfiguration}
-                        >
-                            <Drawer.Navigator
-                                drawerPosition="right"
-                                drawerType="front"
-                                drawerContent={(props) => (
-                                    <DrawerContent {...props} />
-                                )}
+            <WalletConnectProvider>
+                <AuthProvider>
+                    <View style={styles.container}>
+                        <StatusBar barStyle="light-content" />
+                        <ThemeProvider theme={generalTheme}>
+                            <NavigationContainer
+                                theme={navigationTheme}
+                                linking={LinkingConfiguration}
                             >
-                                <Drawer.Screen
-                                    name="Home"
-                                    component={MapStackNavigator}
-                                />
-                            </Drawer.Navigator>
-                        </NavigationContainer>
-                    </ThemeProvider>
-                </View>
-            </AuthProvider>
+                                <Drawer.Navigator
+                                    drawerPosition="right"
+                                    drawerType="front"
+                                    drawerContent={(props) => (
+                                        <DrawerContent {...props} />
+                                    )}
+                                >
+                                    <Drawer.Screen
+                                        name="Home"
+                                        component={MapStackNavigator}
+                                    />
+                                </Drawer.Navigator>
+                            </NavigationContainer>
+                        </ThemeProvider>
+                    </View>
+                </AuthProvider>
+            </WalletConnectProvider>
         );
     }
 }

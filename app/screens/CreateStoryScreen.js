@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { createStory } from '../contracts';
 import {
     Input,
     Button,
@@ -16,9 +17,12 @@ import {
     saveObject,
     publishObject,
     useAuth,
+    uploadToTextile,
     uploadToCloudinary,
+    uploadJSON
 } from 'nonzone-lib';
 
+import WalletConnectProvider, { useWalletConnect } from "react-native-walletconnect";
 import WalletScreen from './WalletScreen';
 import Colors from '../constants/Colors';
 
@@ -31,6 +35,7 @@ export default function CreateStoryScreen({ route, navigation }) {
     const [image, setImage] = useState(null);
     const { user } = useAuth();
     let [kindIndex, setKindIndex] = useState(0);
+    const [userAddress, setUserAddress] = useState('');
 
     useEffect(() => {
         const getPermission = async () => {
@@ -55,9 +60,17 @@ export default function CreateStoryScreen({ route, navigation }) {
                 }
             }
         };
-
         getPermission();
     }, []);
+
+    const createNFT = async (address, props) => {
+        createStory(
+            address,
+            props,
+            true
+        );
+    }
+
 
     const _pickImage = async () => {
         try {
@@ -70,8 +83,6 @@ export default function CreateStoryScreen({ route, navigation }) {
             if (!result.cancelled) {
                 setImage('data:image/jpeg;base64,' + result.base64);
             }
-
-            console.log(result);
         } catch (E) {
             console.log(E);
         }
@@ -88,17 +99,14 @@ export default function CreateStoryScreen({ route, navigation }) {
             if (!result.cancelled) {
                 setImage('data:image/jpeg;base64,' + result.base64);
             }
-
-            console.log(result);
         } catch (E) {
             console.log(E);
         }
     };
 
-    const _saveStory = async () => {
+    const _saveStory = async (address) => {
         if (image) {
             const uploadedImage = await uploadToCloudinary(image);
-            console.log(uploadedImage);
 
             const data = {
                 id: null,
@@ -110,8 +118,18 @@ export default function CreateStoryScreen({ route, navigation }) {
                 description,
                 image: uploadedImage.secure_url,
             };
+
+            const json = await uploadJSON({
+                name: title,
+                description,
+                image: uploadedImage.secure_url,
+                lat: position.latitude,
+                long: position.longitude,
+                isMemory: kindIndex == 0
+            });
+            await createNFT(address, json.url)
+
             const id = await saveObject(data);
-            console.log('save object result', id);
             data.id = id;
             await publishObject(data);
 
@@ -124,6 +142,10 @@ export default function CreateStoryScreen({ route, navigation }) {
         }
     };
 
+    const {
+        createSession,
+        session,
+    } = useWalletConnect();
     return user ? (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -236,9 +258,24 @@ export default function CreateStoryScreen({ route, navigation }) {
                         width: '50%',
                         alignSelf: 'center',
                         marginVertical: 20,
+
                     }}
-                    onPress={_saveStory}
+                    disabled={session[0].accounts[0] == undefined}
+                    onPress={() => _saveStory(session[0].accounts[0])}
+
                 />
+                <Button
+                    title="Connect wallet"
+                    buttonStyle={{
+                        backgroundColor: Colors.tintColor,
+                        width: '50%',
+                        alignSelf: 'center',
+                        marginVertical: 20,
+                    }}
+                    disabled={session[0].accounts[0] !== undefined}
+                    onPress={createSession}
+                />
+               
             </ScrollView>
         </View>
     ) : (

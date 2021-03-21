@@ -52,7 +52,7 @@ export const MapScreen = (props) => {
             }
 
             let position = await Location.getCurrentPositionAsync({});
-            console.log('Detected current position:', position);
+            // console.log('Detected current position:', position);
 
             let newLocation = {
                 latitudeDelta: latitudeDelta,
