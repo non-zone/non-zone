@@ -1,5 +1,5 @@
 
 export default {
-    address: '',
-    mnemonic: ''
-  };
+  address: '',
+  mnemonic: ''
+};
