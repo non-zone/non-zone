@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { createStory } from '../contracts';
+import { createStory, numberOfStories, spaceTokenBalance, payWithSpace, getStoryCreationPrice , transferMatic} from '../contracts';
 import {
     Input,
     Button,
@@ -13,7 +13,6 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import { Biconomy } from "@biconomy/mexa";
 
 import {
     saveObject,
@@ -23,23 +22,12 @@ import {
     uploadJSON
 } from 'nonzone-lib';
 
-import { useWalletConnect } from "react-native-walletconnect";
 import WalletScreen from './WalletScreen';
 import Colors from '../constants/Colors'
 import { ethers } from 'ethers';
 
 const { width } = Dimensions.get('window');
 
-let config = {
-    contract: {
-        address: "0x880176EDA9f1608A2Bf182385379bDcC1a65Dfcf",
-        abi: [{ "inputs": [{ "internalType": "string", "name": "newQuote", "type": "string" }], "name": "setQuote", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_forwarder", "type": "address" }], "name": "setTrustedForwarder", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "forwarder", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "inputs": [], "name": "getQuote", "outputs": [{ "internalType": "string", "name": "currentQuote", "type": "string" }, { "internalType": "address", "name": "currentOwner", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "forwarder", "type": "address" }], "name": "isTrustedForwarder", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "quote", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "trustedForwarder", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "versionRecipient", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }]
-    },
-    apiKey: {
-        test: "cNWqZcoBb.4e4c0990-26a8-4a45-b98e-08101f754119",
-        prod: "8nvA_lM_Q.0424c54e-b4b2-4550-98c5-8b437d3118a9"
-    }
-}
 export default function CreateStoryScreen({ route, navigation }) {
     const position = route.params;
     const [title, setTitle] = useState('');
@@ -48,7 +36,6 @@ export default function CreateStoryScreen({ route, navigation }) {
     const { user } = useAuth();
     let [kindIndex, setKindIndex] = useState(0);
     const [userAddress, setUserAddress] = useState('0x2CEF62C91Dd92FC35f008D1d6Ed08EADF64306bc');
-    const [contractInterface, setContractInterface] = useState();
 
 
     useEffect(() => {
@@ -77,47 +64,22 @@ export default function CreateStoryScreen({ route, navigation }) {
 
         };
 
-        const biconomySetup = async () => {
-            const biconomy = new Biconomy(jsonRpcProvider, {
-                walletProvider: window.ethereum,
-                apiKey: config.apiKey.prod,
-                debug: true
-            });
-
-            // We're creating biconomy provider linked to your network of choice where your contract is deployed
-            let jsonRpcProvider = new ethers.providers.JsonRpcProvider("https://kovan.infura.io/v3/d126f392798444609246423b06116c77");
-
-            const userAddress = '0x2CEF62C91Dd92FC35f008D1d6Ed08EADF64306bc'
-            setUserAddress(userAddress);
-
-            biconomy.onEvent(biconomy.READY, async () => {
-
-                // Initialize your dapp here like getting user accounts etc
-                contract = new ethers.Contract(
-                    config.contract.address,
-                    config.contract.abi,
-                    biconomy.getSignerByAddress(userAddress)
-                );
-
-                const contractInt = new ethers.utils.Interface(config.contract.abi);
-                setContractInterface(contractInt);
-                // getQuoteFromNetwork();
-            }).onEvent(biconomy.ERROR, (error, message) => {
-                // Handle error while initializing mexa
-                console.log(message);
-                console.log(error);
-            });
-        }
         getPermission();
-        biconomySetup();
     }, []);
 
-    const createNFT = async (address, props) => {
-        createStory(
-            address,
-            props,
-            true
-        );
+    const createNFT = async (props) => {
+        // const numberOfStoriesCreated = await numberOfStories();
+        // if (numberOfStoriesCreated > 1) {
+        //     const balance = await spaceTokenBalance();
+        //     const storyPrice = getStoryCreationPrice(numberOfStoriesCreated);
+        //     if (balance < storyPrice)
+        //         console.log('Not enough space');
+        //     else
+        //         await payWithSpace(numberOfStories);
+
+        // }
+        // await createStory(props)
+        await transferMatic('1000000000000000000')
     }
 
     const _pickImage = async () => {
@@ -152,7 +114,7 @@ export default function CreateStoryScreen({ route, navigation }) {
         }
     };
 
-    const _saveStory = async (address) => {
+    const _saveStory = async () => {
         if (image) {
             const uploadedImage = await uploadToCloudinary(image);
 
@@ -175,7 +137,8 @@ export default function CreateStoryScreen({ route, navigation }) {
                 long: position.longitude,
                 isMemory: kindIndex == 0
             });
-            await createNFT(address, json.url)
+
+            await createNFT(json.url);
 
             const id = await saveObject(data);
             data.id = id;
@@ -190,45 +153,7 @@ export default function CreateStoryScreen({ route, navigation }) {
         }
     };
 
-    const {
-        createSession,
-        session,
-        signTransaction
-    } = useWalletConnect();
-    const address = session[0].accounts[0];
 
-
-    const callContract = async () => {
-        let functionSignature = contractInterface.encodeFunctionData("setQuote", [newQuote]);
-
-        let rawTx = {
-            to: config.contract.address,
-            data: functionSignature,
-            from: userAddress
-        };
-
-        let signedTx = await signTransaction(rawTx);
-        // should get user message to sign for EIP712 or personal signature types
-        const forwardData = await biconomy.getForwardRequestAndMessageToSign(signedTx);
-        console.log(forwardData);
-
-        let data = {
-            signature: signature,
-            forwardRequest: forwardData.request,
-            rawTransaction: signedTx,
-            signatureType: biconomy.EIP712_SIGN,
-        };
-
-        let provider = biconomy.getEthersProvider();
-        // send signed transaction with ethers
-        // promise resolves to transaction hash                  
-        let txHash = await provider.send("eth_sendRawTransaction", [data]);
-        showInfoMessage(`Transaction sent. Waiting for confirmation ..`)
-        let receipt = await provider.waitForTransaction(txHash);
-        setTransactionHash(txHash);
-        showSuccessMessage("Transaction confirmed on chain");
-        console.log(receipt);
-    }
     return user ? (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -343,20 +268,8 @@ export default function CreateStoryScreen({ route, navigation }) {
                         marginVertical: 20,
 
                     }}
-                    disabled={session[0].accounts[0] == undefined}
-                    onPress={() => _saveStory(session[0].accounts[0])}
+                    onPress={() => _saveStory()}
 
-                />
-                <Button
-                    title="Connect wallet"
-                    buttonStyle={{
-                        backgroundColor: Colors.tintColor,
-                        width: '50%',
-                        alignSelf: 'center',
-                        marginVertical: 20,
-                    }}
-                    disabled={session[0].accounts[0] !== undefined}
-                    onPress={callContract}
                 />
 
             </ScrollView>

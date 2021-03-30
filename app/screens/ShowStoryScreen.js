@@ -11,7 +11,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import Line from '../components/Line';
 import { createInteraction } from '../contracts';
-import WalletConnectProvider, { useWalletConnect } from "react-native-walletconnect";
 
 import {
     useLoadMyBookmarks,
@@ -116,10 +115,6 @@ export default function ShowStoryScreen({ route, navigation }) {
         }
     };
 
-
-    const {
-        session,
-    } = useWalletConnect();
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
