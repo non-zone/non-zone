@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { createStory, numberOfStories, spaceTokenBalance, payWithSpace, getStoryCreationPrice , transferMatic} from '../contracts';
+import { createStory, numberOfStories, spaceTokenBalance, payWithSpace, getStoryCreationPrice } from '../contracts';
 import {
     Input,
     Button,
@@ -13,6 +13,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import * as SecureStore from 'expo-secure-store';
 
 import {
     saveObject,
@@ -24,7 +25,7 @@ import {
 
 import WalletScreen from './WalletScreen';
 import Colors from '../constants/Colors'
-import { ethers } from 'ethers';
+import { ethers } from "ethers";
 
 const { width } = Dimensions.get('window');
 
@@ -35,7 +36,6 @@ export default function CreateStoryScreen({ route, navigation }) {
     const [image, setImage] = useState(null);
     const { user } = useAuth();
     let [kindIndex, setKindIndex] = useState(0);
-    const [userAddress, setUserAddress] = useState('0x2CEF62C91Dd92FC35f008D1d6Ed08EADF64306bc');
 
 
     useEffect(() => {
@@ -61,25 +61,26 @@ export default function CreateStoryScreen({ route, navigation }) {
                 }
             }
 
-
+            // createWallet();
         };
 
         getPermission();
     }, []);
 
     const createNFT = async (props) => {
-        // const numberOfStoriesCreated = await numberOfStories();
-        // if (numberOfStoriesCreated > 1) {
-        //     const balance = await spaceTokenBalance();
-        //     const storyPrice = getStoryCreationPrice(numberOfStoriesCreated);
-        //     if (balance < storyPrice)
-        //         console.log('Not enough space');
-        //     else
-        //         await payWithSpace(numberOfStories);
-
-        // }
-        // await createStory(props)
-        await transferMatic('1000000000000000000')
+        const numberOfStoriesCreated = await numberOfStories();
+        if (numberOfStoriesCreated > 1) {
+            const balance = await spaceTokenBalance();
+            const storyPrice = getStoryCreationPrice(numberOfStoriesCreated);
+            if (balance < storyPrice)
+                console.log('Not enough space');
+            else {
+                await payWithSpace(numberOfStories);
+                await createStory(props)
+            }
+        } else {
+            await createStory(props)
+        }
     }
 
     const _pickImage = async () => {

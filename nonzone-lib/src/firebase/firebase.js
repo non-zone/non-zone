@@ -18,7 +18,6 @@ export const Login = ({ onCancel, onSignedIn }) => {
     useEffect(() => {
         googleSignIn()
             .then((userCreds) => {
-                console.log('userCreds', userCreds);
                 return userCreds
                     ? ref.current.onSignedIn?.()
                     : ref.current.onCancel();
@@ -68,7 +67,6 @@ export const saveObject = async ({
         data.created = timestamp;
         data.published = false;
     }
-    console.log('save story:', data);
     await objRef.update(data);
     return objRef.key;
 };

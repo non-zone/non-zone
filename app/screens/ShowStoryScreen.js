@@ -10,7 +10,7 @@ import { Text, Icon, Input, Overlay, Avatar } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import Line from '../components/Line';
-import { createInteraction } from '../contracts';
+import {  createInteraction } from '../contracts';
 
 import {
     useLoadMyBookmarks,
@@ -74,18 +74,20 @@ export default function ShowStoryScreen({ route, navigation }) {
     };
 
 
-    const saveComment = async (address) => {
+    const saveComment = async () => {
         setSavingComment(true);
         console.log('save');
 
         try {
             await leaveComment(id, comment);
             const result = await uploadJSON({
+                name: 'comment',
                 title: 'comment', 
                 description: comment, 
-                parentTokenId: id
+                parentTokenId: id,
+                image: "no image available"
             })
-            await createInteraction(address, result.url, id);
+             await createInteraction(result.url, 1);
         } catch (err) {
             console.log(err.message);
         } finally {
@@ -94,14 +96,6 @@ export default function ShowStoryScreen({ route, navigation }) {
             setTippingModalVisible(true);
         }
     };
-
-    const createInteractionNFT = async (address, props) => {
-        createInteraction(
-            address,
-            props,
-            1 // TODO get from DB
-        );
-    }
 
     const tipStory = async (amount) => {
         console.log(amount, 'tipped');
@@ -216,7 +210,7 @@ export default function ShowStoryScreen({ route, navigation }) {
                         style={{ bottom: 0 }}
                         maxLength={255}
                         rightIcon={
-                            <TouchableOpacity onPress={() => saveComment(session[0].accounts[0])}>
+                            <TouchableOpacity onPress={saveComment}>
                                 <Icon name="send" color="white" />
                             </TouchableOpacity>
                         }

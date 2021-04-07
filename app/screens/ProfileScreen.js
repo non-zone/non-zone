@@ -124,7 +124,6 @@ function ProfileScreen(props) {
                 id_token
             );
             googleSignIn(credential);
-            createWallet();
             navigation.replace('WalletScreen');
         }
     }, [response]);

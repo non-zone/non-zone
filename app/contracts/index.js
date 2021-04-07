@@ -80,16 +80,18 @@ export const createInteraction = async (
     const interactionInst = await interactionFactoryContract();
     interactionInst.once(
       'StoryInteractionCreated',
-      async (tokenId, storyCreator, props) => {
+      async (tokenId, interactionCreator, props, storyTokenId, openStream) => {
         console.log('Story created!');
         console.log(tokenId.toString());
+        console.log(openStream);
         console.log(props);
+        console.log(storyTokenId);
       },
     );
-    let interaction = await interactionInst.createInteraction(
-      // address,
+
+    let interaction = await interactionInst.createStoryInteraction(
       props,
-      storyTokenID
+      1
     );
     return interaction;
   } catch (err) {
@@ -103,11 +105,11 @@ export const createInteraction = async (
 export const numberOfStories = async () => {
   try {
     const storyFactoryInst = await storyFactoryContract();
-   
+
     const numberOfStories = await storyFactoryInst.balanceOf(
       getUserAddress()
     );
-    
+
     numberOfStories.toString();
 
     // return numberOfStories.toFixed();
