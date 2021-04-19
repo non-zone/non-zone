@@ -1,3 +1,5 @@
+import 'node-libs-react-native/globals';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import * as React from 'react';

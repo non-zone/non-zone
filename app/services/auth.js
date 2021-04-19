@@ -6,7 +6,6 @@ export const googleSignIn = (credential) => {
         .auth()
         .signInWithCredential(credential)
         .then((userCred) => {
-            console.log('User info after sign in:', userCred);
         })
         .catch((err) => console.log('Error signing in:', err));
 };

@@ -10,6 +10,7 @@ import {
 } from 'nonzone-lib';
 import * as Location from 'expo-location';
 
+
 import Colors from '../constants/Colors';
 
 const { width, height } = Dimensions.get('window');
@@ -52,7 +53,7 @@ export const MapScreen = (props) => {
             }
 
             let position = await Location.getCurrentPositionAsync({});
-            console.log('Detected current position:', position);
+            // console.log('Detected current position:', position);
 
             let newLocation = {
                 latitudeDelta: latitudeDelta,
@@ -143,6 +144,7 @@ export const MapScreen = (props) => {
                                 title={marker.title}
                                 description={marker.description}
                                 image={require('../assets/images/marker.png')}
+                                tokenId={marker.tokenId}
                             >
                                 <Callout
                                     style={styles.calloutStyle}

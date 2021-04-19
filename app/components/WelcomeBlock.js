@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../constants/Layout';
 import { Text } from 'react-native-elements';
 import { StyleSheet, View } from 'react-native';
 import Colors from '../constants/Colors';
 import Line from './Line';
 import { useAuth, useMyWallet } from 'nonzone-lib';
+import { createStory, numberOfStories, spaceTokenBalance, payWithSpace, getStoryCreationPrice } from '../contracts';
 
 function WelcomeBlock() {
     const { user } = useAuth();
-    let { balance } = useMyWallet(user?.uid);
+    const [balance, setBalance] = useState();
+
+    useEffect(() => {
+        const getBalance = async () => {
+            if(!balance) {
+                const spaceBalance = await spaceTokenBalance();
+                console.log(spaceBalance);
+                setBalance(spaceBalance);
+            }
+        };
+
+        getBalance();
+    }, [balance]);
+
     return (
         <View
             style={{
@@ -34,7 +48,7 @@ function WelcomeBlock() {
                     <Line />
 
                     <Text style={styles.balanceText}>
-                        Your balance is {balance} SPACE
+                        Your balance is {balance} H-SPACE
                     </Text>
                 </View>
             ) : (

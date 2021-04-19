@@ -30,6 +30,7 @@ import { googleSignIn } from '../services/auth';
 import { useAuth, useMyPublicProfile, updateUserProfile } from 'nonzone-lib';
 import WelcomeBlock from '../components/WelcomeBlock';
 import Line from '../components/Line';
+import { createWallet } from '../services/wallet';
 
 WebBrowser.maybeCompleteAuthSession();
 

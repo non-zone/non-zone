@@ -10,6 +10,8 @@ import { Text, Icon, Input, Overlay, Avatar } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import Line from '../components/Line';
+import {  createInteraction } from '../contracts';
+
 import {
     useLoadMyBookmarks,
     useLoadAdditionalInfoForObjects,
@@ -19,6 +21,7 @@ import {
     clearBookmarkObject,
     leaveComment,
     sendTip,
+    uploadJSON,
 } from 'nonzone-lib';
 
 import Comment from '../components/Comment';
@@ -26,7 +29,7 @@ import Comment from '../components/Comment';
 const { width } = Dimensions.get('window');
 
 export default function ShowStoryScreen({ route, navigation }) {
-    const { uid, id, kind, title, image, description } = route.params;
+    const { uid, id, kind, title, image, description, tokenId } = route.params;
     const { user } = useAuth();
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === id);
@@ -70,12 +73,21 @@ export default function ShowStoryScreen({ route, navigation }) {
         }
     };
 
+
     const saveComment = async () => {
         setSavingComment(true);
         console.log('save');
 
         try {
             await leaveComment(id, comment);
+            const result = await uploadJSON({
+                name: 'comment',
+                title: 'comment', 
+                description: comment, 
+                parentTokenId: id,
+                image: "no image available"
+            })
+             await createInteraction(result.url, tokenId);
         } catch (err) {
             console.log(err.message);
         } finally {

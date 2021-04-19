@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { createStory, numberOfStories, spaceTokenBalance, payWithSpace, getStoryCreationPrice } from '../contracts';
 import {
     Input,
     Button,
@@ -12,15 +13,17 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+
 import {
     saveObject,
     publishObject,
     useAuth,
     uploadToCloudinary,
+    uploadJSON
 } from 'nonzone-lib';
 
 import WalletScreen from './WalletScreen';
-import Colors from '../constants/Colors';
+import Colors from '../constants/Colors'
 
 const { width } = Dimensions.get('window');
 
@@ -59,6 +62,24 @@ export default function CreateStoryScreen({ route, navigation }) {
         getPermission();
     }, []);
 
+    const createNFT = async (props) => {
+        const numberOfStoriesCreated = await numberOfStories();
+        if (numberOfStoriesCreated > 1) {
+            const balance = await spaceTokenBalance();
+            const storyPrice = getStoryCreationPrice(numberOfStoriesCreated);
+            if (balance < storyPrice) {
+                console.log('Not enough space');
+                return -1;
+            }
+            else {
+                await payWithSpace(numberOfStories);
+                return await createStory(props)
+            }
+        } else {
+            return await createStory(props)
+        }
+    }
+
     const _pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
@@ -70,8 +91,6 @@ export default function CreateStoryScreen({ route, navigation }) {
             if (!result.cancelled) {
                 setImage('data:image/jpeg;base64,' + result.base64);
             }
-
-            console.log(result);
         } catch (E) {
             console.log(E);
         }
@@ -88,8 +107,6 @@ export default function CreateStoryScreen({ route, navigation }) {
             if (!result.cancelled) {
                 setImage('data:image/jpeg;base64,' + result.base64);
             }
-
-            console.log(result);
         } catch (E) {
             console.log(E);
         }
@@ -98,7 +115,6 @@ export default function CreateStoryScreen({ route, navigation }) {
     const _saveStory = async () => {
         if (image) {
             const uploadedImage = await uploadToCloudinary(image);
-            console.log(uploadedImage);
 
             const data = {
                 id: null,
@@ -110,8 +126,19 @@ export default function CreateStoryScreen({ route, navigation }) {
                 description,
                 image: uploadedImage.secure_url,
             };
+
+            const json = await uploadJSON({
+                name: title,
+                description,
+                image: uploadedImage.secure_url,
+                lat: position.latitude,
+                long: position.longitude,
+                isMemory: kindIndex == 0
+            });
+
+            const tokenID = await createNFT(json.url);
+            data.tokenId = tokenID;
             const id = await saveObject(data);
-            console.log('save object result', id);
             data.id = id;
             await publishObject(data);
 
@@ -236,9 +263,12 @@ export default function CreateStoryScreen({ route, navigation }) {
                         width: '50%',
                         alignSelf: 'center',
                         marginVertical: 20,
+
                     }}
-                    onPress={_saveStory}
+                    onPress={() => _saveStory()}
+
                 />
+
             </ScrollView>
         </View>
     ) : (
