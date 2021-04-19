@@ -144,6 +144,7 @@ export const MapScreen = (props) => {
                                 title={marker.title}
                                 description={marker.description}
                                 image={require('../assets/images/marker.png')}
+                                tokenId={marker.tokenId}
                             >
                                 <Callout
                                     style={styles.calloutStyle}

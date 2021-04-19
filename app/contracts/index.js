@@ -1,6 +1,6 @@
 import abis from './abis';
 import addresses from './addresses';
-import { getSigner, ethers, getUserAddress } from '../contracts/wallet';
+import { getSigner, ethers, getUserAddress, getDeployerSigner } from '../contracts/wallet';
 import { BigNumber } from 'ethers';
 
 
@@ -20,7 +20,7 @@ const storyFactoryContract = async () => {
 
 const interactionFactoryContract = async () => {
   try {
-    const signer = await getSigner();
+    const signer = await getDeployerSigner();
     let contract = await new ethers.Contract(
       addresses.interactionFactory,
       abis.interactionFactory,
@@ -36,7 +36,7 @@ const spaceTokenContract = async () => {
   try {
     const signer = await getSigner();
     let contract = await new ethers.Contract(
-      addresses.spaceToken,
+      addresses.hSpaceToken,
       abis.spaceToken,
       signer
     );
@@ -46,58 +46,88 @@ const spaceTokenContract = async () => {
   }
 }
 
+
 export const createStory = async (
   props
 ) => {
   try {
     const storyFactoryInst = await storyFactoryContract();
-    storyFactoryInst.once(
-      'StoryCreated',
-      async (tokenId, storyCreator, props) => {
-        console.log('Token created!');
-        console.log(tokenId.toString());
-        console.log(props);
-      },
-    );
-    let story = await storyFactoryInst.createStory(
+
+    const createTx = await storyFactoryInst.createStory(
       props
     );
-    console.log('contracts ticket');
-    console.log(story);
-    return story;
+
+    // Wait for transaction to finish
+    const storyTransactionResult = await createTx.wait();
+    const { events } = storyTransactionResult;
+    const storyCreatedEvent = events.find(
+      e => e.event === 'StoryCreated',
+    );
+
+    if (!storyCreatedEvent) {
+      throw new Error('Something went wrong');
+    }
+
+    console.log('StoryCreated');
+    console.log(tokenId);
+    const tokenId = storyCreatedEvent.args[0];
+    return tokenId;
+
   } catch (err) {
     console.log('error');
     console.log(err);
-    return false;
+    throw err;
   }
 };
 
-export const createInteraction = async (
+export const createInteraction =  async (
+  address,
   props,
   storyTokenID
 ) => {
   try {
+
     const interactionInst = await interactionFactoryContract();
-    interactionInst.once(
-      'StoryInteractionCreated',
-      async (tokenId, interactionCreator, props, storyTokenId, openStream) => {
-        console.log('Story created!');
-        console.log(tokenId.toString());
-        console.log(openStream);
-        console.log(props);
-        console.log(storyTokenId);
-      },
+    let overrides = {
+      // The maximum units of gas for the transaction to use
+      gasLimit: 2300000,
+    };
+
+    let createTx = await interactionInst.createStoryInteraction(
+      address,
+      props,
+      storyTokenID,
+      overrides
     );
 
-    let interaction = await interactionInst.createStoryInteraction(
-      props,
-      1
+    // Wait for transaction to finish
+    const storyInteractionTransactionResult = await createTx.wait();
+    const { events } = storyInteractionTransactionResult;
+    const storyInteractionCreatedEvent = events.find(
+      e => e.event === 'StoryInteractionCreated',
     );
-    return interaction;
+
+    if (!storyInteractionCreatedEvent) {
+      throw new Error('Something went wrong');
+    }
+
+    console.log('StoryInteractionCreated');
+    console.log(tokenId);
+    // newItemId, owner, _props, _storyTokenId, openStream
+    const tokenId = storyInteractionCreatedEvent.args[0];
+    const storyToken = storyInteractionCreatedEvent.args[3];
+    const openStream = storyInteractionCreatedEvent.args[4];
+
+    console.log('tokenId', tokenId)
+    console.log('storyToken', storyToken)
+    console.log('openStream', openStream)
+
+    return tokenId;
+
   } catch (err) {
     console.log('error');
     console.log(err);
-    return false;
+    throw err;
   }
 }
 
@@ -122,12 +152,13 @@ export const numberOfStories = async () => {
 }
 
 
-export const spaceTokenBalance = async () => {
+export const spaceTokenBalance = async (address) => {
   try {
     const spaceTokenInst = await spaceTokenContract();
     const balance = await spaceTokenInst.balanceOf(
-      getUserAddress()
+      address
     );
+    console.log(balance);
     let balanceStr = BigNumber.from(balance).toString();
     balanceStr = balanceStr.slice(0, balanceStr.length - 18);
     return Number(balanceStr);

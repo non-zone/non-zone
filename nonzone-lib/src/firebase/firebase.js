@@ -41,7 +41,7 @@ export const saveObject = async ({
     title = '',
     description = '',
     image = null,
-    // tokenId
+    tokenId
 }) => {
     if (!uid) throw new Error('uid empty');
     if (!loc || !(loc.latitude || loc.longitude))
@@ -61,7 +61,7 @@ export const saveObject = async ({
         description: description || '',
         image,
         updated: timestamp,
-        // tokenId
+        tokenId
     };
     if (!id) {
         data.created = timestamp;

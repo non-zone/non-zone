@@ -29,7 +29,7 @@ import Comment from '../components/Comment';
 const { width } = Dimensions.get('window');
 
 export default function ShowStoryScreen({ route, navigation }) {
-    const { uid, id, kind, title, image, description } = route.params;
+    const { uid, id, kind, title, image, description, tokenId } = route.params;
     const { user } = useAuth();
     const { data: bookmarks } = useLoadMyBookmarks();
     const isBookmarked = bookmarks?.some((b) => b.objectId === id);
@@ -87,7 +87,7 @@ export default function ShowStoryScreen({ route, navigation }) {
                 parentTokenId: id,
                 image: "no image available"
             })
-             await createInteraction(result.url, 1);
+             await createInteraction(result.url, tokenId);
         } catch (err) {
             console.log(err.message);
         } finally {

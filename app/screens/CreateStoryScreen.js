@@ -13,7 +13,6 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import * as SecureStore from 'expo-secure-store';
 
 import {
     saveObject,
@@ -25,7 +24,6 @@ import {
 
 import WalletScreen from './WalletScreen';
 import Colors from '../constants/Colors'
-import { ethers } from "ethers";
 
 const { width } = Dimensions.get('window');
 
@@ -36,7 +34,6 @@ export default function CreateStoryScreen({ route, navigation }) {
     const [image, setImage] = useState(null);
     const { user } = useAuth();
     let [kindIndex, setKindIndex] = useState(0);
-
 
     useEffect(() => {
         const getPermission = async () => {
@@ -60,8 +57,6 @@ export default function CreateStoryScreen({ route, navigation }) {
                     );
                 }
             }
-
-            // createWallet();
         };
 
         getPermission();
@@ -72,14 +67,16 @@ export default function CreateStoryScreen({ route, navigation }) {
         if (numberOfStoriesCreated > 1) {
             const balance = await spaceTokenBalance();
             const storyPrice = getStoryCreationPrice(numberOfStoriesCreated);
-            if (balance < storyPrice)
+            if (balance < storyPrice) {
                 console.log('Not enough space');
+                return -1;
+            }
             else {
                 await payWithSpace(numberOfStories);
-                await createStory(props)
+                return await createStory(props)
             }
         } else {
-            await createStory(props)
+            return await createStory(props)
         }
     }
 
@@ -139,8 +136,8 @@ export default function CreateStoryScreen({ route, navigation }) {
                 isMemory: kindIndex == 0
             });
 
-            await createNFT(json.url);
-
+            const tokenID = await createNFT(json.url);
+            data.tokenId = tokenID;
             const id = await saveObject(data);
             data.id = id;
             await publishObject(data);
@@ -153,7 +150,6 @@ export default function CreateStoryScreen({ route, navigation }) {
             }
         }
     };
-
 
     return user ? (
         <View style={styles.container}>
